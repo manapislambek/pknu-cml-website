@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Meta tags for character set and responsive design -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- The title that appears in the browser tab -->
+  <title>Construction Materials Laboratory - Pukyong National University</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+
+  <!-- Link to our stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HERO SECTION -->
+  <header class="hero-section">
+  
+    <!-- MAIN NAVIGATION -->
+    <nav class="main-nav">
+      <a href="index.html" class="logo">
+        <img src="images/pknu-logo.png" alt="Pukyong National University Logo" onerror="this.onerror=null; this.src='https://placehold.co/150x40/ffffff/0A2A5B?text=PKNU';">
+      </a>
+      
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="members.html">Members</a></li>
+        <li><a href="https://scholar.google.co.kr/citations?user=1Ou1UX8AAAAJ&hl=ko" target="_blank" rel="noopener noreferrer">Publications</a></li>
+        <li><a href="facility.html">Facility</a></li>
+        <li><a href="contact.html">News & Contact</a></li>
+      </ul>
+    </nav>
+  
+    <div class="hero-content">
+      <h1>Construction Materials Laboratory</h1>
+      <p class="hero-subtitle">Advancing the future of sustainable and resilient infrastructure through materials science.</p>
+      <!-- ADDED class for JS targeting -->
+      <a href="#research-section" class="hero-button smooth-scroll">Explore Our Research</a>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="container">
+
+    <!-- WELCOME TEXT SECTION -->
+    <section class="welcome-section fade-in-element">
+      <h3>Welcome to Our Laboratory</h3>
+      <p>
+        We are located at the beautiful ocean area in Nam-gu, Busan, South Korea. The research specialty of our group is in the area of architectural and construction materials, including cement chemistry, early age set and stiffening, rheological behavior, durability, recycling of industrial waste, radioactive waste separation and immobilization, development of advanced construction materials (e.g. use of CNT, graphene, or other nano-materials), etc.
+      </p>
+      <p>
+        Please check our past and current on-going research activities. Potential applicants are always welcome to contact the group member for the questions and the application.
+      </p>
+    </section>
+
+    <!-- RESEARCH AREAS SECTION -->
+    <!-- ADDED id for linking -->
+    <section id="research-section" class="research-section fade-in-element">
+      <h2>Our Research Areas</h2>
+      <div class="pillars-container">
+        <!-- JavaScript will populate this list -->
+      </div>
+    </section>
+
+    <!-- SELECTED PROJECTS SECTION -->
+    <section class="projects-section fade-in-element">
+        <h2>List of Projects (Selected)</h2>
+        <table class="projects-table">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Project Title</th>
+                    <th>Funding Agency</th>
+                    <th>Duration of Project</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- JavaScript will populate this list -->
+            </tbody>
+        </table>
+    </section>
+
+  </main>
+  
+  <footer class="main-footer">
+    <p>&copy; 2025 Construction Materials Laboratory, Pukyong National University. All Rights Reserved.</p>
+  </footer>
+
+  <!-- Load our JavaScript files -->
+  <script type="module" src="script.js"></script>
+  <script type="module" src="animations.js"></script>
+  <!-- ADDED new script for smooth scrolling -->
+  <script type="module" src="smooth-scroll.js"></script>
+
+</body>
+</html>

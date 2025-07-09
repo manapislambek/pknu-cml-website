@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News & Contact - Construction Materials Laboratory</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+
+  <!-- Link to our stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <nav class="main-nav">
+      <a href="index.html" class="logo">
+        <img src="images/pknu-logo.png" alt="Pukyong National University Logo" onerror="this.onerror=null; this.src='https://placehold.co/150x40/0A2A5B/ffffff?text=PKNU';">
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="members.html">Members</a></li>
+        <li><a href="https://scholar.google.co.kr/citations?user=1Ou1UX8AAAAJ&hl=ko" target="_blank" rel="noopener noreferrer">Publications</a></li>
+        <li><a href="facility.html">Facility</a></li>
+        <li><a href="contact.html">News & Contact</a></li>
+      </ul>
+    </nav>
+    <div class="page-header-title">
+        <h1>News & Contact</h1>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="container">
+    
+    <!-- Contact Info Section -->
+    <section class="contact-info-section">
+        <h2>Contact Information</h2>
+        <div class="contact-details">
+            <p><strong>Address:</strong> Pukyong National University, 45 Yongso-ro, Nam-gu, Busan, South Korea</p>
+            <p><strong>Email:</strong> <a href="mailto:cwchung@pknu.ac.kr">cwchung@pknu.ac.kr</a></p>
+            <p><strong>Phone:</strong> +82-51-629-XXXX</p>
+        </div>
+    </section>
+
+    <!-- Tabbed Content Section -->
+    <section class="tab-section">
+        <div class="tab-buttons">
+            <button class="tab-button active" data-tab="announcements">Notice (공지사항)</button>
+            <button class="tab-button" data-tab="gallery">Lab Life</button>
+        </div>
+
+        <div class="tab-content-container">
+            <!-- Announcements Panel -->
+            <div id="announcements" class="tab-content active">
+                
+                <!-- Notice Board Controls -->
+                <div class="notice-controls">
+                    <div class="search-wrapper">
+                        <input type="text" id="search-input" placeholder="Search by title...">
+                    </div>
+                    <div class="view-options">
+                        <label for="rows-per-page">Rows per page:</label>
+                        <select id="rows-per-page">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="announcements-list">
+                    <!-- JavaScript will populate this list -->
+                </div>
+
+                <!-- Pagination Controls -->
+                <div class="pagination-controls">
+                    <!-- JavaScript will populate this -->
+                </div>
+
+            </div>
+
+            <!-- Gallery Panel -->
+            <div id="gallery" class="tab-content">
+                <div class="photo-grid">
+                    <!-- JavaScript will populate this grid -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+  </main>
+  
+  <footer class="main-footer">
+    <p>&copy; 2025 Construction Materials Laboratory, Pukyong National University. All Rights Reserved.</p>
+  </footer>
+
+  <!-- Load our NEW JavaScript file for this page -->
+  <script type="module" src="contact-script.js"></script>
+
+</body>
+</html>
