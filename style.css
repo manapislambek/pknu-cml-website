@@ -9,7 +9,7 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  line-height: 1.6;
+  line-height: 1.7; /* Increased for better readability */
   color: #495057; /* Softer dark grey for text */
   background-color: #f8f9fa; /* A very light grey background for the whole page */
 }
@@ -18,7 +18,7 @@ body {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 3rem 2rem; /* Increased padding */
 }
 
 h1, h2, h3 {
@@ -249,8 +249,8 @@ h2 {
 
 .pillars-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Back to 2 columns as requested */
-  gap: 2.5rem; 
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 2rem; 
 }
 
 .pillar-card {
@@ -730,6 +730,10 @@ h2 {
         display: none;
     }
 
+    .hamburger-menu {
+        display: flex;
+    }
+
     .pillars-container {
         grid-template-columns: 1fr; /* Stack cards in a single column */
     }
@@ -765,4 +769,54 @@ h2 {
 .fade-in-element.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ==== MOBILE NAVIGATION STYLES ==== */
+.hamburger-menu {
+    display: none; /* Hidden by default on desktop */
+    flex-direction: column;
+    justify-content: space-around;
+    width: 2rem;
+    height: 2rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 11;
+}
+
+.hamburger-menu span {
+    width: 2rem;
+    height: 0.25rem;
+    background: #fff;
+    border-radius: 10px;
+    transition: all 0.3s linear;
+    position: relative;
+    transform-origin: 1px;
+}
+
+.mobile-nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(10, 42, 91, 0.98);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.mobile-nav.is-active {
+    display: flex;
+}
+
+.mobile-nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 2rem;
+    margin: 1.5rem 0;
+    font-family: 'Roboto Slab', serif;
 }
