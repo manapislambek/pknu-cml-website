@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }, {
-        threshold: 0.4 // Trigger when 10% of the element is visible
+        threshold: 0.15, // UPDATED: Trigger when 15% of the element is visible
+        rootMargin: "0px 0px -50px 0px" // Start loading when element is 50px from bottom of viewport
     });
 
     // Tell the observer to watch each of our animated elements

@@ -386,7 +386,7 @@ h2 {
 }
 
 .member-card.expanded .member-details-content {
-    max-height: 5000px; /* UPDATED: Increased max-height to prevent cutoff */
+    max-height: 5000px; /* Increased max-height to prevent cutoff */
     margin-top: 1.5rem;
     padding-top: 1.5rem;
     transition: max-height 0.5s ease-in, margin-top 0.5s ease-in;
@@ -730,6 +730,19 @@ h2 {
     position: relative;
     transform-origin: 1px;
 }
+
+/* Styles for the "X" close button */
+.hamburger-menu.is-active span:nth-child(1) {
+    transform: rotate(45deg);
+}
+.hamburger-menu.is-active span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+.hamburger-menu.is-active span:nth-child(3) {
+    transform: rotate(-45deg);
+}
+
 
 .mobile-nav {
     display: none;
