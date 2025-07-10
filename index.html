@@ -34,15 +34,30 @@
         <li><a href="facility.html">Facility</a></li>
         <li><a href="contact.html">News & Contact</a></li>
       </ul>
+      
+      <!-- Hamburger Menu Button -->
+      <button class="hamburger-menu">
+          <span></span>
+          <span></span>
+          <span></span>
+      </button>
     </nav>
   
     <div class="hero-content">
       <h1>Construction Materials Laboratory</h1>
       <p class="hero-subtitle">Advancing the future of sustainable and resilient infrastructure through materials science.</p>
-      <!-- ADDED class for JS targeting -->
       <a href="#research-section" class="hero-button smooth-scroll">Explore Our Research</a>
     </div>
   </header>
+  
+  <!-- Mobile Navigation Overlay -->
+  <div class="mobile-nav">
+      <a href="index.html">Home</a>
+      <a href="members.html">Members</a>
+      <a href="https://scholar.google.co.kr/citations?user=1Ou1UX8AAAAJ&hl=ko" target="_blank" rel="noopener noreferrer">Publications</a>
+      <a href="facility.html">Facility</a>
+      <a href="contact.html">News & Contact</a>
+  </div>
 
   <!-- MAIN CONTENT AREA -->
   <main class="container">
@@ -59,7 +74,6 @@
     </section>
 
     <!-- RESEARCH AREAS SECTION -->
-    <!-- ADDED id for linking -->
     <section id="research-section" class="research-section fade-in-element">
       <h2>Our Research Areas</h2>
       <div class="pillars-container">
@@ -94,8 +108,8 @@
   <!-- Load our JavaScript files -->
   <script type="module" src="script.js"></script>
   <script type="module" src="animations.js"></script>
-  <!-- ADDED new script for smooth scrolling -->
   <script type="module" src="smooth-scroll.js"></script>
+  <script type="module" src="mobile-nav.js"></script>
 
 </body>
 </html>
