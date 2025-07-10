@@ -386,7 +386,7 @@ h2 {
 }
 
 .member-card.expanded .member-details-content {
-    max-height: 5000px; /* Increased max-height to prevent cutoff */
+    max-height: 5000px; /* Increased max-height */
     margin-top: 1.5rem;
     padding-top: 1.5rem;
     transition: max-height 0.5s ease-in, margin-top 0.5s ease-in;
@@ -718,7 +718,10 @@ h2 {
     border: none;
     cursor: pointer;
     padding: 0;
-    z-index: 11;
+    z-index: 12; /* Ensure it's above the overlay */
+    position: fixed; /* Fix position relative to viewport */
+    top: 1.5rem;
+    right: 1.5rem;
 }
 
 .hamburger-menu span {
@@ -755,7 +758,7 @@ h2 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 10;
+    z-index: 11; /* Lower z-index than the button */
 }
 
 .mobile-nav.is-active {
