@@ -789,6 +789,25 @@ h2 {
     font-family: 'Roboto Slab', serif;
 }
 
+/* Close (X) button styles in mobile menu overlay */
+.mobile-nav-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 2.5rem;
+    z-index: 1010;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.mobile-nav-close:hover,
+.mobile-nav-close:focus {
+    color: #a7c5e4;
+    outline: none;
+}
+
 /* ==== RESPONSIVE DESIGN ==== */
 @media (max-width: 992px) { /* Changed breakpoint for tablets */
     .pillars-container {
