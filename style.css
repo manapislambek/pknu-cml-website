@@ -709,6 +709,7 @@ h2 {
 }
 
 /* ==== MOBILE NAVIGATION STYLES ==== */
+/* ==== MOBILE NAVIGATION STYLES ==== */
 .hamburger-menu {
     display: none; /* Hidden by default on desktop */
     flex-direction: column;
@@ -719,7 +720,7 @@ h2 {
     border: none;
     cursor: pointer;
     padding: 0;
-    z-index: 12000; /* Increased z-index to always be above mobile-nav */
+    z-index: 1100; /* Ensure this is the topmost element */
     position: fixed; /* Fix position relative to viewport */
     top: 1.5rem;
     right: 1.5rem;
@@ -738,7 +739,6 @@ h2 {
     background: #fff;
     border-radius: 10px;
     transition: all 0.3s linear;
-    z-index: 10000;
     position: relative;
     transform-origin: 1px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.18); /* Drop shadow for contrast */
@@ -774,7 +774,7 @@ h2 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 11; /* Lower z-index than the button */
+    z-index: 1000; /* High z-index to cover content, but lower than the button */
 }
 
 .mobile-nav.is-active {
