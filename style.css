@@ -137,7 +137,8 @@ h2 {
   align-items: center;
   width: 100%;
   padding: 1.5rem 4rem; /* More padding */
-  z-index: 10;
+  position: relative;
+  z-index: 0;
   transition: background-color 0.3s ease;
 }
 
@@ -718,7 +719,7 @@ h2 {
     border: none;
     cursor: pointer;
     padding: 0;
-    z-index: 12; /* Ensure it's above the overlay */
+    z-index: 9999; /* Ensure it's above the overlay */
     position: fixed; /* Fix position relative to viewport */
     top: 1.5rem;
     right: 1.5rem;
@@ -730,6 +731,7 @@ h2 {
     background: #fff;
     border-radius: 10px;
     transition: all 0.3s linear;
+    z-index: 10000;
     position: relative;
     transform-origin: 1px;
 }
