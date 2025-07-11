@@ -25,7 +25,6 @@
       <a href="index.html" class="logo">
         <img src="images/pknu-logo.png" alt="Pukyong National University Logo" onerror="this.onerror=null; this.src='https://placehold.co/150x40/0A2A5B/ffffff?text=PKNU';">
       </a>
-      
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="members.html">Members</a></li>
@@ -33,7 +32,21 @@
         <li><a href="facility.html">Facility</a></li>
         <li><a href="contact.html">News & Contact</a></li>
       </ul>
+      <!-- Hamburger Menu Button -->
+      <button class="hamburger-menu">
+          <span></span>
+          <span></span>
+          <span></span>
+      </button>
     </nav>
+    <div class="mobile-nav">
+        <button class="mobile-nav-close" aria-label="Close menu">&times;</button>
+        <a href="index.html">Home</a>
+        <a href="members.html">Members</a>
+        <a href="https://scholar.google.co.kr/citations?user=1Ou1UX8AAAAJ&hl=ko" target="_blank" rel="noopener noreferrer">Publications</a>
+        <a href="facility.html">Facility</a>
+        <a href="contact.html">News & Contact</a>
+    </div>
     <div class="page-header-title">
         <h1>Our Team</h1>
     </div>
@@ -70,6 +83,7 @@
   <!-- Load our JavaScript files -->
   <script type="module" src="members-script.js"></script>
   <script type="module" src="animations.js"></script>
+  <script type="module" src="mobile-nav.js"></script>
 
 </body>
 </html>
