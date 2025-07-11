@@ -719,21 +719,35 @@ h2 {
     border: none;
     cursor: pointer;
     padding: 0;
-    z-index: 9999; /* Ensure it's above the overlay */
+    z-index: 12000; /* Increased z-index to always be above mobile-nav */
     position: fixed; /* Fix position relative to viewport */
     top: 1.5rem;
     right: 1.5rem;
 }
 
+.hamburger-menu.is-active {
+    background: rgba(10, 42, 91, 0.7); /* Subtle background for visibility */
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border: 2px solid #fff; /* White border for extra contrast */
+}
+
 .hamburger-menu span {
     width: 2rem;
-    height: 0.25rem;
+    height: 0.32rem; /* Thicker bars for visibility */
     background: #fff;
     border-radius: 10px;
     transition: all 0.3s linear;
     z-index: 10000;
     position: relative;
     transform-origin: 1px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.18); /* Drop shadow for contrast */
+}
+.hamburger-menu:hover,
+.hamburger-menu:focus {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    outline: none;
+    border-color: #a7c5e4;
 }
 
 /* Styles for the "X" close button */
