@@ -1,40 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Meta tags for character set and responsive design -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- The title that appears in the browser tab -->
   <title>Construction Materials Laboratory - Pukyong National University</title>
-  
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
-
-  <!-- Link to our stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<!-- This class tells the CSS to apply hero styles to the header -->
+<body class="home">
 
-  <!-- HERO SECTION -->
-  <!-- The navigation bar will be loaded here by main-layout.js -->
-  <header class="hero-section">
-    <!-- The hero content remains specific to this page -->
-    <div class="hero-content">
+  <!-- All pages now share this exact header structure -->
+  <header class="main-header">
+    <!-- The navigation will be loaded here by main-layout.js -->
+    <div class="header-content">
+      <!-- This content is specific to the homepage -->
       <h1>Construction Materials Laboratory</h1>
       <p class="hero-subtitle">Advancing the future of sustainable and resilient infrastructure through materials science.</p>
       <a href="#research-section" class="hero-button smooth-scroll">Explore Our Research</a>
     </div>
   </header>
   
-  <!-- The Mobile Nav overlay is now in nav.html and will be loaded by the script -->
-
-  <!-- MAIN CONTENT AREA -->
   <main class="container">
-
-    <!-- WELCOME TEXT SECTION -->
     <section class="welcome-section fade-in-element">
       <h3>Welcome to Our Laboratory</h3>
       <p>
@@ -44,16 +33,10 @@
         Please check our past and current on-going research activities. Potential applicants are always welcome to contact the group member for the questions and the application.
       </p>
     </section>
-
-    <!-- RESEARCH AREAS SECTION -->
     <section id="research-section" class="research-section fade-in-element">
       <h2>Our Research Areas</h2>
-      <div class="pillars-container">
-        <!-- JavaScript will populate this list -->
-      </div>
+      <div class="pillars-container"></div>
     </section>
-
-    <!-- SELECTED PROJECTS SECTION -->
     <section class="projects-section fade-in-element">
         <h2>List of Projects (Selected)</h2>
         <table class="projects-table">
@@ -65,24 +48,16 @@
                     <th>Duration of Project</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- JavaScript will populate this list -->
-            </tbody>
+            <tbody></tbody>
         </table>
     </section>
-
   </main>
   
-  <!-- The footer content will be loaded here by main-layout.js -->
   <footer class="main-footer"></footer>
 
-  <!-- Load our JavaScript files -->
-  <!-- We load main-layout.js first, and it handles the mobile nav logic -->
   <script src="main-layout.js" defer></script>
   <script type="module" src="script.js"></script>
   <script type="module" src="animations.js"></script>
   <script type="module" src="smooth-scroll.js"></script>
-  <!-- We no longer need to load mobile-nav.js -->
-
 </body>
 </html>

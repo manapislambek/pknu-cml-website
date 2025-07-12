@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
  */
 async function loadNav() {
     // Find the header element on the current page
-    const headerElement = document.querySelector("header.page-header, header.hero-section");
+    const headerElement = document.querySelector(".main-header");
     if (!headerElement) return;
 
     try {
@@ -26,9 +26,9 @@ async function loadNav() {
         headerElement.insertAdjacentHTML('afterbegin', navHtml);
 
         // Now that the HTML is definitely in the DOM, find the elements and add listeners.
-        // We query within the headerElement to ensure we get the correct buttons.
-        const hamburgerButton = headerElement.querySelector('.hamburger-menu');
-        const mobileNav = headerElement.querySelector('.mobile-nav');
+        // We query within the document, which is reliable after the await.
+        const hamburgerButton = document.querySelector('.hamburger-menu');
+        const mobileNav = document.querySelector('.mobile-nav');
 
         if (hamburgerButton && mobileNav) {
             hamburgerButton.addEventListener('click', () => {

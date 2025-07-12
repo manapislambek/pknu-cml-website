@@ -4,26 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Facility - Construction Materials Laboratory</title>
-  
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
-
-  <!-- Link to our stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Page Header -->
-  <!-- The navigation will be loaded here by main-layout.js -->
-  <header class="page-header">
-    <div class="page-header-title">
+  <!-- All pages now share this exact header structure -->
+  <header class="main-header">
+    <!-- The navigation will be loaded here by main-layout.js -->
+    <div class="header-content">
+        <!-- This content is specific to the facility page -->
         <h1>Our Facilities</h1>
     </div>
   </header>
 
-  <!-- MAIN CONTENT AREA -->
   <main class="container">
     <section class="facility-intro">
         <p>Our laboratory consists of 6 different lab spaces assigned for various purposes, including a general purpose lab, chemical analysis lab, hood lab, processing lab, concrete lab, and a concrete preparation lab for teaching purposes.</p>
@@ -35,13 +31,9 @@
     </section>
   </main>
   
-  <!-- The footer content will be loaded here by main-layout.js -->
   <footer class="main-footer"></footer>
 
-  <!-- Load our JavaScript files -->
   <script src="main-layout.js" defer></script>
   <script type="module" src="facility-script.js"></script>
-  <!-- We no longer need to load mobile-nav.js -->
-
 </body>
 </html>

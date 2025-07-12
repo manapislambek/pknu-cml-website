@@ -4,29 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>News & Contact - Construction Materials Laboratory</title>
-  
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
-
-  <!-- Link to our stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Page Header -->
-  <!-- The navigation will be loaded here by main-layout.js -->
-  <header class="page-header">
-    <div class="page-header-title">
+  <!-- All pages now share this exact header structure -->
+  <header class="main-header">
+    <!-- The navigation will be loaded here by main-layout.js -->
+    <div class="header-content">
+        <!-- This content is specific to the contact page -->
         <h1>News & Contact</h1>
     </div>
   </header>
 
-  <!-- MAIN CONTENT AREA -->
   <main class="container">
     
-    <!-- Contact Info Section -->
     <section class="contact-info-section">
         <h2>Contact Information</h2>
         <div class="contact-details">
@@ -36,7 +31,6 @@
         </div>
     </section>
 
-    <!-- Tabbed Content Section -->
     <section class="tab-section">
         <div class="tab-buttons">
             <button class="tab-button active" data-tab="announcements">Notice</button>
@@ -44,10 +38,7 @@
         </div>
 
         <div class="tab-content-container">
-            <!-- Announcements Panel -->
             <div id="announcements" class="tab-content active">
-                
-                <!-- Notice Board Controls -->
                 <div class="notice-controls">
                     <div class="search-wrapper">
                         <input type="text" id="search-input" placeholder="Search by title...">
@@ -61,36 +52,20 @@
                         </select>
                     </div>
                 </div>
-
-                <div class="announcements-list">
-                    <!-- JavaScript will populate this list -->
-                </div>
-
-                <!-- Pagination Controls -->
-                <div class="pagination-controls">
-                    <!-- JavaScript will populate this -->
-                </div>
-
+                <div class="announcements-list"></div>
+                <div class="pagination-controls"></div>
             </div>
-
-            <!-- Gallery Panel -->
             <div id="gallery" class="tab-content">
-                <div class="photo-grid">
-                    <!-- JavaScript will populate this grid -->
-                </div>
+                <div class="photo-grid"></div>
             </div>
         </div>
     </section>
 
   </main>
   
-  <!-- The footer content will be loaded here by main-layout.js -->
   <footer class="main-footer"></footer>
 
-  <!-- Load our JavaScript files -->
   <script src="main-layout.js" defer></script>
   <script type="module" src="contact-script.js"></script>
-  <!-- We no longer need to load mobile-nav.js -->
-
 </body>
 </html>

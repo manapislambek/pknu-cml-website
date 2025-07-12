@@ -13,7 +13,6 @@
   --footer-text: #a7c5e4;
 }
 
-/* A simple CSS reset to ensure consistency across browsers */
 * {
   margin: 0;
   padding: 0;
@@ -44,53 +43,32 @@ h2 {
     text-align: center;
 }
 
-/* ==== HEADER STYLES ==== */
-.page-header {
+/* ==== HEADER STYLES (UNIFIED) ==== */
+.main-header {
+    position: relative;
     background-color: var(--pknu-blue);
-    padding-bottom: 4rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.page-header .main-nav {
-    position: static;
-    padding: 1rem 3rem;
-}
-
-.page-header-title {
-    text-align: center;
     color: var(--bg-white);
+    padding: 4rem 2rem;
+    text-align: center;
 }
 
-.page-header-title h1 {
+.header-content h1 {
     font-size: 3.5rem;
 }
 
-
-/* ==== HERO SECTION STYLES ==== */
-.hero-section {
-  position: relative;
+/* HERO STYLES (APPLIED ONLY ON HOMEPAGE) */
+body.home .main-header {
   height: 70vh;
-  background-color: #2c3e50;
   background-image: url('images/busan-hero.jpg'); 
   background-size: cover;
   background-position: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  text-align: center;
-  color: var(--bg-white);
+  padding: 2rem;
 }
 
-.hero-section .main-nav {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent);
-    z-index: 10;
-}
-
-.hero-section::before {
+body.home .main-header::before {
     content: '';
     position: absolute;
     top: 0;
@@ -100,18 +78,18 @@ h2 {
     background-color: rgba(10, 42, 91, 0.55);
 }
 
-.hero-content {
+body.home .header-content {
     position: relative;
     z-index: 2;
 }
 
-.hero-content h1 {
+body.home .header-content h1 {
   font-size: 4rem;
   margin-bottom: 1rem;
   text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
 }
 
-.hero-content .hero-subtitle {
+.hero-subtitle {
   font-size: 1.4rem;
   font-weight: 300;
   margin-bottom: 2.5rem;
@@ -121,7 +99,7 @@ h2 {
   margin-right: auto;
 }
 
-.hero-content .hero-button {
+.hero-button {
   display: inline-block;
   background-color: var(--primary-accent);
   color: var(--bg-white);
@@ -133,7 +111,7 @@ h2 {
   box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
 }
 
-.hero-content .hero-button:hover {
+.hero-button:hover {
   background-color: var(--primary-accent-dark);
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
@@ -141,13 +119,19 @@ h2 {
 
 /* ==== NAVIGATION STYLES ==== */
 .main-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
   padding: 1.5rem 4rem;
-  position: relative;
-  transition: background-color 0.3s ease;
+  z-index: 100;
+}
+
+body.home .main-nav {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent);
 }
 
 .logo img {
@@ -189,40 +173,6 @@ h2 {
 
 .nav-links > li > a:hover::after {
     width: 100%;
-}
-
-.dropdown {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: -20px;
-  background-color: var(--bg-white);
-  border-radius: 8px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-  min-width: 220px;
-  list-style: none;
-  padding: 0.5rem 0;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.nav-links li:hover > .dropdown {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.dropdown li a {
-  color: #333;
-  display: block;
-  padding: 0.75rem 1.5rem;
-  font-weight: normal;
-}
-
-.dropdown li a:hover {
-  background-color: #f4f4f4;
-  color: var(--primary-accent-dark);
 }
 
 /* ==== WELCOME SECTION STYLES ==== */
@@ -449,7 +399,6 @@ h2 {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 2rem;
-    /* FIX 3: Ensure all cards in a row are the same height */
     align-items: stretch;
 }
 
@@ -581,16 +530,15 @@ h2 {
     cursor: pointer;
     transition: background-color 0.2s ease;
     position: relative;
-    gap: 1rem; /* Add gap between flex items */
+    gap: 1rem;
 }
 
-/* FIX 4: Add +/- icon to announcement header */
 .announcement-header::after {
     content: '+';
     font-size: 1.5rem;
     color: var(--primary-accent);
     transition: transform 0.3s ease;
-    margin-left: auto; /* Push the icon to the far right */
+    margin-left: auto;
 }
 .announcement-item.expanded .announcement-header::after {
     content: '−';
@@ -602,7 +550,7 @@ h2 {
     background-color: var(--bg-light);
 }
 .announcement-number {
-    flex-shrink: 0; /* Prevent number from shrinking */
+    flex-shrink: 0;
     width: 30px;
     color: var(--text-light);
 }
@@ -611,10 +559,10 @@ h2 {
     font-size: 1rem;
     font-family: 'Inter', sans-serif;
     color: #333;
-    padding-right: 1rem; /* Add padding to prevent text overlapping icon */
+    padding-right: 1rem;
 }
 .announcement-date {
-    flex-shrink: 0; /* Prevent date from shrinking */
+    flex-shrink: 0;
     width: 100px;
     text-align: right;
     font-size: 0.9rem;
@@ -688,6 +636,7 @@ h2 {
     font-weight: normal;
 }
 
+/* ==== PORTABLE TEXT CONTENT STYLES ==== */
 .portable-text-content h1,
 .portable-text-content h2,
 .portable-text-content h3,
@@ -748,40 +697,30 @@ h2 {
     display: none;
     flex-direction: column;
     justify-content: space-around;
-    width: 2rem;
-    height: 2rem;
+    width: 2.5rem;
+    height: 2.5rem;
     background: transparent;
     border: none;
     cursor: pointer;
-    padding: 0;
-    z-index: 1100; 
+    padding: 0.5rem;
     position: fixed;
-    top: 1.5rem;
-    right: 1.5rem;
-}
-
-.hamburger-menu.is-active {
-    background: rgba(10, 42, 91, 0.7);
-    border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    border: 2px solid var(--bg-white);
+    top: 1rem;
+    right: 1rem;
+    z-index: 1100;
 }
 
 .hamburger-menu span {
-    width: 2rem;
-    height: 0.32rem;
+    width: 1.5rem;
+    height: 3px;
     background: var(--bg-white);
     border-radius: 10px;
     transition: all 0.3s linear;
     position: relative;
     transform-origin: 1px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.18);
 }
-.hamburger-menu:hover,
-.hamburger-menu:focus {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-    outline: none;
-    border-color: var(--footer-text);
+
+.hamburger-menu.is-active span {
+    background: var(--bg-white);
 }
 
 .hamburger-menu.is-active span:nth-child(1) {
@@ -794,7 +733,6 @@ h2 {
 .hamburger-menu.is-active span:nth-child(3) {
     transform: rotate(-45deg);
 }
-
 
 .mobile-nav {
     display: none;
@@ -831,13 +769,6 @@ h2 {
 
 
 @media (max-width: 768px) {
-    .hero-content {
-        padding-top: 5rem;
-    }
-    .hero-content h1 {
-        font-size: 2.5rem;
-    }
-
     .main-nav {
         padding: 1rem;
     }
@@ -848,6 +779,13 @@ h2 {
 
     .hamburger-menu {
         display: flex;
+    }
+    
+    body.home .header-content {
+        padding-top: 5rem;
+    }
+    body.home .header-content h1 {
+        font-size: 2.5rem;
     }
 
     .pillars-container {

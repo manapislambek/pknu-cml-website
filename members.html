@@ -1,69 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Meta tags for character set and responsive design -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- The title that appears in the browser tab -->
   <title>Members - Construction Materials Laboratory</title>
-  
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
-
-  <!-- Link to our stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
+<!-- No class on body means standard header styles will apply -->
 <body>
 
-  <!-- Page Header -->
-  <!-- The navigation will be loaded here by main-layout.js -->
-  <header class="page-header">
-    <div class="page-header-title">
-        <h1>Our Team</h1>
+  <!-- All pages now share this exact header structure -->
+  <header class="main-header">
+    <!-- The navigation will be loaded here by main-layout.js -->
+    <div class="header-content">
+      <!-- This content is specific to the members page -->
+      <h1>Our Team</h1>
     </div>
   </header>
 
-  <!-- MAIN CONTENT AREA -->
   <main class="container">
-    <!-- Professor Section -->
     <section id="professor-section" class="team-section fade-in-element"></section>
-    
-    <!-- PhD Students Section -->
     <section id="phd-section" class="team-section fade-in-element">
       <h2>Ph.D. Students</h2>
       <div class="team-grid"></div>
     </section>
-
-    <!-- Master's Students Section -->
     <section id="masters-section" class="team-section fade-in-element">
       <h2>Master's Students</h2>
       <div class="team-grid"></div>
     </section>
-
-    <!-- Undergraduate Students Section -->
     <section id="undergraduate-section" class="team-section fade-in-element">
       <h2>Undergraduate Students</h2>
       <div class="team-grid"></div>
     </section>
-
-    <!-- Alumni Section -->
     <section id="alumni-section" class="team-section fade-in-element">
       <h2>Alumni</h2>
       <div class="team-grid"></div>
     </section>
   </main>
   
-  <!-- The footer content will be loaded here by main-layout.js -->
   <footer class="main-footer"></footer>
 
-  <!-- Load our JavaScript files -->
   <script src="main-layout.js" defer></script>
   <script type="module" src="members-script.js"></script>
   <script type="module" src="animations.js"></script>
-  <!-- We no longer need to load mobile-nav.js -->
-
 </body>
 </html>
