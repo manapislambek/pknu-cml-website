@@ -28,7 +28,7 @@ async function loadTeamMembers() {
         const professorContainer = document.querySelector('#professor-section');
         const phdContainer = document.querySelector('#phd-section .team-grid');
         const mastersContainer = document.querySelector('#masters-section .team-grid');
-        const undergradContainer = document.querySelector('#undergrad-section .team-grid');
+        const undergradContainer = document.querySelector('#undergraduate-section .team-grid'); // Corrected ID
         const alumniContainer = document.querySelector('#alumni-section .team-grid');
 
         // Clear any existing content
