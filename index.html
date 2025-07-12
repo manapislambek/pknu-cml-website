@@ -19,30 +19,9 @@
 <body>
 
   <!-- HERO SECTION -->
+  <!-- The navigation bar will be loaded here by main-layout.js -->
   <header class="hero-section">
-  
-    <!-- MAIN NAVIGATION -->
-    <nav class="main-nav">
-      <a href="index.html" class="logo">
-        <img src="images/pknu-logo.png" alt="Pukyong National University Logo" onerror="this.onerror=null; this.src='https://placehold.co/150x40/ffffff/0A2A5B?text=PKNU';">
-      </a>
-      
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="members.html">Members</a></li>
-        <li><a href="https://scholar.google.co.kr/citations?user=1Ou1UX8AAAAJ&hl=ko" target="_blank" rel="noopener noreferrer">Publications</a></li>
-        <li><a href="facility.html">Facility</a></li>
-        <li><a href="contact.html">News & Contact</a></li>
-      </ul>
-      
-      <!-- Hamburger Menu Button -->
-      <button class="hamburger-menu">
-          <span></span>
-          <span></span>
-          <span></span>
-      </button>
-    </nav>
-  
+    <!-- The hero content remains specific to this page -->
     <div class="hero-content">
       <h1>Construction Materials Laboratory</h1>
       <p class="hero-subtitle">Advancing the future of sustainable and resilient infrastructure through materials science.</p>
@@ -50,15 +29,7 @@
     </div>
   </header>
   
-  <!-- Mobile Navigation Overlay -->
-  <div class="mobile-nav">
-      <button class="mobile-nav-close" aria-label="Close menu">&times;</button>
-      <a href="index.html">Home</a>
-      <a href="members.html">Members</a>
-      <a href="https://scholar.google.co.kr/citations?user=1Ou1UX8AAAAJ&hl=ko" target="_blank" rel="noopener noreferrer">Publications</a>
-      <a href="facility.html">Facility</a>
-      <a href="contact.html">News & Contact</a>
-  </div>
+  <!-- The Mobile Nav overlay is now in nav.html and will be loaded by the script -->
 
   <!-- MAIN CONTENT AREA -->
   <main class="container">
@@ -102,15 +73,16 @@
 
   </main>
   
-  <footer class="main-footer">
-    <p>&copy; 2025 Construction Materials Laboratory, Pukyong National University. All Rights Reserved.</p>
-  </footer>
+  <!-- The footer content will be loaded here by main-layout.js -->
+  <footer class="main-footer"></footer>
 
   <!-- Load our JavaScript files -->
+  <!-- We load main-layout.js first, and it handles the mobile nav logic -->
+  <script src="main-layout.js" defer></script>
   <script type="module" src="script.js"></script>
   <script type="module" src="animations.js"></script>
   <script type="module" src="smooth-scroll.js"></script>
-  <script type="module" src="mobile-nav.js"></script>
+  <!-- We no longer need to load mobile-nav.js -->
 
 </body>
 </html>
