@@ -393,14 +393,6 @@ h2 {
     transition: max-height 0.5s ease-in, margin-top 0.5s ease-in;
 }
 
-.member-details-content h2,
-.member-details-content h3 {
-    font-size: 1.2rem;
-    color: var(--pknu-blue);
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-}
-
 .expand-btn {
     background: var(--bg-light);
     border: 1px solid var(--border-color);
@@ -419,14 +411,12 @@ h2 {
     border-color: var(--primary-accent);
 }
 
-/* FIX 1: PROFESSOR CARD ALIGNMENT */
 .professor-card {
     grid-column: 1 / -1;
     background: linear-gradient(to right, var(--bg-light), var(--bg-white));
 }
 .professor-card .member-summary {
     display: flex;
-    /* This is the key change: align items to the start (left) */
     justify-content: flex-start; 
     text-align: left;
     gap: 2.5rem;
@@ -461,7 +451,6 @@ h2 {
     gap: 2rem;
 }
 
-/* FIX 2: FACILITY CARD PADDING & ALIGNMENT */
 .facility-card {
     background-color: var(--bg-white);
     border: 1px solid var(--border-light);
@@ -469,7 +458,6 @@ h2 {
     overflow: hidden;
     box-shadow: 0 8px 25px rgba(0,0,0,0.07);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    /* Added flex display to control layout */
     display: flex;
     flex-direction: column;
 }
@@ -488,9 +476,7 @@ h2 {
 }
 
 .facility-info {
-    /* This is the key change: adding consistent padding */
     padding: 1.5rem;
-    /* Added to make the card grow if content is different lengths */
     flex-grow: 1; 
 }
 
@@ -527,7 +513,6 @@ h2 {
     border: 1px solid var(--border-color);
 }
 
-/* FIX 3: MODERN TAB STYLES */
 .tab-buttons {
     display: flex;
     justify-content: center;
@@ -542,17 +527,15 @@ h2 {
     font-size: 1.2rem;
     font-weight: bold;
     color: var(--text-light);
-    /* Changed to a bottom border for a cleaner look */
     border-bottom: 3px solid transparent;
     transition: all 0.3s ease;
-    margin-bottom: -1px; /* Aligns the bottom border with the container's border */
+    margin-bottom: -1px;
 }
 .tab-button.active {
     color: var(--primary-accent);
     border-bottom-color: var(--primary-accent);
 }
 
-/* This rule ensures only the active tab's content is shown */
 .tab-content {
     display: none;
 }
@@ -680,6 +663,49 @@ h2 {
     color: #888;
     margin-top: 0.25rem;
     font-weight: normal;
+}
+
+/* ==== FIX: PORTABLE TEXT CONTENT STYLES ==== */
+/* A reusable class for any container rendering rich text from Sanity */
+.portable-text-content h1,
+.portable-text-content h2,
+.portable-text-content h3,
+.portable-text-content h4,
+.portable-text-content h5,
+.portable-text-content h6 {
+    margin: 1.5rem 0 0.5rem 0;
+    color: var(--pknu-blue);
+    font-family: 'Roboto Slab', serif;
+}
+
+.portable-text-content h1 { font-size: 1.5rem; }
+.portable-text-content h2 { font-size: 1.3rem; }
+.portable-text-content h3 { font-size: 1.2rem; }
+
+.portable-text-content p {
+    margin-bottom: 1rem;
+}
+
+.portable-text-content ul,
+.portable-text-content ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem; /* Standard indentation */
+}
+
+.portable-text-content li {
+    margin-bottom: 0.5rem;
+}
+
+.portable-text-content blockquote {
+    margin: 1.5rem 0;
+    padding-left: 1rem;
+    border-left: 3px solid var(--border-color);
+    color: var(--text-light);
+}
+
+.portable-text-content a {
+    color: var(--primary-accent);
+    text-decoration: underline;
 }
 
 
@@ -831,7 +857,6 @@ h2 {
         text-align: center;
     }
     
-    /* FIX 1.1: Ensure professor card content is left-aligned on mobile too */
     .professor-card .member-info {
         text-align: center;
     }

@@ -95,13 +95,18 @@ function displayAnnouncements() {
         const announcementEl = document.createElement('div');
         announcementEl.className = 'announcement-item';
         const date = new Date(item.publishedAt).toLocaleDateString('en-CA');
+        // FIX: Add the .portable-text-content class to the body container
         announcementEl.innerHTML = `
             <div class="announcement-header">
                 <span class="announcement-number">${startIndex + index + 1}</span>
                 <span class="announcement-title">${item.title}</span>
                 <span class="announcement-date">${date}</span>
             </div>
-            <div class="announcement-body"><div class="announcement-body-content">${toHTML(item.body)}</div></div>
+            <div class="announcement-body">
+                <div class="announcement-body-content portable-text-content">
+                    ${toHTML(item.body)}
+                </div>
+            </div>
         `;
         container.appendChild(announcementEl);
     });
