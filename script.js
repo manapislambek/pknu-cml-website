@@ -16,13 +16,11 @@ async function loadResearchAreas() {
   if (!container) return;
 
   try {
-    // 1. Show a loading message immediately
     container.innerHTML = '<p style="text-align: center; padding: 2rem;">Loading research areas...</p>';
 
     const query = `*[_type == "researchArea"] | order(order asc)`;
     const areas = await client.fetch(query);
     
-    // 2. Clear the loading message
     container.innerHTML = '';
 
     if (areas.length === 0) {
@@ -42,7 +40,6 @@ async function loadResearchAreas() {
 
   } catch (error) {
     console.error('Error fetching research areas:', error);
-    // 3. Show a user-friendly error message if something goes wrong
     container.innerHTML = '<p style="text-align: center; color: red; padding: 2rem;">Could not load research areas. Please try again later.</p>';
   }
 }
@@ -54,13 +51,11 @@ async function loadProjects() {
   if (!tableBody) return;
 
   try {
-    // 1. Show a loading message in the table
     tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem;">Loading projects...</td></tr>';
 
     const query = `*[_type == "project"] | order(order asc)`;
     const projects = await client.fetch(query);
 
-    // 2. Clear the loading message
     tableBody.innerHTML = '';
 
     if (projects.length === 0) {
@@ -70,17 +65,18 @@ async function loadProjects() {
 
     projects.forEach((project) => {
       const row = document.createElement('tr');
+      // MOBILE FIX: Add data-label attributes to table cells for responsive CSS
       row.innerHTML = `
-        <td>${project.order || ''}</td>
-        <td>${project.title || ''}</td>
-        <td>${project.fundingAgency || ''}</td>
-        <td>${project.duration || ''}</td>
+        <td data-label="No.">${project.order || ''}</td>
+        <td data-label="Project Title">${project.title || ''}</td>
+        <td data-label="Funding Agency">${project.fundingAgency || ''}</td>
+        <td data-label="Duration">${project.duration || ''}</td>
       `;
       tableBody.appendChild(row);
     });
-  } catch (error) {
+  } catch (error)
+{
     console.error('Error fetching projects:', error);
-    // 3. Show an error message in the table
     tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: red; padding: 2rem;">Could not load projects. Please try again later.</td></tr>';
   }
 }
