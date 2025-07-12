@@ -18,14 +18,23 @@ function urlFor(source) {
 
 // --- Function to load ALL Facility Items ---
 async function loadFacilityItems() {
+    const container = document.querySelector('.facility-grid');
+    if(!container) return;
+
     try {
+        // 1. Show a loading message
+        container.innerHTML = `<p style="text-align: center; padding: 2rem;">Loading facilities...</p>`;
+
         const query = `*[_type == "facilityItem"] | order(order asc)`;
         const items = await client.fetch(query);
 
-        const container = document.querySelector('.facility-grid');
-        if(!container) return;
+        // 2. Clear the loading message
+        container.innerHTML = ''; 
 
-        container.innerHTML = ''; // Clear any placeholders
+        if (items.length === 0) {
+            container.innerHTML = '<p style="text-align: center; padding: 2rem;">No facility items have been added yet.</p>';
+            return;
+        }
 
         items.forEach(item => {
             const card = document.createElement('div');
@@ -36,8 +45,8 @@ async function loadFacilityItems() {
             card.innerHTML = `
                 <img src="${imageUrl}" alt="Image of ${item.name}" class="facility-photo">
                 <div class="facility-info">
-                    <h3 class="facility-name">${item.name}</h3>
-                    <p class="facility-description">${item.description}</p>
+                    <h3 class="facility-name">${item.name || 'Unnamed Item'}</h3>
+                    <p class="facility-description">${item.description || 'No description available.'}</p>
                 </div>
             `;
             container.appendChild(card);
@@ -45,6 +54,8 @@ async function loadFacilityItems() {
 
     } catch (error) {
         console.error('Error fetching facility items:', error);
+        // 3. Show a user-friendly error message
+        container.innerHTML = `<p style="text-align: center; color: red; padding: 2rem;">Could not load facility items. Please try again later.</p>`;
     }
 }
 
