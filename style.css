@@ -449,6 +449,8 @@ h2 {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 2rem;
+    /* FIX 3: Ensure all cards in a row are the same height */
+    align-items: stretch;
 }
 
 .facility-card {
@@ -579,15 +581,16 @@ h2 {
     cursor: pointer;
     transition: background-color 0.2s ease;
     position: relative;
+    gap: 1rem; /* Add gap between flex items */
 }
 
+/* FIX 4: Add +/- icon to announcement header */
 .announcement-header::after {
     content: '+';
     font-size: 1.5rem;
     color: var(--primary-accent);
-    position: absolute;
-    right: 1rem;
     transition: transform 0.3s ease;
+    margin-left: auto; /* Push the icon to the far right */
 }
 .announcement-item.expanded .announcement-header::after {
     content: '−';
@@ -599,7 +602,8 @@ h2 {
     background-color: var(--bg-light);
 }
 .announcement-number {
-    width: 50px;
+    flex-shrink: 0; /* Prevent number from shrinking */
+    width: 30px;
     color: var(--text-light);
 }
 .announcement-title {
@@ -607,10 +611,11 @@ h2 {
     font-size: 1rem;
     font-family: 'Inter', sans-serif;
     color: #333;
-    padding-right: 2rem;
+    padding-right: 1rem; /* Add padding to prevent text overlapping icon */
 }
 .announcement-date {
-    width: 120px;
+    flex-shrink: 0; /* Prevent date from shrinking */
+    width: 100px;
     text-align: right;
     font-size: 0.9rem;
     color: var(--text-light);

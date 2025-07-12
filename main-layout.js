@@ -45,7 +45,7 @@ function initializeNavListeners() {
     const hamburgerButton = document.querySelector('.hamburger-menu');
     const mobileNav = document.querySelector('.mobile-nav');
     
-    // FIX 2: The event listener for the separate close button has been removed.
+    // The event listener for the separate close button has been removed.
     // The hamburger button now toggles the menu open and closed.
     if (hamburgerButton && mobileNav) {
         hamburgerButton.addEventListener('click', () => {
