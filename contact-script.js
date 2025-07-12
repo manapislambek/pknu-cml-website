@@ -7,7 +7,7 @@ import { toHTML } from 'https://esm.sh/@portabletext/to-html';
 let allAnnouncements = [];
 let currentPage = 1;
 let rowsPerPage = 10;
-let isLoadingAnnouncements = true; // Add a loading flag
+let isLoadingAnnouncements = true;
 
 // --- Tab Switching Logic ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -16,8 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
+            // FIX 3.1: This logic ensures only the correct tab shows.
+            // First, remove active class from all buttons and content
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabContents.forEach(content => content.classList.remove('active'));
+
+            // Then, add active class to the clicked button and its corresponding content
             button.classList.add('active');
             const tabId = button.dataset.tab;
             document.getElementById(tabId).classList.add('active');
@@ -66,10 +70,9 @@ function displayAnnouncements() {
 
     if (!container) return;
     
-    // Show loading message only on initial load
     if (isLoadingAnnouncements) {
         container.innerHTML = '<p style="text-align: center; padding: 2rem;">Loading announcements...</p>';
-        return; // Exit until data is fetched
+        return;
     }
 
     container.innerHTML = '';
@@ -137,13 +140,12 @@ function setupPagination(totalItems) {
 async function initialLoadAnnouncements() {
     const container = document.querySelector('.announcements-list');
     try {
-        // Trigger loading state in displayAnnouncements
         displayAnnouncements(); 
         
         const query = `*[_type == "announcement"] | order(publishedAt desc)`;
         allAnnouncements = await client.fetch(query);
-        isLoadingAnnouncements = false; // Turn off loading flag
-        displayAnnouncements(); // Re-render with actual data
+        isLoadingAnnouncements = false;
+        displayAnnouncements();
     } catch (error) {
         console.error('Error fetching announcements:', error);
         isLoadingAnnouncements = false;

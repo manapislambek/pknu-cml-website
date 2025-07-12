@@ -419,9 +419,24 @@ h2 {
     border-color: var(--primary-accent);
 }
 
+/* FIX 1: PROFESSOR CARD ALIGNMENT */
 .professor-card {
     grid-column: 1 / -1;
     background: linear-gradient(to right, var(--bg-light), var(--bg-white));
+}
+.professor-card .member-summary {
+    display: flex;
+    /* This is the key change: align items to the start (left) */
+    justify-content: flex-start; 
+    text-align: left;
+    gap: 2.5rem;
+    align-items: center;
+}
+.professor-card .member-info {
+    text-align: left;
+}
+.professor-card .expand-btn {
+    align-self: flex-start;
 }
 
 /* ==== FACILITY PAGE STYLES ==== */
@@ -432,12 +447,21 @@ h2 {
     margin-top: 2rem;
 }
 
+.facility-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 4rem auto;
+    font-size: 1.1rem;
+    color: #555;
+}
+
 .facility-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 2rem;
 }
 
+/* FIX 2: FACILITY CARD PADDING & ALIGNMENT */
 .facility-card {
     background-color: var(--bg-white);
     border: 1px solid var(--border-light);
@@ -445,6 +469,9 @@ h2 {
     overflow: hidden;
     box-shadow: 0 8px 25px rgba(0,0,0,0.07);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Added flex display to control layout */
+    display: flex;
+    flex-direction: column;
 }
 
 .facility-card:hover {
@@ -453,7 +480,18 @@ h2 {
 }
 
 .facility-photo {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
     border-bottom: 1px solid var(--border-light);
+}
+
+.facility-info {
+    /* This is the key change: adding consistent padding */
+    padding: 1.5rem;
+    /* Added to make the card grow if content is different lengths */
+    flex-grow: 1; 
 }
 
 .facility-name {
@@ -489,26 +527,59 @@ h2 {
     border: 1px solid var(--border-color);
 }
 
+/* FIX 3: MODERN TAB STYLES */
 .tab-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
     border-bottom: 1px solid var(--border-color);
 }
-
 .tab-button {
+    padding: 1rem 2rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
     color: var(--text-light);
+    /* Changed to a bottom border for a cleaner look */
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    margin-bottom: -1px; /* Aligns the bottom border with the container's border */
 }
-
 .tab-button.active {
     color: var(--primary-accent);
     border-bottom-color: var(--primary-accent);
 }
 
-/* ==== NOTICE BOARD STYLES ==== */
-.notice-controls {
-    border-bottom: 2px solid var(--pknu-blue);
+/* This rule ensures only the active tab's content is shown */
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
 }
 
-#search-input, #rows-per-page {
+
+/* ==== NOTICE BOARD STYLES ==== */
+.notice-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+#search-input {
+    padding: 8px 12px;
     border: 1px solid #ced4da;
+    border-radius: 5px;
+    width: 250px;
+}
+#rows-per-page {
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
 }
 
 .announcements-list {
@@ -518,30 +589,99 @@ h2 {
 .announcement-item {
     border-bottom: 1px solid var(--border-light);
 }
-
+.announcement-header {
+    display: flex;
+    padding: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
 .announcement-header:hover {
     background-color: var(--bg-light);
 }
-
-.announcement-number, .announcement-date {
+.announcement-number {
+    width: 50px;
     color: var(--text-light);
 }
-
+.announcement-title {
+    flex-grow: 1;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+}
+.announcement-date {
+    width: 120px;
+    text-align: right;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
 .announcement-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+    padding: 0 2rem;
+}
+.announcement-item.expanded .announcement-body {
+    max-height: 1000px; /* Large value */
+    padding: 2rem;
     background-color: var(--bg-light);
+    transition: max-height 0.4s ease-in, padding 0.4s ease-in;
 }
 
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+}
 .pagination-button {
     background: var(--bg-white);
     border: 1px solid var(--border-color);
     color: var(--primary-accent);
+    margin: 0 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
 }
-
 .pagination-button.active {
     background-color: var(--primary-accent);
     color: var(--bg-white);
     border-color: var(--primary-accent);
 }
+
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+.photo-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    background-color: var(--bg-white);
+}
+.gallery-photo {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+.photo-caption {
+    padding: 1rem;
+}
+.photo-title {
+    display: block;
+    font-size: 1rem;
+    color: #333;
+    font-weight: bold;
+}
+.photo-date {
+    display: block;
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 0.25rem;
+    font-weight: normal;
+}
+
 
 /* ==== FOOTER STYLES ==== */
 .main-footer {
@@ -688,6 +828,11 @@ h2 {
 
     .professor-card .member-summary {
         flex-direction: column;
+        text-align: center;
+    }
+    
+    /* FIX 1.1: Ensure professor card content is left-aligned on mobile too */
+    .professor-card .member-info {
         text-align: center;
     }
 
