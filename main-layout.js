@@ -26,14 +26,23 @@ async function loadNav() {
         headerElement.insertAdjacentHTML('afterbegin', navHtml);
 
         // Now that the HTML is definitely in the DOM, find the elements and add listeners.
-        // We query within the document, which is reliable after the await.
         const hamburgerButton = document.querySelector('.hamburger-menu');
         const mobileNav = document.querySelector('.mobile-nav');
+        const closeButton = document.querySelector('.mobile-nav-close');
 
         if (hamburgerButton && mobileNav) {
+            // Hamburger button opens the menu
             hamburgerButton.addEventListener('click', () => {
-                hamburgerButton.classList.toggle('is-active');
-                mobileNav.classList.toggle('is-active');
+                hamburgerButton.classList.add('is-active');
+                mobileNav.classList.add('is-active');
+            });
+        }
+        
+        if (closeButton && mobileNav) {
+            // Close button closes the menu
+            closeButton.addEventListener('click', () => {
+                hamburgerButton.classList.remove('is-active');
+                mobileNav.classList.remove('is-active');
             });
         }
 

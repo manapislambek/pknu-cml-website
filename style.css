@@ -175,6 +175,78 @@ body.home .main-nav {
     width: 100%;
 }
 
+/* ==== MOBILE NAVIGATION & HAMBURGER (Z-INDEX FIX) ==== */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1100; /* Highest z-index */
+}
+
+.hamburger-menu span {
+    width: 1.5rem;
+    height: 3px;
+    background: var(--bg-white);
+    border-radius: 10px;
+    transition: all 0.3s linear;
+    position: relative;
+    transform-origin: 1px;
+}
+
+.hamburger-menu.is-active {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.mobile-nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(10, 42, 91, 0.98);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.mobile-nav.is-active {
+    display: flex;
+}
+
+.mobile-nav a {
+    color: var(--bg-white);
+    text-decoration: none;
+    font-size: 2rem;
+    margin: 1.5rem 0;
+    font-family: 'Roboto Slab', serif;
+}
+
+.mobile-nav-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 2.5rem;
+    cursor: pointer;
+    z-index: 1010;
+    padding: 0.5rem;
+    line-height: 1;
+}
+
 /* ==== WELCOME SECTION STYLES ==== */
 .welcome-section {
   text-align: center;
@@ -690,74 +762,6 @@ body.home .main-nav {
 
 .main-footer p {
     color: var(--footer-text);
-}
-
-/* ==== MOBILE NAVIGATION STYLES ==== */
-.hamburger-menu {
-    display: none;
-    flex-direction: column;
-    justify-content: space-around;
-    width: 2.5rem;
-    height: 2.5rem;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 1100;
-}
-
-.hamburger-menu span {
-    width: 1.5rem;
-    height: 3px;
-    background: var(--bg-white);
-    border-radius: 10px;
-    transition: all 0.3s linear;
-    position: relative;
-    transform-origin: 1px;
-}
-
-.hamburger-menu.is-active span {
-    background: var(--bg-white);
-}
-
-.hamburger-menu.is-active span:nth-child(1) {
-    transform: rotate(45deg);
-}
-.hamburger-menu.is-active span:nth-child(2) {
-    opacity: 0;
-    transform: translateX(-20px);
-}
-.hamburger-menu.is-active span:nth-child(3) {
-    transform: rotate(-45deg);
-}
-
-.mobile-nav {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background-color: rgba(10, 42, 91, 0.98);
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.mobile-nav.is-active {
-    display: flex;
-}
-
-.mobile-nav a {
-    color: var(--bg-white);
-    text-decoration: none;
-    font-size: 2rem;
-    margin: 1.5rem 0;
-    font-family: 'Roboto Slab', serif;
 }
 
 /* ==== RESPONSIVE DESIGN ==== */
