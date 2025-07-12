@@ -87,7 +87,6 @@ h2 {
     left: 0;
     width: 100%;
     background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent);
-    /* MOBILE FIX: Ensure nav is above the overlay */
     z-index: 10;
 }
 
@@ -732,7 +731,6 @@ h2 {
     border: none;
     cursor: pointer;
     padding: 0;
-    /* MOBILE FIX: Ensure hamburger is always on top */
     z-index: 1100; 
     position: fixed;
     top: 1.5rem;
@@ -786,7 +784,6 @@ h2 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    /* MOBILE FIX: Ensure mobile nav overlay is on top, but below the hamburger button */
     z-index: 1000;
 }
 
@@ -829,7 +826,6 @@ h2 {
 
 
 @media (max-width: 768px) {
-    /* MOBILE FIX: Add padding to prevent hero text overlapping with nav */
     .hero-content {
         padding-top: 5rem;
     }
@@ -870,9 +866,7 @@ h2 {
         align-self: center;
     }
 
-    /* MOBILE FIX: Responsive table styles */
     .projects-section {
-        /* Remove overflow now that the table is responsive */
         overflow-x: visible;
     }
     .projects-table {
@@ -880,7 +874,7 @@ h2 {
         box-shadow: none;
     }
     .projects-table thead {
-        display: none; /* Hide the desktop headers */
+        display: none;
     }
     .projects-table tr {
         display: block;
@@ -889,27 +883,29 @@ h2 {
         border-radius: 8px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.07);
         background-color: var(--bg-white);
+        padding: 0.5rem;
     }
     .projects-table td {
         display: block;
-        text-align: right; /* Align content to the right */
+        /* MOBILE FIX: Change text alignment for better readability */
+        text-align: left;
         padding: 0.75rem 1rem;
         border-bottom: 1px solid var(--border-light);
     }
     .projects-table td:last-child {
         border-bottom: none;
     }
-    /* Add the header label before each cell */
     .projects-table td::before {
         content: attr(data-label);
-        float: left; /* Align label to the left */
+        /* MOBILE FIX: Change from float to block for better layout */
+        display: block;
         font-weight: bold;
         text-transform: uppercase;
         font-size: 0.85rem;
-        color: var(--text-dark);
+        color: var(--text-light);
+        margin-bottom: 0.25rem;
     }
 
-    /* MOBILE FIX: Adjust notice board controls for smaller screens */
     .notice-controls {
         flex-direction: column;
         gap: 1rem;
