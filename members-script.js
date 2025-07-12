@@ -28,12 +28,14 @@ async function loadTeamMembers() {
         const professorContainer = document.querySelector('#professor-section');
         const phdContainer = document.querySelector('#phd-section .team-grid');
         const mastersContainer = document.querySelector('#masters-section .team-grid');
+        const undergradContainer = document.querySelector('#undergrad-section .team-grid');
         const alumniContainer = document.querySelector('#alumni-section .team-grid');
 
         // Clear any existing content
         if(professorContainer) professorContainer.innerHTML = '';
         if(phdContainer) phdContainer.innerHTML = '';
         if(mastersContainer) mastersContainer.innerHTML = '';
+        if(undergradContainer) undergradContainer.innerHTML = '';
         if(alumniContainer) alumniContainer.innerHTML = '';
 
         // Sort members into their respective roles
@@ -85,7 +87,9 @@ async function loadTeamMembers() {
                 phdContainer.appendChild(memberCard);
             } else if (member.role && member.role.toLowerCase().includes('master')) {
                 mastersContainer.appendChild(memberCard);
-            } 
+            } else if (member.role && member.role.toLowerCase().includes('undergraduate')) {
+                undergradContainer.appendChild(memberCard);
+            }
         });
 
         // Add event listeners to all the new "Read More" buttons
