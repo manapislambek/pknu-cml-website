@@ -135,9 +135,11 @@ body.home .main-nav {
 }
 
 .logo img {
-  height: 65px; /* Increased height for the new logo */
+  height: 65px;
   width: auto;
-  margin-top: 0.5rem; /* Add a small top margin */
+  margin-top: 0.5rem;
+  /* This filter makes the logo appear white */
+  filter: brightness(0) invert(1);
 }
 
 .nav-links {
