@@ -348,10 +348,11 @@ h2 {
     box-shadow: 0 12px 35px rgba(0,0,0,0.1);
 }
 
+/* CHANGE: Member photo shape updated */
 .member-photo {
     width: 160px;
     height: 160px;
-    border-radius: 50%;
+    border-radius: 12px; /* Changed from 50% to create a rounded square */
     object-fit: cover;
     margin-bottom: 1.5rem;
     border: 5px solid var(--bg-white);
