@@ -605,12 +605,14 @@ body.home .main-nav {
     gap: 1rem;
 }
 
+/* FIX 1: Announcement icon layout */
 .announcement-header::after {
     content: '+';
     font-size: 1.5rem;
     color: var(--primary-accent);
     transition: transform 0.3s ease;
-    margin-left: auto;
+    margin-left: auto; /* Push the icon to the far right */
+    flex-shrink: 0; /* Prevent icon from shrinking */
 }
 .announcement-item.expanded .announcement-header::after {
     content: '−';
@@ -797,6 +799,11 @@ body.home .main-nav {
     }
 
     .team-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* FIX 2: Facility cards go to a single column on mobile */
+    .facility-grid {
         grid-template-columns: 1fr;
     }
 
