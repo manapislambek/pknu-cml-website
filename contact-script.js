@@ -16,19 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // FIX 3.1: This logic ensures only the correct tab shows.
-            // First, remove active class from all buttons and content
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabContents.forEach(content => content.classList.remove('active'));
-
-            // Then, add active class to the clicked button and its corresponding content
             button.classList.add('active');
             const tabId = button.dataset.tab;
             document.getElementById(tabId).classList.add('active');
         });
     });
 
-    // --- Notice Board Control Event Listeners ---
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
         searchInput.addEventListener('input', () => {
@@ -62,7 +57,39 @@ function urlFor(source) {
   return builder.image(source);
 }
 
-// --- Function to Display Announcements (with pagination and search) ---
+// --- Function to load Contact Information ---
+async function loadContactInfo() {
+    const addressEl = document.getElementById('contact-address');
+    const emailEl = document.getElementById('contact-email');
+    const phoneEl = document.getElementById('contact-phone');
+
+    if (!addressEl || !emailEl || !phoneEl) return;
+
+    try {
+        // Fetch the single contact info document
+        const query = `*[_type == "contactInfo"][0]`;
+        const info = await client.fetch(query);
+
+        if (info) {
+            addressEl.textContent = info.address || 'Not available';
+            emailEl.textContent = info.email || 'Not available';
+            emailEl.href = `mailto:${info.email || ''}`;
+            phoneEl.textContent = info.phone || 'Not available';
+        } else {
+            addressEl.textContent = 'Contact information has not been set up yet.';
+            emailEl.textContent = '';
+            phoneEl.textContent = '';
+        }
+
+    } catch (error) {
+        console.error('Error fetching contact info:', error);
+        document.getElementById('contact-details-container').innerHTML = 
+            '<p style="color: red;">Could not load contact information.</p>';
+    }
+}
+
+
+// --- Function to Display Announcements ---
 function displayAnnouncements() {
     const container = document.querySelector('.announcements-list');
     const searchInput = document.getElementById('search-input');
@@ -95,18 +122,13 @@ function displayAnnouncements() {
         const announcementEl = document.createElement('div');
         announcementEl.className = 'announcement-item';
         const date = new Date(item.publishedAt).toLocaleDateString('en-CA');
-        // FIX: Add the .portable-text-content class to the body container
         announcementEl.innerHTML = `
             <div class="announcement-header">
                 <span class="announcement-number">${startIndex + index + 1}</span>
                 <span class="announcement-title">${item.title}</span>
                 <span class="announcement-date">${date}</span>
             </div>
-            <div class="announcement-body">
-                <div class="announcement-body-content portable-text-content">
-                    ${toHTML(item.body)}
-                </div>
-            </div>
+            <div class="announcement-body"><div class="announcement-body-content portable-text-content">${toHTML(item.body)}</div></div>
         `;
         container.appendChild(announcementEl);
     });
@@ -199,5 +221,6 @@ async function loadGalleryImages() {
 
 
 // --- Run all initial load functions ---
+loadContactInfo();
 initialLoadAnnouncements();
 loadGalleryImages();

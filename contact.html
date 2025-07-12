@@ -11,11 +11,8 @@
 </head>
 <body>
 
-  <!-- All pages now share this exact header structure -->
   <header class="main-header">
-    <!-- The navigation will be loaded here by main-layout.js -->
     <div class="header-content">
-        <!-- This content is specific to the contact page -->
         <h1>News & Contact</h1>
     </div>
   </header>
@@ -24,10 +21,11 @@
     
     <section class="contact-info-section">
         <h2>Contact Information</h2>
-        <div class="contact-details">
-            <p><strong>Address:</strong> Pukyong National University, 45 Yongso-ro, Nam-gu, Busan, South Korea</p>
-            <p><strong>Email:</strong> <a href="mailto:cwchung@pknu.ac.kr">cwchung@pknu.ac.kr</a></p>
-            <p><strong>Phone:</strong> +82-51-629-XXXX</p>
+        <!-- Placeholders for dynamic content -->
+        <div id="contact-details-container" class="contact-details">
+            <p><strong>Address:</strong> <span id="contact-address">Loading...</span></p>
+            <p><strong>Email:</strong> <a id="contact-email" href="#"></a></p>
+            <p><strong>Phone:</strong> <span id="contact-phone"></span></p>
         </div>
     </section>
 
