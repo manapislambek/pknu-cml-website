@@ -605,14 +605,13 @@ body.home .main-nav {
     gap: 1rem;
 }
 
-/* FIX 1: Announcement icon layout */
 .announcement-header::after {
     content: '+';
     font-size: 1.5rem;
     color: var(--primary-accent);
     transition: transform 0.3s ease;
-    margin-left: auto; /* Push the icon to the far right */
-    flex-shrink: 0; /* Prevent icon from shrinking */
+    margin-left: auto;
+    flex-shrink: 0;
 }
 .announcement-item.expanded .announcement-header::after {
     content: '−';
@@ -803,9 +802,16 @@ body.home .main-nav {
     }
 
     /* FIX 2: Facility cards go to a single column on mobile */
+    .facility-section {
+        padding: 2rem 1rem; /* Reduce padding on mobile */
+    }
     .facility-grid {
         grid-template-columns: 1fr;
     }
+    .facility-info {
+        padding: 1.5rem; /* Reduce internal padding on mobile */
+    }
+
 
     .professor-card .member-summary {
         flex-direction: column;
@@ -865,6 +871,17 @@ body.home .main-nav {
     }
     #search-input {
         width: 100%;
+    }
+    
+    /* FIX 1: Announcement icon layout on mobile */
+    .announcement-header {
+        padding: 1rem 0.5rem; /* Reduce padding */
+    }
+    .announcement-title {
+        padding-right: 0.5rem; /* Reduce padding */
+    }
+    .announcement-date {
+        width: 80px; /* Allow date to be smaller */
     }
 }
 
