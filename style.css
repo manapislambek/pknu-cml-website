@@ -135,8 +135,9 @@ body.home .main-nav {
 }
 
 .logo img {
-  height: 50px;
+  height: 65px; /* Increased height for the new logo */
   width: auto;
+  margin-top: 0.5rem; /* Add a small top margin */
 }
 
 .nav-links {
