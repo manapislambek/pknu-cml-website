@@ -78,7 +78,6 @@ async function loadTeamMembers() {
                 `;
             }
 
-            // FIX: Add the .portable-text-content class to the details container
             memberCard.innerHTML = `
                 <div class="member-summary">
                     <img src="${imageUrl}" alt="Photo of ${member.name}" class="member-photo">
@@ -111,11 +110,18 @@ async function loadTeamMembers() {
         document.querySelectorAll('.expand-btn').forEach(button => {
             button.addEventListener('click', (e) => {
                 const card = e.target.closest('.member-card');
+                const isExpanded = card.classList.contains('expanded');
+                
                 card.classList.toggle('expanded');
-                if (card.classList.contains('expanded')) {
-                    e.target.textContent = 'Show Less';
-                } else {
+                
+                if (isExpanded) {
+                    // FIX 1: If the card was expanded, now it's closing.
                     e.target.textContent = 'Read More';
+                    // Scroll the top of the card into view
+                    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                    // If the card was closed, now it's opening.
+                    e.target.textContent = 'Show Less';
                 }
             });
         });

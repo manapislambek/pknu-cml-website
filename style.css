@@ -476,7 +476,7 @@ h2 {
 }
 
 .facility-info {
-    padding: 1.5rem;
+    padding: 2rem;
     flex-grow: 1; 
 }
 
@@ -574,10 +574,27 @@ h2 {
 }
 .announcement-header {
     display: flex;
+    align-items: center;
     padding: 1rem;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    position: relative;
 }
+
+.announcement-header::after {
+    content: '+';
+    font-size: 1.5rem;
+    color: var(--primary-accent);
+    position: absolute;
+    right: 1rem;
+    transition: transform 0.3s ease;
+}
+.announcement-item.expanded .announcement-header::after {
+    content: '−';
+    transform: rotate(180deg);
+}
+
+
 .announcement-header:hover {
     background-color: var(--bg-light);
 }
@@ -590,6 +607,7 @@ h2 {
     font-size: 1rem;
     font-family: 'Inter', sans-serif;
     color: #333;
+    padding-right: 2rem;
 }
 .announcement-date {
     width: 120px;
@@ -799,24 +817,6 @@ h2 {
     font-family: 'Roboto Slab', serif;
 }
 
-.mobile-nav-close {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    background: transparent;
-    border: none;
-    color: var(--bg-white);
-    font-size: 2.5rem;
-    z-index: 1010;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-.mobile-nav-close:hover,
-.mobile-nav-close:focus {
-    color: var(--footer-text);
-    outline: none;
-}
-
 /* ==== RESPONSIVE DESIGN ==== */
 @media (max-width: 992px) {
     .pillars-container {
@@ -887,7 +887,6 @@ h2 {
     }
     .projects-table td {
         display: block;
-        /* MOBILE FIX: Change text alignment for better readability */
         text-align: left;
         padding: 0.75rem 1rem;
         border-bottom: 1px solid var(--border-light);
@@ -897,7 +896,6 @@ h2 {
     }
     .projects-table td::before {
         content: attr(data-label);
-        /* MOBILE FIX: Change from float to block for better layout */
         display: block;
         font-weight: bold;
         text-transform: uppercase;
