@@ -801,7 +801,7 @@ body.home .main-nav {
         grid-template-columns: 1fr;
     }
 
-    /* FIX 2: Facility cards go to a single column on mobile */
+    /* FIX 2: Facility cards layout on mobile */
     .facility-section {
         padding: 2rem 1rem; /* Reduce padding on mobile */
     }
@@ -873,15 +873,25 @@ body.home .main-nav {
         width: 100%;
     }
     
-    /* FIX 1: Announcement icon layout on mobile */
+    /* FIX 1: Announcement header layout on mobile */
     .announcement-header {
-        padding: 1rem 0.5rem; /* Reduce padding */
+        flex-wrap: wrap; /* Allow items to wrap to the next line */
+        padding: 1rem 0.5rem;
     }
     .announcement-title {
-        padding-right: 0.5rem; /* Reduce padding */
+        width: 100%; /* Title takes full width on its own line */
+        margin-bottom: 0.5rem;
+        padding-right: 0;
+    }
+    .announcement-number {
+        width: auto;
     }
     .announcement-date {
-        width: 80px; /* Allow date to be smaller */
+        width: auto;
+        margin-left: 0.5rem;
+    }
+    .announcement-header::after {
+        margin-left: auto; /* Keep icon to the right */
     }
 }
 
