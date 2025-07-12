@@ -12,15 +12,23 @@ const client = createClient({
 
 // --- Function to load Research Area cards ---
 async function loadResearchAreas() {
+  const container = document.querySelector('.pillars-container');
+  if (!container) return;
+
   try {
+    // 1. Show a loading message immediately
+    container.innerHTML = '<p style="text-align: center; padding: 2rem;">Loading research areas...</p>';
+
     const query = `*[_type == "researchArea"] | order(order asc)`;
     const areas = await client.fetch(query);
-    console.log('Research Areas data fetched from Sanity:', areas);
+    
+    // 2. Clear the loading message
+    container.innerHTML = '';
 
-    const container = document.querySelector('.pillars-container');
-    if (!container) return;
-
-    container.innerHTML = ''; // Clear static content
+    if (areas.length === 0) {
+        container.innerHTML = '<p style="text-align: center; padding: 2rem;">No research areas have been added yet.</p>';
+        return;
+    }
 
     areas.forEach(area => {
       const card = document.createElement('div');
@@ -34,21 +42,31 @@ async function loadResearchAreas() {
 
   } catch (error) {
     console.error('Error fetching research areas:', error);
+    // 3. Show a user-friendly error message if something goes wrong
+    container.innerHTML = '<p style="text-align: center; color: red; padding: 2rem;">Could not load research areas. Please try again later.</p>';
   }
 }
 
 
 // --- Function to load Projects table ---
 async function loadProjects() {
+  const tableBody = document.querySelector('.projects-table tbody');
+  if (!tableBody) return;
+
   try {
+    // 1. Show a loading message in the table
+    tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem;">Loading projects...</td></tr>';
+
     const query = `*[_type == "project"] | order(order asc)`;
     const projects = await client.fetch(query);
-    console.log('Projects data fetched from Sanity:', projects);
 
-    const tableBody = document.querySelector('.projects-table tbody');
-    if (!tableBody) return;
+    // 2. Clear the loading message
+    tableBody.innerHTML = '';
 
-    tableBody.innerHTML = ''; // Clear static content
+    if (projects.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem;">No projects have been added yet.</td></tr>';
+        return;
+    }
 
     projects.forEach((project) => {
       const row = document.createElement('tr');
@@ -62,6 +80,8 @@ async function loadProjects() {
     });
   } catch (error) {
     console.error('Error fetching projects:', error);
+    // 3. Show an error message in the table
+    tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: red; padding: 2rem;">Could not load projects. Please try again later.</td></tr>';
   }
 }
 
