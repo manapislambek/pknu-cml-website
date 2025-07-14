@@ -20,6 +20,7 @@ function urlFor(source) {
 // --- Function to load ALL Team Members ---
 async function loadTeamMembers() {
     const professorContainer = document.querySelector('#professor-section');
+    const postdocsContainer = document.querySelector('#postdocs-section .team-grid')
     const phdContainer = document.querySelector('#phd-section .team-grid');
     const mastersContainer = document.querySelector('#masters-section .team-grid');
     const undergradContainer = document.querySelector('#undergraduate-section .team-grid');
@@ -35,6 +36,7 @@ async function loadTeamMembers() {
 
     try {
         setContainerState(professorContainer, 'Loading professor...');
+        setContainerState(postdocsContainer, 'Loading postdoctoral researchers...');
         setContainerState(phdContainer, 'Loading Ph.D. students...');
         setContainerState(mastersContainer, 'Loading Master\'s students...');
         setContainerState(undergradContainer, 'Loading undergraduate students...');
@@ -44,6 +46,7 @@ async function loadTeamMembers() {
         const members = await client.fetch(query);
 
         if(professorContainer) professorContainer.innerHTML = '';
+        if(postdocsContainer) postdocsContainer.innerHTML = '';
         if(phdContainer) phdContainer.innerHTML = '';
         if(mastersContainer) mastersContainer.innerHTML = '';
         if(undergradContainer) undergradContainer.innerHTML = '';
@@ -51,6 +54,7 @@ async function loadTeamMembers() {
 
         if (members.length === 0) {
             setContainerState(professorContainer, 'No team members have been added yet.');
+            document.querySelector('#postdocs-section h2').style.display = 'none';
             document.querySelector('#phd-section h2').style.display = 'none';
             document.querySelector('#masters-section h2').style.display = 'none';
             document.querySelector('#undergraduate-section h2').style.display = 'none';
@@ -98,6 +102,8 @@ async function loadTeamMembers() {
             } else if (member.role && member.role.toLowerCase().includes('professor')) {
                 if(professorContainer) professorContainer.appendChild(memberCard);
                 memberCard.classList.add('professor-card');
+            } else if (member.role && member.role.toLowerCase().includes('postdoc')) {
+                if(postdocsContainer) postdocsContainerContainer.appendChild(memberCard);
             } else if (member.role && member.role.toLowerCase().includes('ph.d')) {
                 if(phdContainer) phdContainer.appendChild(memberCard);
             } else if (member.role && member.role.toLowerCase().includes('master')) {
@@ -129,6 +135,7 @@ async function loadTeamMembers() {
     } catch (error) {
         console.error('Error fetching team members:', error);
         setContainerError(professorContainer, 'Could not load team members. Please try again later.');
+        if (postdocsContainer) postdocsContainer.parentElement.style.display = 'none';
         if (phdContainer) phdContainer.parentElement.style.display = 'none';
         if (mastersContainer) mastersContainer.parentElement.style.display = 'none';
         if (undergradContainer) undergradContainer.parentElement.style.display = 'none';
