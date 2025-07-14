@@ -681,7 +681,8 @@ body.home .main-nav {
 
 .photo-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    /* On desktop, it will be 2 columns */
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
 }
 .photo-card {
@@ -893,6 +894,12 @@ body.home .main-nav {
     }
     .announcement-header::after {
         margin-left: auto;
+    }
+    .tab-section {
+    padding: 1rem; /* Reduce padding on the parent container */
+    }
+    .photo-grid {
+    grid-template-columns: 1fr; /* Switch to a single column on mobile */
     }
 }
 
