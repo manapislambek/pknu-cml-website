@@ -20,7 +20,7 @@ function urlFor(source) {
 // --- Function to load ALL Team Members ---
 async function loadTeamMembers() {
     const professorContainer = document.querySelector('#professor-section');
-    const postdocsContainer = document.querySelector('#postdocs-section .team-grid')
+    const postdocsContainer = document.querySelector('#postdocs-section .team-grid');
     const phdContainer = document.querySelector('#phd-section .team-grid');
     const mastersContainer = document.querySelector('#masters-section .team-grid');
     const undergradContainer = document.querySelector('#undergraduate-section .team-grid');
@@ -103,7 +103,7 @@ async function loadTeamMembers() {
                 if(professorContainer) professorContainer.appendChild(memberCard);
                 memberCard.classList.add('professor-card');
             } else if (member.role && member.role.toLowerCase().includes('postdoc')) {
-                if(postdocsContainer) postdocsContainerContainer.appendChild(memberCard);
+                if(postdocsContainer) postdocsContainer.appendChild(memberCard);
             } else if (member.role && member.role.toLowerCase().includes('ph.d')) {
                 if(phdContainer) phdContainer.appendChild(memberCard);
             } else if (member.role && member.role.toLowerCase().includes('master')) {
