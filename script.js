@@ -1,86 +1,145 @@
-// Import the Sanity client library from a more reliable CDN
-import { createClient } from 'https://esm.sh/@sanity/client';
+// script.js (Complete Version)
 
-// Configure the client with your project's details
+import { createClient } from 'https://esm.sh/@sanity/client';
+import { toHTML } from 'https://esm.sh/@portabletext/to-html';
+import { initializeAnimations } from './animations.js';
+
 const client = createClient({
-  projectId: 'fd0kvo22', // Your Project ID from sanity.json
-  dataset: 'production',    // Usually 'production'
-  useCdn: true,             // `false` if you want to ensure fresh data
-  apiVersion: '2024-06-27', // Use a recent date
+  projectId: 'fd0kvo22',
+  dataset: 'production',
+  useCdn: true,
+  apiVersion: '2024-07-21',
 });
 
+// Creates the main section containers and titles
+async function loadHomepageContent() {
+    const welcomeContainer = document.querySelector('#welcome-section');
+    const researchContainer = document.querySelector('#research-highlights');
+    const publicationsContainer = document.querySelector('#recent-publications');
+    const newsContainer = document.querySelector('#latest-news');
 
-// --- Function to load Research Area cards ---
-async function loadResearchAreas() {
-  const container = document.querySelector('.pillars-container');
-  if (!container) return;
+    try {
+        const query = `*[_type == "homepage"][0]`;
+        const content = await client.fetch(query);
 
-  try {
-    container.innerHTML = '<p style="text-align: center; padding: 2rem;">Loading research areas...</p>';
+        if (welcomeContainer) {
+            const welcomeText = (content && content.welcomeText) ? toHTML(content.welcomeText) : '';
+            welcomeContainer.innerHTML = `<h2 class="fade-in-element">Welcome to Our Laboratory</h2><div class="welcome-text-home fade-in-element">${welcomeText}</div>`;
+        }
+        if (researchContainer) {
+            researchContainer.innerHTML = `<h2 class="fade-in-element">Research Highlights</h2><div class="research-grid"></div>`;
+        }
+        if (publicationsContainer) {
+            publicationsContainer.innerHTML = `<h2 class="fade-in-element">Recent Publications</h2><div class="publications-list"></div><div class="view-all-link fade-in-element"><a href="publications.html">View all publications &rarr;</a></div>`;
+        }
+        if (newsContainer) {
+            newsContainer.innerHTML = `<h2 class="fade-in-element">Latest News</h2><div class="news-grid"></div><div class="view-all-link fade-in-element"><a href="contact.html">View all news &rarr;</a></div>`;
+        }
+    } catch (error) { 
+        console.error("Homepage content ERROR:", error); 
+    }
+}
 
-    const query = `*[_type == "researchArea"] | order(order asc)`;
-    const areas = await client.fetch(query);
+// Fetches and displays the Research Highlights
+async function loadResearchHighlights() {
+    const sectionContainer = document.querySelector('#research-highlights');
+    const gridContainer = document.querySelector('#research-highlights .research-grid');
+    if (!gridContainer || !sectionContainer) return;
+
+    try {
+        // The query now includes 'order'
+        const query = `*[_type == "researchArea"] { title, order } | order(order asc)`;
+        const areas = await client.fetch(query);
+        if (!areas || areas.length === 0) return;
+        
+        gridContainer.innerHTML = ''; 
+
+        areas.forEach(area => {
+            const card = document.createElement('div');
+            card.className = 'research-item-card fade-in-element';
+            card.innerHTML = `<h3>${area.title}</h3>`;
+            gridContainer.appendChild(card);
+        });
+
+        const oldLink = sectionContainer.querySelector('.view-all-link');
+        if (oldLink) oldLink.remove();
+
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'view-all-link fade-in-element';
+        buttonContainer.innerHTML = `<a href="research.html">View research details &rarr;</a>`;
+        sectionContainer.appendChild(buttonContainer);
+    } catch (error) { 
+        console.error("Error fetching research highlights:", error); 
+    }
+}
+
+// Fetches and displays the 3 most recent publications
+async function loadRecentPublications() {
+    const container = document.querySelector('#recent-publications .publications-list');
+    if (!container) return;
+    try {
+        const query = `*[_type == "publication"] | order(publicationDate desc) [0...3]`;
+        const publications = await client.fetch(query);
+        if (!publications || publications.length === 0) return;
+        
+        publications.forEach(pub => {
+            const item = document.createElement('div');
+            item.className = 'publication-item fade-in-element';
+            item.innerHTML = `
+                <p class="publication-meta">${pub.publicationDetails} (${new Date(pub.publicationDate).getFullYear()})</p>
+                <h3 class="publication-title">${pub.title}</h3>
+                <p class="publication-authors">${pub.authors}</p>
+                ${pub.link ? `<a href="${pub.link}" target="_blank" rel="noopener noreferrer" class="publication-link">Read Paper &rarr;</a>` : ''}
+            `;
+            container.appendChild(item);
+        });
+    } catch (error) { console.error("Error fetching recent publications:", error); }
+}
+
+// Fetches and displays the 3 most recent news announcements
+async function loadLatestNews() {
+    const container = document.querySelector('#latest-news .news-grid');
+    if (!container) return;
+    try {
+        // Fetch the _id along with other fields
+        const query = `*[_type == "announcement"] { _id, title, publishedAt } | order(publishedAt desc) [0...3]`;
+        const announcements = await client.fetch(query);
+        if (!announcements || announcements.length === 0) return;
+
+        announcements.forEach(item => {
+            // Create a link that wraps the card
+            const cardLink = document.createElement('a');
+            cardLink.href = `contact.html?announcement=${item._id}`;
+            cardLink.className = 'news-card-link';
+
+            const date = new Date(item.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            // The card itself is now inside the link
+            cardLink.innerHTML = `
+                <div class="news-card fade-in-element">
+                    <p class="news-date">${date}</p>
+                    <h3 class="news-title">${item.title}</h3>
+                </div>
+            `;
+            container.appendChild(cardLink);
+        });
+    } catch (error) { console.error('Error fetching latest news:', error); }
+}
+
+// Main initialization function
+async function initializeHomepage() {
+    // 1. Create the section containers
+    await loadHomepageContent();
     
-    container.innerHTML = '';
+    // 2. Load the content for the sections we just created
+    await Promise.all([
+        loadResearchHighlights(),
+        loadRecentPublications(),
+        loadLatestNews()
+    ]);
 
-    if (areas.length === 0) {
-        container.innerHTML = '<p style="text-align: center; padding: 2rem;">No research areas have been added yet.</p>';
-        return;
-    }
-
-    areas.forEach(area => {
-      const card = document.createElement('div');
-      card.className = 'pillar-card';
-      card.innerHTML = `
-        <h3>${area.title || ''}</h3>
-        <p>${area.description || ''}</p>
-      `;
-      container.appendChild(card);
-    });
-
-  } catch (error) {
-    console.error('Error fetching research areas:', error);
-    container.innerHTML = '<p style="text-align: center; color: red; padding: 2rem;">Could not load research areas. Please try again later.</p>';
-  }
+    // 3. Initialize the animations AFTER all content is on the page
+    initializeAnimations(); 
 }
 
-
-// --- Function to load Projects table ---
-async function loadProjects() {
-  const tableBody = document.querySelector('.projects-table tbody');
-  if (!tableBody) return;
-
-  try {
-    tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem;">Loading projects...</td></tr>';
-
-    const query = `*[_type == "project"] | order(order asc)`;
-    const projects = await client.fetch(query);
-
-    tableBody.innerHTML = '';
-
-    if (projects.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem;">No projects have been added yet.</td></tr>';
-        return;
-    }
-
-    projects.forEach((project) => {
-      const row = document.createElement('tr');
-      // MOBILE FIX: Add data-label attributes to table cells for responsive CSS
-      row.innerHTML = `
-        <td data-label="No.">${project.order || ''}</td>
-        <td data-label="Project Title">${project.title || ''}</td>
-        <td data-label="Funding Agency">${project.fundingAgency || ''}</td>
-        <td data-label="Duration">${project.duration || ''}</td>
-      `;
-      tableBody.appendChild(row);
-    });
-  } catch (error)
-{
-    console.error('Error fetching projects:', error);
-    tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: red; padding: 2rem;">Could not load projects. Please try again later.</td></tr>';
-  }
-}
-
-// --- Run all load functions when the page loads ---
-loadResearchAreas();
-loadProjects();
+initializeHomepage();

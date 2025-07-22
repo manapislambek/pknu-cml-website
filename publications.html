@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publications - Construction Materials Laboratory</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="header-content">
+      <h1>Publications</h1>
+    </div>
+  </header>
+  
+  <main class="container">
+    <section class="publications-section">
+        <div class="tab-buttons">
+            <button class="tab-button active" data-tab="journal">Journal Papers</button>
+            <button class="tab-button" data-tab="conference">Conference Papers</button>
+        </div>
+
+        <div class="pub-controls">
+            <div class="search-wrapper">
+                <input type="text" id="pub-search-input" placeholder="Search by title...">
+            </div>
+            <div class="view-options">
+                <select id="pub-sort-order">
+                    <option value="asc">Sort: Oldest First</option>
+                    <option value="desc">Sort: Newest First</option>
+                </select>
+                <select id="pub-rows-per-page">
+                    <option value="5">5 per page</option>
+                    <option value="10" selected>10 per page</option>
+                    <option value="20">20 per page</option>
+                    <option value="10000">Show All</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="tab-content-container">
+            <div id="journal" class="tab-content active">
+                <div class="publications-list"></div>
+                <div class="pagination-controls"></div>
+            </div>
+            <div id="conference" class="tab-content">
+                <div class="publications-list"></div>
+                <div class="pagination-controls"></div>
+            </div>
+        </div>
+    </section>
+  </main>
+  
+  <footer class="main-footer"></footer>
+
+  <script src="main-layout.js" defer></script>
+  <script type="module" src="publications-script.js"></script>
+</body>
+</html>

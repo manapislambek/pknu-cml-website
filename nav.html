@@ -1,31 +1,42 @@
-<!-- This file contains only the navigation components -->
 <nav class="main-nav">
-  <a href="index.html" class="logo">
-    <img src="images/pknu-logo-full.png" alt="Pukyong National University Logo" onerror="this.onerror=null; this.src='https://placehold.co/150x40/ffffff/0A2A5B?text=PKNU';">
-  </a>
-  
+  <a href="index.html" class="logo"><img src="images/pknu-logo-full.png" alt="Pukyong National University Logo"></a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
-    <li><a href="members.html">Members</a></li>
-    <li><a href="https://scholar.google.co.kr/citations?user=1Ou1UX8AAAAJ&hl=ko" target="_blank" rel="noopener noreferrer">Publications</a></li>
+    <li class="dropdown">
+      <a href="research.html">Research</a>
+      <ul class="dropdown-menu">
+        <li><a href="research.html#research-section">Research Areas</a></li>
+        <li><a href="research.html#projects-section">Projects</a></li>
+      </ul>
+    </li>
+    <li class="dropdown">
+      <a href="members.html">Members</a>
+      <ul class="dropdown-menu">
+        <li><a href="members.html#professor">Professor</a></li>
+        <li><a href="members.html#students">Researchers</a></li>
+        <li><a href="members.html#alumni">Alumni</a></li>
+      </ul>
+    </li>
+    <li class="dropdown">
+      <a href="publications.html">Publications</a>
+      <ul class="dropdown-menu">
+        <li><a href="publications.html#journal">Journal Papers</a></li>
+        <li><a href="publications.html#conference">Conference Papers</a></li>
+      </ul>
+    </li>
     <li><a href="facility.html">Facility</a></li>
-    <li><a href="contact.html">News & Contact</a></li>
+    <li class="dropdown">
+      <a href="contact.html">News & Contact</a>
+      <ul class="dropdown-menu">
+        <li><a href="contact.html#announcements">Notice</a></li>
+        <li><a href="contact.html#gallery">Photo Gallery</a></li>
+        <li><a href="contact.html#contact-info-section">Contact Info</a></li>
+      </ul>
+    </li>
   </ul>
-  
-  <button class="hamburger-menu" aria-label="Open navigation menu">
-      <span></span>
-      <span></span>
-      <span></span>
-  </button>
+  <button class="hamburger-menu" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
 </nav>
-
-<!-- Mobile Navigation Overlay -->
 <div class="mobile-nav">
-    <!-- The dedicated close button is back, and will be styled to be on top -->
     <button class="mobile-nav-close" aria-label="Close menu">&times;</button>
-    <a href="index.html">Home</a>
-    <a href="members.html">Members</a>
-    <a href="https://scholar.google.co.kr/citations?user=1Ou1UX8AAAAJ&hl=ko" target="_blank" rel="noopener noreferrer">Publications</a>
-    <a href="facility.html">Facility</a>
-    <a href="contact.html">News & Contact</a>
+    <a href="index.html">Home</a><a href="research.html">Research</a><a href="members.html">Members</a><a href="publications.html">Publications</a><a href="facility.html">Facility</a><a href="contact.html">News & Contact</a>
 </div>

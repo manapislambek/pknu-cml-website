@@ -1,15 +1,66 @@
-// Import the Sanity client and other necessary libraries
+// 1. IMPORTS
+// All imports must come first.
 import { createClient } from 'https://esm.sh/@sanity/client';
 import imageUrlBuilder from 'https://esm.sh/@sanity/image-url';
 import { toHTML } from 'https://esm.sh/@portabletext/to-html';
 
-// --- Global State for Notice Board ---
+// 2. SANITY CLIENT SETUP
+// The client must be created right after imports.
+const client = createClient({
+  projectId: 'fd0kvo22',
+  dataset: 'production',
+  useCdn: true,
+  apiVersion: '2024-07-21',
+});
+
+// 3. HELPER FUNCTIONS & COMPONENTS
+// These can be defined now because they depend on the 'client'.
+const builder = imageUrlBuilder(client);
+function urlFor(source) {
+  return builder.image(source);
+}
+
+const portableTextComponents = {
+  types: {
+    image: ({ value }) => {
+      if (!value?.asset?._ref) {
+        return '';
+      }
+      return `
+        <img
+          class="portable-text-image"
+          alt="${value.alt || ' '}"
+          loading="lazy"
+          src="${urlFor(value).width(800).auto('format').url()}"
+        />
+      `;
+    }
+  }
+};
+
+// 4. GLOBAL STATE & EVENT LISTENERS
+// The rest of the script can now follow.
 let allAnnouncements = [];
 let currentPage = 1;
 let rowsPerPage = 10;
 let isLoadingAnnouncements = true;
 
-// --- Tab Switching Logic ---
+// In contact-script.js
+
+function handleTabSwitch() {
+    const hash = window.location.hash;
+    let targetTab;
+    if (hash === '#gallery') {
+      targetTab = 'gallery';
+    } else if (hash === '#contact-info-section') {
+      targetTab = 'contact';
+    } else {
+      targetTab = 'announcements';
+    }
+    const targetButton = document.querySelector(`.tab-button[data-tab="${targetTab}"]`);
+    if (targetButton) targetButton.click();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -40,24 +91,13 @@ document.addEventListener('DOMContentLoaded', () => {
             displayAnnouncements();
         });
     }
+
+    window.addEventListener('hashchange', handleTabSwitch);
+    handleTabSwitch(); // Run on initial load
 });
 
 
-// Configure the Sanity client
-const client = createClient({
-  projectId: 'fd0kvo22',
-  dataset: 'production',
-  useCdn: true,
-  apiVersion: '2024-06-28',
-});
-
-// Configure the image URL builder
-const builder = imageUrlBuilder(client);
-function urlFor(source) {
-  return builder.image(source);
-}
-
-// --- Function to load Contact Information ---
+// 5. PAGE-SPECIFIC FUNCTIONS
 async function loadContactInfo() {
     const addressEl = document.getElementById('contact-address');
     const emailEl = document.getElementById('contact-email');
@@ -66,7 +106,6 @@ async function loadContactInfo() {
     if (!addressEl || !emailEl || !phoneEl) return;
 
     try {
-        // Fetch the single contact info document
         const query = `*[_type == "contactInfo"][0]`;
         const info = await client.fetch(query);
 
@@ -80,7 +119,6 @@ async function loadContactInfo() {
             emailEl.textContent = '';
             phoneEl.textContent = '';
         }
-
     } catch (error) {
         console.error('Error fetching contact info:', error);
         document.getElementById('contact-details-container').innerHTML = 
@@ -88,26 +126,20 @@ async function loadContactInfo() {
     }
 }
 
-
-// --- Function to Display Announcements ---
 function displayAnnouncements() {
     const container = document.querySelector('.announcements-list');
     const searchInput = document.getElementById('search-input');
     const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
 
     if (!container) return;
-    
     if (isLoadingAnnouncements) {
         container.innerHTML = '<p style="text-align: center; padding: 2rem;">Loading announcements...</p>';
         return;
     }
-
     container.innerHTML = '';
-
     const filteredAnnouncements = allAnnouncements.filter(item => 
         item.title.toLowerCase().includes(searchTerm)
     );
-
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
     const paginatedItems = filteredAnnouncements.slice(startIndex, endIndex);
@@ -121,6 +153,7 @@ function displayAnnouncements() {
     paginatedItems.forEach((item, index) => {
         const announcementEl = document.createElement('div');
         announcementEl.className = 'announcement-item';
+        announcementEl.id = item._id;
         const date = new Date(item.publishedAt).toLocaleDateString('en-CA');
         announcementEl.innerHTML = `
             <div class="announcement-header">
@@ -128,7 +161,11 @@ function displayAnnouncements() {
                 <span class="announcement-title">${item.title}</span>
                 <span class="announcement-date">${date}</span>
             </div>
-            <div class="announcement-body"><div class="announcement-body-content portable-text-content">${toHTML(item.body)}</div></div>
+            <div class="announcement-body">
+              <div class="announcement-body-content portable-text-content">
+                ${toHTML(item.body, {components: portableTextComponents})}
+              </div>
+            </div>
         `;
         container.appendChild(announcementEl);
     });
@@ -138,11 +175,21 @@ function displayAnnouncements() {
             e.currentTarget.closest('.announcement-item').classList.toggle('expanded');
         });
     });
-
     setupPagination(filteredAnnouncements.length);
 }
 
-// --- Function to setup Pagination Controls ---
+function checkUrlForAnnouncement() {
+    const params = new URLSearchParams(window.location.search);
+    const announcementId = params.get('announcement');
+    if (announcementId) {
+        const target = document.getElementById(announcementId);
+        if (target) {
+            target.classList.add('expanded');
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+}
+
 function setupPagination(totalItems) {
     const paginationContainer = document.querySelector('.pagination-controls');
     if (!paginationContainer) return;
@@ -162,35 +209,30 @@ function setupPagination(totalItems) {
     }
 }
 
-
-// --- Function to load ALL Announcements initially ---
 async function initialLoadAnnouncements() {
     const container = document.querySelector('.announcements-list');
     try {
         displayAnnouncements(); 
-        
-        const query = `*[_type == "announcement"] | order(publishedAt desc)`;
+        const query = `*[_type == "announcement"] { _id, title, publishedAt, body }`;
         allAnnouncements = await client.fetch(query);
         isLoadingAnnouncements = false;
         displayAnnouncements();
+        checkUrlForAnnouncement();
     } catch (error) {
         console.error('Error fetching announcements:', error);
         isLoadingAnnouncements = false;
-        if(container) container.innerHTML = '<p style="text-align: center; color: red; padding: 2rem;">Could not load announcements.</p>';
+        if(container) container.innerHTML = '<p style="text-align: center; color: red;">Could not load announcements.</p>';
     }
 }
 
-// --- Function to load Gallery Images ---
 async function loadGalleryImages() {
     const container = document.querySelector('.photo-grid');
     if(!container) return;
     
     try {
         container.innerHTML = '<p style="text-align: center; padding: 2rem;">Loading gallery...</p>';
-        
         const query = `*[_type == "galleryImage"] | order(date desc)`;
         const images = await client.fetch(query);
-
         container.innerHTML = '';
 
         if (images.length === 0) {
@@ -212,7 +254,6 @@ async function loadGalleryImages() {
             `;
             container.appendChild(photoCard);
         });
-
     } catch (error) {
         console.error('Error fetching gallery images:', error);
         container.innerHTML = '<p style="text-align: center; color: red; padding: 2rem;">Could not load gallery images.</p>';
@@ -220,7 +261,7 @@ async function loadGalleryImages() {
 }
 
 
-// --- Run all initial load functions ---
+// --- 6. RUN ALL INITIAL LOAD FUNCTIONS ---
 loadContactInfo();
 initialLoadAnnouncements();
 loadGalleryImages();

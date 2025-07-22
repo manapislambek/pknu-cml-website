@@ -7,7 +7,7 @@ const client = createClient({
   projectId: 'fd0kvo22', // Your Project ID
   dataset: 'production',
   useCdn: true,
-  apiVersion: '2024-06-28',
+  apiVersion: '2024-07-21',
 });
 
 // Configure the image URL builder

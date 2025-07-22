@@ -571,6 +571,15 @@ body.home .main-nav {
 
 
 /* ==== NOTICE BOARD STYLES ==== */
+
+/* Style for images inside announcements */
+.portable-text-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+}
+
 .notice-controls {
     display: flex;
     justify-content: space-between;
@@ -769,10 +778,185 @@ body.home .main-nav {
     color: var(--footer-text);
 }
 
+/* ==== NEW HOMEPAGE STYLES ==== */
+.explore-section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}
+
+.explore-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.explore-card {
+    text-decoration: none;
+    color: inherit;
+    background-color: var(--bg-white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.explore-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+
+.explore-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+}
+
+.explore-card-content {
+    padding: 2rem;
+}
+
+.explore-card-content h3 {
+    color: var(--pknu-blue);
+    margin-bottom: 0.5rem;
+}
+
+.latest-news-section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    background-color: var(--bg-light);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.news-card {
+    background-color: var(--bg-white);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.news-card .news-date {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+}
+
+.news-card .news-title {
+    font-family: 'Roboto Slab', serif;
+    font-size: 1.25rem;
+    color: var(--pknu-blue);
+    font-weight: bold;
+}
+
+.view-all-link {
+    text-align: center;
+}
+
+.view-all-link a {
+    color: var(--primary-accent);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* ==== PUBLICATIONS PAGE STYLES ==== */
+.publications-section .tab-buttons {
+    margin-bottom: 3rem;
+}
+
+.publications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.publication-item {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.publication-item:last-child {
+  border-bottom: none;
+}
+
+.publication-number {
+  flex-shrink: 0;
+  color: var(--text-light);
+  font-weight: bold;
+}
+
+.publication-content {
+  flex-grow: 1;
+}
+
+.publication-meta {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-bottom: 0.25rem;
+}
+
+.publication-title {
+  font-size: 1.4rem;
+  font-family: 'Roboto Slab', serif;
+  color: var(--pknu-blue);
+  margin-bottom: 0.5rem;
+}
+
+.publication-authors {
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.publication-link {
+  font-weight: bold;
+  color: var(--primary-accent);
+  text-decoration: none;
+}
+
+.publication-meta {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 0.25rem;
+}
+
+.publication-title {
+    font-size: 1.4rem;
+    font-family: 'Roboto Slab', serif;
+    color: var(--pknu-blue);
+    margin-bottom: 0.5rem;
+}
+
+.publication-authors {
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+.publication-link {
+    font-weight: bold;
+    color: var(--primary-accent);
+    text-decoration: none;
+}
+
 /* ==== RESPONSIVE DESIGN ==== */
 @media (max-width: 992px) {
     .pillars-container {
         grid-template-columns: repeat(2, 1fr);
+    }
+    /* Add this inside the @media (max-width: 992px) block */
+    .explore-grid {
+        grid-template-columns: 1fr;
+    }
+    .news-grid {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -913,4 +1097,323 @@ body.home .main-nav {
 .fade-in-element.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* =============================
+   HOMEPAGE RESEARCH HIGHLIGHTS
+   ============================= */
+
+
+/* This rule creates the grid layout */
+#research-highlights .research-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+/* This styles the non-clickable cards */
+.research-item-card {
+  background-color: transparent;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  /* NO hover effect */
+}
+
+.research-item-card h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 500; /* Regular weight */
+  color: var(--text-dark);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Styles for the "Learn More" button container */
+.research-highlights-section .view-all-link {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+/* Responsive behavior for the grid */
+@media (max-width: 992px) {
+  #research-highlights .research-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  #research-highlights .research-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Styling for the clickable news card links on the homepage */
+.news-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.news-card-link .news-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.news-card-link:hover .news-card {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* =======================================
+   EXPANDABLE RESEARCH AREA CARD STYLES
+   ======================================= */
+
+.pillar-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.pillar-summary {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.pillar-summary p {
+  flex-grow: 1; /* Pushes button to the bottom */
+}
+
+.pillar-details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-out, margin-top 0.5s ease-out;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 1px solid transparent;
+}
+
+.pillar-card.expanded .pillar-details {
+  max-height: 5000px; /* A large value to allow for content */
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-light);
+  transition: max-height 0.7s ease-in, margin-top 0.7s ease-in;
+}
+
+.pillar-card .expand-btn {
+  background: var(--bg-light);
+  border: 1px solid var(--border-color);
+  color: #555;
+  padding: 8px 16px;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  align-self: flex-start; /* Aligns button to the left */
+  transition: all 0.3s ease;
+}
+
+.pillar-card .expand-btn:hover {
+  background-color: var(--primary-accent);
+  color: var(--bg-white);
+  border-color: var(--primary-accent);
+}
+
+/* ========================
+   MODAL WINDOW STYLES
+   ======================== */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Hidden by default */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.modal.is-active {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  cursor: pointer;
+}
+
+.modal-content {
+  position: relative;
+  z-index: 1001;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 2rem 3rem 3rem;
+  max-width: 800px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  transform: scale(0.95) translateY(10px);
+  transition: transform 0.3s ease;
+}
+
+.modal.is-active .modal-content {
+  transform: scale(1) translateY(0);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 2.5rem;
+  font-weight: 300;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #aaa;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: #333;
+}
+
+#modal-title {
+  text-align: left;
+  margin-top: 0;
+}
+
+/* ========================
+   DROPDOWN NAVIGATION STYLES
+   ======================== */
+/* In style.css */
+
+.nav-links .dropdown {
+  position: relative;
+  /* Add padding to create a hoverable bridge below the link */
+  padding-bottom: 15px;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--pknu-blue);
+  list-style: none;
+  padding: 0.5rem 0;
+  margin-top: 0; /* Remove the problematic margin */
+  border-radius: 8px;
+  min-width: 200px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+}
+
+.dropdown:hover > .dropdown-menu {
+  display: block; /* Show on hover */
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-menu li {
+  margin: 0;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  white-space: nowrap;
+  color: var(--bg-white);
+  font-weight: normal;
+}
+
+.dropdown-menu a:hover {
+  background-color: var(--primary-accent);
+}
+
+.dropdown-menu a::after {
+  display: none; /* Remove the underline effect from dropdown links */
+}
+
+/* ========================
+   NEW FOOTER STYLES
+   ======================== */
+.main-footer {
+  padding: 5rem 2rem 2rem;
+  margin-top: 5rem;
+  background-color: var(--pknu-blue);
+  color: #fff;
+}
+
+.footer-content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footer-cta h2 {
+  font-size: 2.5rem;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.footer-cta p {
+  color: var(--footer-text);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  max-width: 600px;
+  margin: 0 auto 2.5rem auto;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 4rem;
+  padding-top: 2rem;
+}
+
+.footer-bottom p {
+  color: var(--footer-text);
+  font-size: 0.9rem;
+}
+
+/* Add more space between nav and page titles on interior pages */
+:not(body.home) .header-content {
+  padding-top: 4rem;
+}
+
+/* Styles for Publication Page Controls */
+.pub-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+#pub-search-input, #pub-year-filter, #pub-rows-per-page {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
 }

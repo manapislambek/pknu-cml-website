@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research - Construction Materials Laboratory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="header-content">
+      <h1>Our Research</h1>
+    </div>
+  </header>
+  
+  <main class="container">
+    <div class="tab-buttons">
+      <button class="tab-button" data-tab="areas">Research Areas</button>
+      <button class="tab-button" data-tab="projects">Projects</button>
+    </div>
+
+    <div class="tab-content-container">
+      <div id="areas" class="tab-content">
+        <section id="research-section" class="research-section">
+          <div class="pillars-container">
+            </div>
+        </section>
+      </div>
+
+      <div id="projects" class="tab-content">
+        <section id="projects-section" class="projects-section">
+          <table class="projects-table">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Project Title</th>
+                <th>Funding Agency</th>
+                <th>Duration of Project</th>
+              </tr>
+            </thead>
+            <tbody>
+              </tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+  </main>
+  <div class="modal" id="research-modal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <button class="modal-close">&times;</button>
+      <h2 id="modal-title"></h2>
+      <div id="modal-body" class="portable-text-content"></div>
+    </div>
+  </div>
+
+  <footer class="main-footer"></footer>
+
+  <script src="main-layout.js" defer></script>
+  <script type="module" src="research-script.js"></script>
+</body>
+</html>

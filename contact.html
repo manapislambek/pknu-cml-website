@@ -18,25 +18,15 @@
   </header>
 
   <main class="container">
-    
-    <section class="contact-info-section">
-        <h2>Contact Information</h2>
-        <!-- Placeholders for dynamic content -->
-        <div id="contact-details-container" class="contact-details">
-            <p><strong>Address:</strong> <span id="contact-address">Loading...</span></p>
-            <p><strong>Email:</strong> <a id="contact-email" href="#"></a></p>
-            <p><strong>Phone:</strong> <span id="contact-phone"></span></p>
-        </div>
-    </section>
-
-    <section class="tab-section">
+    <div class="tab-section">
         <div class="tab-buttons">
-            <button class="tab-button active" data-tab="announcements">Notice</button>
-            <button class="tab-button" data-tab="gallery">Lab Life</button>
+            <button class="tab-button" data-tab="announcements">Notice</button>
+            <button class="tab-button" data-tab="gallery">Photo Gallery</button>
+            <button class="tab-button" data-tab="contact">Contact Info</button>
         </div>
 
         <div class="tab-content-container">
-            <div id="announcements" class="tab-content active">
+            <div id="announcements" class="tab-content">
                 <div class="notice-controls">
                     <div class="search-wrapper">
                         <input type="text" id="search-input" placeholder="Search by title...">
@@ -53,12 +43,22 @@
                 <div class="announcements-list"></div>
                 <div class="pagination-controls"></div>
             </div>
+
             <div id="gallery" class="tab-content">
                 <div class="photo-grid"></div>
             </div>
-        </div>
-    </section>
 
+            <div id="contact" class="tab-content">
+                <section id="contact-info-section" class="contact-info-section">
+                    <div id="contact-details-container" class="contact-details">
+                        <p><strong>Address:</strong> <span id="contact-address">Loading...</span></p>
+                        <p><strong>Email:</strong> <a id="contact-email" href="#"></a></p>
+                        <p><strong>Phone:</strong> <span id="contact-phone"></span></p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
   </main>
   
   <footer class="main-footer"></footer>

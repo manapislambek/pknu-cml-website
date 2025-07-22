@@ -9,46 +9,59 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<!-- No class on body means standard header styles will apply -->
 <body>
 
-  <!-- All pages now share this exact header structure -->
   <header class="main-header">
-    <!-- The navigation will be loaded here by main-layout.js -->
     <div class="header-content">
-      <!-- This content is specific to the members page -->
       <h1>Our Team</h1>
     </div>
   </header>
 
   <main class="container">
-    <section id="professor-section" class="team-section fade-in-element"></section>
-    <section id="postdocs-section" class="team-section fade-in-element">
-      <h2>Postdoctoral Researchers</h2>
-      <div class="team-grid"></div>
-    </section>
-    <section id="phd-section" class="team-section fade-in-element">
-      <h2>Ph.D. Students</h2>
-      <div class="team-grid"></div>
-    </section>
-    <section id="masters-section" class="team-section fade-in-element">
-      <h2>Master's Students</h2>
-      <div class="team-grid"></div>
-    </section>
-    <section id="undergraduate-section" class="team-section fade-in-element">
-      <h2>Undergraduate Students</h2>
-      <div class="team-grid"></div>
-    </section>
-    <section id="alumni-section" class="team-section fade-in-element">
-      <h2>Alumni</h2>
-      <div class="team-grid"></div>
-    </section>
+    <div class="tab-buttons">
+      <button class="tab-button" data-tab="professor">Professors</button>
+      <button class="tab-button" data-tab="students">Researchers</button>
+      <button class="tab-button" data-tab="alumni">Alumni</button>
+    </div>
+
+    <div class="tab-content-container">
+      
+      <div id="professor" class="tab-content">
+        <section id="professor-section" class="team-section"></section>
+      </div>
+
+      <div id="students" class="tab-content">
+        <section id="postdocs-section" class="team-section">
+          <h2>Postdoctoral Researchers</h2>
+          <div class="team-grid"></div>
+        </section>
+        <section id="phd-section" class="team-section">
+          <h2>Ph.D. Students</h2>
+          <div class="team-grid"></div>
+        </section>
+        <section id="masters-section" class="team-section">
+          <h2>Master's Students</h2>
+          <div class="team-grid"></div>
+        </section>
+        <section id="undergraduate-section" class="team-section">
+          <h2>Undergraduate Students</h2>
+          <div class="team-grid"></div>
+        </section>
+      </div>
+
+      <div id="alumni" class="tab-content">
+        <section id="alumni-section" class="team-section">
+          <h2>Alumni</h2>
+          <div class="team-grid"></div>
+        </section>
+      </div>
+
+    </div>
   </main>
   
   <footer class="main-footer"></footer>
 
   <script src="main-layout.js" defer></script>
   <script type="module" src="members-script.js"></script>
-  <script type="module" src="animations.js"></script>
 </body>
 </html>
