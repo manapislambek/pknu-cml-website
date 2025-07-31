@@ -72,10 +72,13 @@ function displayPublications() {
 // --- Initial data load ---
 async function loadAllPublications() {
     try {
-        const query = `*[_type == "publication"]`;
+        // This query now explicitly asks for all the fields we need
+        const query = `*[_type == "publication"]{title, authors, category, type, journalName, year, volume, issue, pages, link, publicationDate}`;
         allPublications = await client.fetch(query);
         displayPublications();
-    } catch (error) { console.error("Error fetching publications:", error); }
+    } catch (error) {
+        console.error("Error fetching publications:", error);
+    }
 }
 
 // --- Event Listeners and Initialization ---
