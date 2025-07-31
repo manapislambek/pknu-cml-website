@@ -78,22 +78,42 @@ async function loadRecentPublications() {
     const container = document.querySelector('#recent-publications .publications-list');
     if (!container) return;
     try {
-        const query = `*[_type == "publication"] | order(publicationDate desc) [0...3]`;
+        const query = `*[_type == "publication"]{title, authors, publicationDate, journalName, volume, issue, pages, link} | order(publicationDate desc) [0...3]`;
         const publications = await client.fetch(query);
-        if (!publications || publications.length === 0) return;
+
+        if (!publications || publications.length === 0) {
+            container.innerHTML = '<p>No recent publications to show.</p>';
+            return;
+        };
+
+        const formatNumbers = (vol, iss, pag) => {
+            let parts = [];
+            if (vol && iss) parts.push(`${vol}(${iss})`);
+            else if (vol) parts.push(vol);
+            if (pag) parts.push(pag);
+            return parts.join(', ');
+        };
         
         publications.forEach(pub => {
             const item = document.createElement('div');
-            item.className = 'publication-item fade-in-element';
+            item.className = 'publication-item hp-publication-item fade-in-element';
+            const year = new Date(pub.publicationDate).getFullYear();
+            const numbers = formatNumbers(pub.volume, pub.issue, pub.pages);
+            
             item.innerHTML = `
-                <p class="publication-meta">${pub.publicationDetails} (${new Date(pub.publicationDate).getFullYear()})</p>
-                <h3 class="publication-title">${pub.title}</h3>
-                <p class="publication-authors">${pub.authors}</p>
-                ${pub.link ? `<a href="${pub.link}" target="_blank" rel="noopener noreferrer" class="publication-link">Read Paper &rarr;</a>` : ''}
+              <p class="publication-meta">${pub.journalName} (${year}) ${numbers}</p>
+              <h3 class="publication-title">${pub.title}</h3>
+              <p class="publication-authors">${pub.authors}</p>
+              <div class="hp-pub-link">
+                  ${pub.link ? `<a href="${pub.link}" target="_blank" rel="noopener noreferrer" class="publication-link">Read Paper &rarr;</a>` : ''}
+              </div>
             `;
             container.appendChild(item);
         });
-    } catch (error) { console.error("Error fetching recent publications:", error); }
+    } catch (error) { 
+        console.error("Error fetching recent publications:", error);
+        container.innerHTML = '<p>Could not load recent publications.</p>';
+    }
 }
 
 // Fetches and displays the 3 most recent news announcements

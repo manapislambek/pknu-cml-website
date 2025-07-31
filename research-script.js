@@ -56,7 +56,8 @@ async function loadResearchAreas() {
     const parentContentEl = container.closest('.tab-content');
     container.innerHTML = '<p>Loading research areas...</p>';
     try {
-        const query = `*[_type == "researchArea"] { _id, title, description, detailedDescription } | order(order asc)`;
+        // This is the corrected query that includes the 'order' field
+        const query = `*[_type == "researchArea"] { _id, title, description, detailedDescription, order } | order(order asc)`;
         const areas = await client.fetch(query);
         parentContentEl.dataset.loaded = 'true';
 
@@ -102,14 +103,13 @@ async function loadProjects() {
         }
     } catch (error) {
         console.error('Error fetching projects:', error);
-        tableBody.innerHTML = '<tr><td colspan="4" style="color: red;">Failed to load projects.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="4" style="color: red;">Failed to load projects.</p>';
     }
     initializeAnimations();
 }
 
 
 // --- Page Initialization ---
-
 function initResearchPage() {
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -133,7 +133,7 @@ function initResearchPage() {
     tabButtons.forEach(button => {
         button.addEventListener('click', () => switchTab(button.dataset.tab));
     });
-
+    
     const handleHash = () => {
         const hash = window.location.hash;
         const targetTab = (hash === '#projects-section') ? 'projects' : 'areas';
@@ -141,7 +141,7 @@ function initResearchPage() {
     };
 
     window.addEventListener('hashchange', handleHash);
-    handleHash(); // Initial load
+    handleHash();
     
     setupModalControls();
 }

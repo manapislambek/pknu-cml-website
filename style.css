@@ -1417,3 +1417,40 @@ body.home .main-nav {
     border: 1px solid #ced4da;
     border-radius: 5px;
 }
+
+/* =======================================
+   HOMEPAGE RECENT PUBLICATIONS LAYOUT (VERTICAL STYLE)
+   ======================================= */
+
+/* This turns the item back into a simple block */
+.hp-publication-item {
+  display: block;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.hp-publication-item:last-child {
+  border-bottom: none;
+}
+
+/* Style for the "Journal of..., (2024)" line */
+.hp-pub-meta {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-bottom: 0.25rem;
+}
+
+/* Style for the main title of the paper */
+.hp-pub-title {
+  font-size: 1.4rem;
+  font-family: 'Roboto Slab', serif;
+  color: var(--pknu-blue);
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+/* Style for the authors list */
+.hp-pub-authors {
+  font-style: italic;
+  margin-bottom: 1rem;
+}
