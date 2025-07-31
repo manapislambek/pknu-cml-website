@@ -93,15 +93,24 @@ async function loadRecentPublications() {
             if (pag) parts.push(pag);
             return parts.join(', ');
         };
+
+        const buildMetaString = (pub) => {
+            const year = new Date(pub.publicationDate).getFullYear();
+            const parts = [];
+            if (pub.journalName) parts.push(pub.journalName);
+            parts.push(`(${year})`);
+            const nums = formatNumbers(pub.volume, pub.issue, pub.pages);
+            if (nums) parts.push(nums);
+            return parts.join(' ');
+        };
         
         publications.forEach(pub => {
             const item = document.createElement('div');
             item.className = 'publication-item hp-publication-item fade-in-element';
-            const year = new Date(pub.publicationDate).getFullYear();
-            const numbers = formatNumbers(pub.volume, pub.issue, pub.pages);
+            const metaText = buildMetaString(pub); // Use the new robust function
             
             item.innerHTML = `
-              <p class="publication-meta">${pub.journalName || ''} (${year}) ${numbers}</p>
+              <p class="publication-meta">${metaText}</p>
               <h3 class="publication-title">${pub.title}</h3>
               <p class="publication-authors">${pub.authors}</p>
               <div class="hp-pub-link">

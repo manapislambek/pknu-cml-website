@@ -1,3 +1,4 @@
+// publications-script.js
 import { createClient } from 'https://esm.sh/@sanity/client';
 
 const client = createClient({
@@ -11,7 +12,7 @@ const client = createClient({
 let allPublications = [];
 let activeTab = 'international';
 
-// --- Helper function to format the volume/issue/pages string ---
+// --- Helper functions ---
 function formatNumbers(vol, iss, pag) {
     let parts = [];
     if (vol && iss) parts.push(`${vol}(${iss})`);
@@ -20,33 +21,41 @@ function formatNumbers(vol, iss, pag) {
     return parts.join(', ');
 }
 
-// --- Helper function to render a list of publications into a container ---
+function buildMetaString(pub) {
+    const year = new Date(pub.publicationDate).getFullYear();
+    const parts = [];
+    if (pub.journalName) parts.push(pub.journalName);
+    parts.push(`(${year})`);
+    const nums = formatNumbers(pub.volume, pub.issue, pub.pages);
+    if (nums) parts.push(nums);
+    return parts.join(' ');
+}
+
+// --- Render list function ---
 function renderList(items, container) {
     container.innerHTML = '';
     if (items.length === 0) {
-        container.innerHTML = '<p style="padding: 1.5rem 0; color: #6c757d;">No publications match your criteria in this category.</p>';
+        container.innerHTML = '<p style="padding: 1.5rem 0; color: #6c757d;">No publications match your criteria.</p>';
         return;
     }
     items.forEach((pub, index) => {
         const item = document.createElement('div');
         item.className = 'publication-item';
-        const year = new Date(pub.publicationDate).getFullYear();
-        const numbers = formatNumbers(pub.volume, pub.issue, pub.pages);
-        const itemNumber = index + 1; // Numbering starts from 1 for each list
+        const metaText = buildMetaString(pub); // Use the new robust function
+        const itemNumber = index + 1;
 
         item.innerHTML = `
           <div class="publication-number">${itemNumber}.</div>
           <div class="publication-content">
-            <p class="publication-meta">${pub.journalName || ''} (${year}) ${numbers}</p>
+            <p class="publication-meta">${metaText}</p>
             <h3 class="publication-title">${pub.title}</h3>
             <p class="publication-authors">${pub.authors}</p>
-            ${pub.link ? `<a href="${pub.link}" target="_blank" rel="noopener noreferrer" class="publication-link">Read Paper &rarr;</a>` : ''}
+            ${pub.link ? `<a href="${pub.link}" ...>Read Paper &rarr;</a>` : ''}
           </div>
         `;
         container.appendChild(item);
     });
 }
-
 // --- Main function to filter, sort, and display publications ---
 function displayPublications() {
     // 1. Get current filter values
