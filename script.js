@@ -78,7 +78,6 @@ async function loadRecentPublications() {
     const container = document.querySelector('#recent-publications .publications-list');
     if (!container) return;
     try {
-        // This query is now more specific to ensure all fields are fetched
         const query = `*[_type == "publication"]{title, authors, publicationDate, journalName, volume, issue, pages, link} | order(publicationDate desc) [0...3]`;
         const publications = await client.fetch(query);
 
@@ -94,13 +93,13 @@ async function loadRecentPublications() {
             if (pag) parts.push(pag);
             return parts.join(', ');
         };
-
+        
         publications.forEach(pub => {
             const item = document.createElement('div');
             item.className = 'publication-item hp-publication-item fade-in-element';
             const year = new Date(pub.publicationDate).getFullYear();
             const numbers = formatNumbers(pub.volume, pub.issue, pub.pages);
-
+            
             item.innerHTML = `
               <p class="publication-meta">${pub.journalName || ''} (${year}) ${numbers}</p>
               <h3 class="publication-title">${pub.title}</h3>
