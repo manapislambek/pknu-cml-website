@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Publications - Construction Materials Laboratory</title>
+  <!-- Make sure to link your actual stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,22 +17,33 @@
   
   <main class="container">
     <section class="publications-section">
-        <div class="tab-buttons">
-            <button class="tab-button active" data-tab="journal">Journal Papers</button>
-            <button class="tab-button" data-tab="conference">Conference Papers</button>
+        
+        <!-- Category Tabs: International / Domestic -->
+        <div class="category-tabs">
+            <button class="category-button active" data-category="international">International</button>
+            <button class="category-button" data-category="korean">Domestic</button>
         </div>
 
+        <!-- Filter Controls -->
         <div class="pub-controls">
-            <div class="search-wrapper">
+            <div class="filter-wrapper">
+                <!-- Dropdown for Publication Type -->
+                <select id="pub-type-select">
+                    <option value="journal" selected>Journal Papers</option>
+                    <option value="conference">Conference Papers</option>
+                </select>
+
+                <!-- Search Bar -->
                 <input type="text" id="pub-search-input" placeholder="Search by title...">
             </div>
+
             <div class="view-options">
+                <!-- Sorting and Rows Per Page Dropdowns -->
                 <select id="pub-sort-order">
-                    <option value="asc">Sort: Oldest First</option>
                     <option value="desc">Sort: Newest First</option>
+                    <option value="asc">Sort: Oldest First</option>
                 </select>
                 <select id="pub-rows-per-page">
-                    <option value="5">5 per page</option>
                     <option value="10" selected>10 per page</option>
                     <option value="20">20 per page</option>
                     <option value="10000">Show All</option>
@@ -39,22 +51,19 @@
             </div>
         </div>
 
-        <div class="tab-content-container">
-            <div id="journal" class="tab-content active">
-                <div class="publications-list"></div>
-                <div class="pagination-controls"></div>
-            </div>
-            <div id="conference" class="tab-content">
-                <div class="publications-list"></div>
-                <div class="pagination-controls"></div>
-            </div>
+        <!-- A single container for the publication list -->
+        <div id="publications-list-container" class="publications-list">
+            <!-- Publication items will be rendered here by the script -->
         </div>
+        
     </section>
   </main>
   
   <footer class="main-footer"></footer>
 
+  <!-- Ensure you have a main-layout.js if it's needed for header/footer -->
   <script src="main-layout.js" defer></script>
+  <!-- The main script for this page -->
   <script type="module" src="publications-script.js"></script>
 </body>
 </html>
