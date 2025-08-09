@@ -27,41 +27,45 @@ function safeYear(dateStr) {
 }
 
 function buildMetaParts(pub) {
-  // Build two clean lines: line1 = authors + (year), line2 = journal + volume/issue/pages
+  // Three stacked lines: 1) Title (handled elsewhere) 2) Authors (Year) 3) Journal + volume/issue/pages
+  // Replace BibTeX double hyphen with en dash for page ranges
+  const pageClean = (pub.pages || '').trim().replace(/--/g, '–');
+
+  const y = safeYear(pub.publicationDate);
+  const yearHtml = y ? `<span class="pub-year">(${y})</span>` : '';
+
   const line1Parts = [];
   if (pub.authors) line1Parts.push(pub.authors);
-  const y = safeYear(pub.publicationDate);
-  if (y) line1Parts.push(`(${y})`);
+  if (yearHtml) line1Parts.push(yearHtml);
   const line1 = line1Parts.join(' ');
 
-  const nums = [pub.volume, pub.issue, pub.pages].map(v => (v || '').trim());
-  const [vol, iss, pgs] = nums;
-  const volPart = vol ? `${vol}` : '';
-  const issPart = iss ? `(${iss})` : '';
-  const pagePart = pgs ? (vol || iss ? `: ${pgs}` : pgs) : '';
-  const numeric = `${volPart}${issPart}${pagePart}`.trim();
+  const vol = (pub.volume || '').trim();
+  const iss = (pub.issue || '').trim();
+  const volIss = vol || iss ? `${vol}${iss ? `(${iss})` : ''}` : '';
+
+  const journalHtml = pub.journalName ? `<em>${pub.journalName}</em>` : '';
+  const numHtml = [volIss, pageClean].filter(Boolean).join(' · '); // nice dot separator
 
   const line2Parts = [];
-  if (pub.journalName) line2Parts.push(pub.journalName);
-  if (numeric) line2Parts.push(numeric);
-  const line2 = line2Parts.join(' ');
+  if (journalHtml) line2Parts.push(journalHtml);
+  if (numHtml) line2Parts.push(numHtml);
+  const line2 = line2Parts.join(' · ');
 
   return { line1, line2 };
 }
 
 function createPubItem(pub) {
-  const linkHtml = pub.link
-    ? `<a href="${pub.link}" target="_blank" rel="noopener noreferrer" class="pub-link">Link</a>`
-    : '';
+  const titleHtml = pub.link
+    ? `<a href="${pub.link}" target="_blank" rel="noopener noreferrer" class="pub-title-link">${pub.title || ''}</a>`
+    : `${pub.title || ''}`;
 
   const meta = buildMetaParts(pub);
 
   return `
     <article class="publication-item">
-      <h3 class="pub-title">${pub.title || ''}</h3>
-      ${meta.line1 ? `<div class=\"pub-line pub-authors\">${meta.line1}</div>` : ''}
-      ${meta.line2 ? `<div class=\"pub-line pub-journal\">${meta.line2}</div>` : ''}
-      ${linkHtml}
+      <h3 class="pub-title">${titleHtml}</h3>
+      ${meta.line1 ? `<div class="pub-line pub-authors">${meta.line1}</div>` : ''}
+      ${meta.line2 ? `<div class="pub-line pub-journal">${meta.line2}</div>` : ''}
     </article>
   `;
 }
