@@ -1588,10 +1588,22 @@ body.home .main-nav {
 }
 
 /* publications.css additions (or inside style.css) */
+.publication-item {
+  display: block;
+}
+.pub-title {
+  margin: 0 0 .25rem;
+  font-weight: 700;
+  font-size: 1.15rem; /* tweak as you like */
+  line-height: 1.3;
+}
+.pub-line { line-height: 1.35; }
+.pub-authors { color: #495057; }
+.pub-journal { color: #495057; }
+.pub-link { display: inline-block; margin-top: .35rem; }
+
+/* Pager styles (unchanged) */
 .pub-pagination { display: flex; gap: .75rem; align-items: center; margin-top: 1rem; }
 .pager-btn { padding: .5rem .75rem; border: 1px solid #ccc; background: #fff; cursor: pointer; }
 .pager-btn[disabled] { opacity: .5; cursor: default; }
 .pub-range { color: #6c757d; margin-bottom: .5rem; }
-.pub-title { margin: 0 0 .25rem; }
-.pub-meta { color: #495057; }
-.pub-link { display: inline-block; margin-top: .25rem; }

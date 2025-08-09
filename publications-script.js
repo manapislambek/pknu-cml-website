@@ -26,40 +26,41 @@ function safeYear(dateStr) {
   return new Date(t).getFullYear();
 }
 
-function buildMetaString(pub) {
-  const parts = [];
-  // Authors
-  if (pub.authors) parts.push(pub.authors);
-
-  // Year (in parentheses)
+function buildMetaParts(pub) {
+  // Build two clean lines: line1 = authors + (year), line2 = journal + volume/issue/pages
+  const line1Parts = [];
+  if (pub.authors) line1Parts.push(pub.authors);
   const y = safeYear(pub.publicationDate);
-  if (y) parts.push(`(${y})`);
+  if (y) line1Parts.push(`(${y})`);
+  const line1 = line1Parts.join(' ');
 
-  // Journal / Conference name
-  if (pub.journalName) parts.push(pub.journalName);
-
-  // Volume / Issue / Pages (formats compactly, skipping empties)
   const nums = [pub.volume, pub.issue, pub.pages].map(v => (v || '').trim());
   const [vol, iss, pgs] = nums;
   const volPart = vol ? `${vol}` : '';
-  const issPart = iss ? (vol ? `(${iss})` : `(${iss})`) : '';
+  const issPart = iss ? `(${iss})` : '';
   const pagePart = pgs ? (vol || iss ? `: ${pgs}` : pgs) : '';
   const numeric = `${volPart}${issPart}${pagePart}`.trim();
-  if (numeric) parts.push(numeric);
 
-  return parts.join(' ');
+  const line2Parts = [];
+  if (pub.journalName) line2Parts.push(pub.journalName);
+  if (numeric) line2Parts.push(numeric);
+  const line2 = line2Parts.join(' ');
+
+  return { line1, line2 };
 }
 
 function createPubItem(pub) {
-  // Title with optional external link
   const linkHtml = pub.link
     ? `<a href="${pub.link}" target="_blank" rel="noopener noreferrer" class="pub-link">Link</a>`
     : '';
 
+  const meta = buildMetaParts(pub);
+
   return `
     <article class="publication-item">
       <h3 class="pub-title">${pub.title || ''}</h3>
-      <div class="pub-meta">${buildMetaString(pub)}</div>
+      ${meta.line1 ? `<div class=\"pub-line pub-authors\">${meta.line1}</div>` : ''}
+      ${meta.line2 ? `<div class=\"pub-line pub-journal\">${meta.line2}</div>` : ''}
       ${linkHtml}
     </article>
   `;
