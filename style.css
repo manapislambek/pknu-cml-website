@@ -1587,7 +1587,13 @@ body.home .main-nav {
     color: #0056b3;
 }
 
-/* publications.css additions (or inside style.css) */
+/* --- Publications: force 3-line stacked layout --- */
+.pub-list .publication-item {
+  display: block !important;           /* kill the old grid */
+  grid-template-columns: unset !important;
+}
+
+/* Card */
 .publication-item {
   background: #fff;
   border: 1px solid #e9ecef;
@@ -1600,22 +1606,43 @@ body.home .main-nav {
   box-shadow: 0 6px 18px rgba(16,24,40,.08);
 }
 
-/* Title line */
-.pub-title { margin: 0 0 .25rem; font-weight: 700; font-size: 1.2rem; line-height: 1.35; color: #1f2937; }
+/* Title (line 1) */
+.pub-title { 
+  margin: 0 0 .25rem; 
+  font-weight: 700; 
+  font-size: 1.2rem; 
+  line-height: 1.35; 
+  color: #111827;
+  display: -webkit-box; 
+  -webkit-line-clamp: 2; 
+  -webkit-box-orient: vertical; 
+  overflow: hidden;
+}
 .pub-title-link { color: inherit; text-decoration: none; }
 .pub-title-link:hover { text-decoration: underline; }
-/* Keep titles tidy if very long */
-.pub-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-/* Meta lines */
+/* Meta (lines 2–3) */
 .pub-line { line-height: 1.45; font-size: .98rem; color: #4b5563; }
-.pub-authors { }
 .pub-journal em { font-style: italic; }
-.pub-year { background: #f1f3f5; color: #374151; border-radius: 999px; padding: 0 .45em; font-size: .88em; margin-left: .5ch; }
+.pub-year { 
+  background: #f1f3f5; 
+  color: #374151; 
+  border-radius: 999px; 
+  padding: 0 .45em; 
+  font-size: .88em; 
+  margin-left: .5ch; 
+}
 
-/* Pager styles */
+/* Pager */
 .pub-pagination { display: flex; gap: .75rem; align-items: center; margin-top: 1rem; }
 .pager-btn { padding: .5rem .75rem; border: 1px solid #d1d5db; background: #fff; border-radius: 8px; cursor: pointer; }
 .pager-btn:hover { box-shadow: 0 1px 6px rgba(0,0,0,.06); }
 .pager-btn[disabled] { opacity: .55; cursor: default; }
 .pub-range { color: #6b7280; margin-bottom: .5rem; }
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+  .publication-item { padding: 14px; }
+  .pub-title { font-size: 1.08rem; -webkit-line-clamp: 3; }
+  .pub-line { font-size: .95rem; }
+}
