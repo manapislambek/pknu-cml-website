@@ -1,134 +1,242 @@
-import { createClient } from 'https://esm.sh/@sanity/client';
+// publications-script.js — Full, hardened version
+// - Deep-link aware: respects #journal / #conference in the URL
+// - "Undefined"-proof metadata and date handling
+// - Stable ESM version for @sanity/client
+
+import { createClient } from 'https://esm.sh/@sanity/client@6.15.10';
 
 // --- Sanity Client Setup ---
 const client = createClient({
-  projectId: 'fd0kvo22', // Replace with your actual project ID
+  projectId: 'fd0kvo22',
   dataset: 'production',
-  useCdn: true, // `false` if you want to ensure fresh data
-  apiVersion: '2024-07-21',
+  useCdn: true,              // set to false if you need the freshest data always
+  apiVersion: '2024-07-21',  // keep in sync with your Studio
 });
 
 // --- Global State ---
 let allPublications = [];
-let activeCategory = 'international'; // Default category
+let activeCategory = 'international'; // Default; toggled by the category buttons if present
+let currentPage = 1;
 
-// --- Helper: Format Volume, Issue, and Pages ---
-function formatNumbers(vol, iss, pag) {
-    let parts = [];
-    if (vol && iss) parts.push(`${vol}(${iss})`);
-    else if (vol) parts.push(vol);
-    if (pag) parts.push(pag);
-    return parts.join(', ');
+// --- Helpers ---
+function safeYear(dateStr) {
+  if (!dateStr) return '';
+  const t = Date.parse(dateStr);
+  if (Number.isNaN(t)) return '';
+  return new Date(t).getFullYear();
 }
 
-// --- Helper: Build the metadata string, guarding against missing fields ---
 function buildMetaString(pub) {
-    const year = new Date(pub.publicationDate).getFullYear();
-    const parts = [];
-    // This check prevents "undefined" from showing
-    if (pub.journalName) {
-        parts.push(pub.journalName);
-    }
-    parts.push(`(${year})`);
-    const nums = formatNumbers(pub.volume, pub.issue, pub.pages);
-    if (nums) {
-        parts.push(nums);
-    }
-    return parts.join(' ');
+  const parts = [];
+  // Authors
+  if (pub.authors) parts.push(pub.authors);
+
+  // Year (in parentheses)
+  const y = safeYear(pub.publicationDate);
+  if (y) parts.push(`(${y})`);
+
+  // Journal / Conference name
+  if (pub.journalName) parts.push(pub.journalName);
+
+  // Volume / Issue / Pages (formats compactly, skipping empties)
+  const nums = [pub.volume, pub.issue, pub.pages].map(v => (v || '').trim());
+  const [vol, iss, pgs] = nums;
+  const volPart = vol ? `${vol}` : '';
+  const issPart = iss ? (vol ? `(${iss})` : `(${iss})`) : '';
+  const pagePart = pgs ? (vol || iss ? `: ${pgs}` : pgs) : '';
+  const numeric = `${volPart}${issPart}${pagePart}`.trim();
+  if (numeric) parts.push(numeric);
+
+  return parts.join(' ');
 }
 
-// --- Helper: Render a list of items into a container ---
-function renderList(items, container) {
-    container.innerHTML = ''; // Clear previous results
-    if (items.length === 0) {
-        container.innerHTML = '<p style="padding: 1.5rem 0; color: #6c757d;">No publications match your criteria.</p>';
-        return;
-    }
-    items.forEach((pub, index) => {
-        const item = document.createElement('div');
-        item.className = 'publication-item';
-        const metaText = buildMetaString(pub);
-        const itemNumber = index + 1;
+function createPubItem(pub) {
+  // Title with optional external link
+  const linkHtml = pub.link
+    ? `<a href="${pub.link}" target="_blank" rel="noopener noreferrer" class="pub-link">Link</a>`
+    : '';
 
-        item.innerHTML = `
-          <div class="publication-number">${itemNumber}.</div>
-          <div class="publication-content">
-            <p class="publication-meta">${metaText}</p>
-            <h3 class="publication-title">${pub.title}</h3>
-            <p class="publication-authors">${pub.authors}</p>
-            ${pub.link ? `<a href="${pub.link}" target="_blank" rel="noopener noreferrer" class="read-paper-link">Read Paper &rarr;</a>` : ''}
-          </div>
-        `;
-        container.appendChild(item);
-    });
+  return `
+    <article class="publication-item">
+      <h3 class="pub-title">${pub.title || ''}</h3>
+      <div class="pub-meta">${buildMetaString(pub)}</div>
+      ${linkHtml}
+    </article>
+  `;
 }
 
-// --- Main function to filter, sort, and display publications ---
+function renderList(items, container, page, perPage) {
+  if (!container) return;
+  container.innerHTML = '';
+
+  if (items.length === 0) {
+    container.innerHTML = '<p style="padding: 1.5rem 0; color: #6c757d;">No publications match your criteria.</p>';
+    return;
+  }
+
+  // Pagination slice
+  const showAll = !perPage || perPage >= 10000;
+  const total = items.length;
+  const totalPages = showAll ? 1 : Math.max(1, Math.ceil(total / perPage));
+  const curr = showAll ? 1 : Math.min(page, totalPages);
+  const startIdx = showAll ? 0 : (curr - 1) * perPage;
+  const endIdx = showAll ? total : Math.min(total, startIdx + perPage);
+  const pageItems = items.slice(startIdx, endIdx);
+
+  // Items
+  const listHtml = pageItems.map(createPubItem).join('\n');
+
+  // Pager (Prev / Next + range)
+  const rangeText = showAll
+    ? `Showing all ${total}`
+    : `Showing ${startIdx + 1}–${endIdx} of ${total}`;
+
+  const pagerHtml = totalPages > 1 && !showAll ? `
+    <nav class="pub-pagination" aria-label="Publications pagination">
+      <button class="pager-btn" data-page="prev" ${curr === 1 ? 'disabled' : ''}>Prev</button>
+      <span class="pager-status">Page ${curr} of ${totalPages}</span>
+      <button class="pager-btn" data-page="next" ${curr === totalPages ? 'disabled' : ''}>Next</button>
+    </nav>
+  ` : '';
+
+  container.innerHTML = `
+    <div class="pub-range">${rangeText}</div>
+    <div class="pub-list">${listHtml}</div>
+    ${pagerHtml}
+  `;
+
+  if (pagerHtml) {
+    const prev = container.querySelector('[data-page="prev"]');
+    const next = container.querySelector('[data-page="next"]');
+    prev && prev.addEventListener('click', () => { currentPage = Math.max(1, currentPage - 1); displayPublications(); });
+    next && next.addEventListener('click', () => { currentPage = currentPage + 1; displayPublications(); });
+  }
+}
+
+function normalizedIncludes(haystack, needle) {
+  return (haystack || '').toLowerCase().includes((needle || '').toLowerCase());
+}
+
+function sortByDate(a, b, order) {
+  const da = a.publicationDate ? Date.parse(a.publicationDate) : 0;
+  const db = b.publicationDate ? Date.parse(b.publicationDate) : 0;
+  return order === 'asc' ? da - db : db - da;
+}
+
+// --- Core render ---
 function displayPublications() {
-    // 1. Get current values from all UI controls
-    const activeType = document.getElementById('pub-type-select').value;
-    const searchTerm = document.getElementById('pub-search-input').value.toLowerCase();
-    const sortOrder = document.getElementById('pub-sort-order').value;
-    const rowsPerPage = parseInt(document.getElementById('pub-rows-per-page').value, 10);
+  const listEl = document.getElementById('publications-list-container');
+  const typeSel = document.getElementById('pub-type-select');
+  const searchInput = document.getElementById('pub-search-input');
+  const sortSel = document.getElementById('pub-sort-order');
+  const perPageSel = document.getElementById('pub-rows-per-page');
 
-    // 2. Filter the data in sequence
-    let filteredData = allPublications
-        .filter(p => p.category === activeCategory) // Filter by active tab (International/Domestic)
-        .filter(p => p.type === activeType);      // Filter by dropdown (Journal/Conference)
+  const type = typeSel ? typeSel.value : 'journal';
+  const q = searchInput ? searchInput.value.trim() : '';
+  const order = sortSel ? sortSel.value : 'desc';
+  const perPage = perPageSel ? parseInt(perPageSel.value, 10) : 10;
 
-    // Apply search term if it exists
-    if (searchTerm) {
-        filteredData = filteredData.filter(p => p.title.toLowerCase().includes(searchTerm));
-    }
+  // Keep hash synced with type select
+  const hash = `#${type}`;
+  if (window.location.hash !== hash) {
+    // Avoid pushing a new entry for every keystroke; only set on type change
+    // (This function can be called a lot; this minor check is enough.)
+    history.replaceState(null, '', hash);
+  }
 
-    // 3. Apply sorting
-    filteredData.sort((a, b) => {
-        const dateA = new Date(a.publicationDate);
-        const dateB = new Date(b.publicationDate);
-        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
-    });
+  // Filter
+  let data = allPublications.filter(p => p.category === activeCategory && p.type === type);
+  if (q) data = data.filter(p => normalizedIncludes(p.title, q));
 
-    // 4. Apply pagination
-    const paginatedData = filteredData.slice(0, rowsPerPage);
+  // Sort
+  data.sort((a, b) => sortByDate(a, b, order));
 
-    // 5. Render the final list to the single container
-    const container = document.getElementById('publications-list-container');
-    renderList(paginatedData, container);
+  // Reset page if filters changed drastically (basic heuristic)
+  if (currentPage > 1) {
+    const totalPages = perPage >= 10000 ? 1 : Math.max(1, Math.ceil(data.length / perPage));
+    if (currentPage > totalPages) currentPage = totalPages;
+  }
+
+  renderList(data, listEl, currentPage, perPage);
 }
 
-// --- Function to initially load all data from Sanity ---
+// --- Data load ---
 async function loadAllPublications() {
-    try {
-        // GROQ query to fetch all necessary fields
-        const query = `*[_type == "publication"]{title, authors, category, type, journalName, publicationDate, volume, issue, pages, link}`;
-        allPublications = await client.fetch(query);
-        displayPublications(); // Perform the initial render
-    } catch (error) {
-        console.error("Error fetching publications:", error);
-        const container = document.getElementById('publications-list-container');
-        container.innerHTML = '<p style="color: red;">Failed to load publications. Please try again later.</p>';
-    }
+  // Fetch *all* publications once; UI does the filtering/paging client-side
+  const query = `*[_type == "publication"] | order(publicationDate desc) {
+    _id,
+    title,
+    authors,
+    category,
+    type,
+    publicationDate,
+    journalName,
+    volume,
+    issue,
+    pages,
+    link
+  }`;
+
+  try {
+    const data = await client.fetch(query);
+    allPublications = Array.isArray(data) ? data : [];
+    displayPublications();
+  } catch (err) {
+    const listEl = document.getElementById('publications-list-container');
+    console.error('Failed to load publications', err);
+    if (listEl) listEl.innerHTML = '<p style="color:red; padding:1rem 0;">Failed to load publications.</p>';
+  }
 }
 
-// --- Event Listeners and Page Initialization ---
+// --- Boot ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Listener for Category Tabs (International/Domestic)
-    const categoryButtons = document.querySelectorAll('.category-button');
-    categoryButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            activeCategory = button.dataset.category; // Update state
-            categoryButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            displayPublications(); // Re-render the list with the new category
-        });
+  // 1) Category buttons (International / Korean), optional in DOM
+  const categoryButtons = document.querySelectorAll('[data-category]');
+  categoryButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const next = btn.getAttribute('data-category');
+      if (next && (next === 'international' || next === 'korean')) {
+        activeCategory = next;
+        // Visual state (if you use an .active class)
+        categoryButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentPage = 1;
+        displayPublications();
+      }
     });
+  });
 
-    // Add listeners that trigger a re-render for all other controls
-    document.getElementById('pub-type-select').addEventListener('change', displayPublications);
-    document.getElementById('pub-search-input').addEventListener('input', displayPublications);
-    document.getElementById('pub-sort-order').addEventListener('change', displayPublications);
-    document.getElementById('pub-rows-per-page').addEventListener('change', displayPublications);
-    
-    // Initial data load when the page is ready
-    loadAllPublications();
+  // 2) Initialize type from URL hash (#journal / #conference)
+  const initialHash = (window.location.hash || '').toLowerCase();
+  if (initialHash === '#journal' || initialHash === '#conference') {
+    const typeSel = document.getElementById('pub-type-select');
+    if (typeSel) typeSel.value = initialHash.slice(1);
+  }
+
+  // 3) Keep in sync on manual hash changes
+  window.addEventListener('hashchange', () => {
+    const h = (window.location.hash || '').toLowerCase();
+    if (h === '#journal' || h === '#conference') {
+      const typeSel = document.getElementById('pub-type-select');
+      if (typeSel && typeSel.value !== h.slice(1)) {
+        typeSel.value = h.slice(1);
+        currentPage = 1;
+        displayPublications();
+      }
+    }
+  });
+
+  // 4) UI listeners
+  const typeSel = document.getElementById('pub-type-select');
+  const searchInput = document.getElementById('pub-search-input');
+  const sortSel = document.getElementById('pub-sort-order');
+  const perPageSel = document.getElementById('pub-rows-per-page');
+
+  typeSel && typeSel.addEventListener('change', () => { currentPage = 1; displayPublications(); });
+  searchInput && searchInput.addEventListener('input', () => { currentPage = 1; displayPublications(); });
+  sortSel && sortSel.addEventListener('change', () => { currentPage = 1; displayPublications(); });
+  perPageSel && perPageSel.addEventListener('change', () => { currentPage = 1; displayPublications(); });
+
+  // 5) Initial load
+  loadAllPublications();
 });

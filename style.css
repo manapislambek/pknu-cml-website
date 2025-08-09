@@ -1586,3 +1586,12 @@ body.home .main-nav {
 .read-paper-link:hover {
     color: #0056b3;
 }
+
+/* publications.css additions (or inside style.css) */
+.pub-pagination { display: flex; gap: .75rem; align-items: center; margin-top: 1rem; }
+.pager-btn { padding: .5rem .75rem; border: 1px solid #ccc; background: #fff; cursor: pointer; }
+.pager-btn[disabled] { opacity: .5; cursor: default; }
+.pub-range { color: #6c757d; margin-bottom: .5rem; }
+.pub-title { margin: 0 0 .25rem; }
+.pub-meta { color: #495057; }
+.pub-link { display: inline-block; margin-top: .25rem; }
