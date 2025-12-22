@@ -1678,3 +1678,35 @@ body.home .main-nav {
   .home-pubs .home-pub-title { font-size: 1.02rem; -webkit-line-clamp: 3; }
   .home-pubs .home-pub-journal-row { gap: .4rem; }
 }
+
+/* === Homepage: Recent Publications — three-line stacked === */
+.home-pubs .home-pub-card { 
+  display: block !important; /* ensure no grid from older styles */
+  background: #fff; border: 1px solid #e9ecef; border-radius: 14px;
+  padding: 14px 16px; box-shadow: 0 1px 2px rgba(16,24,40,.04);
+  transition: box-shadow .18s ease, transform .18s ease;
+}
+.home-pubs .home-pub-card:hover { box-shadow: 0 6px 18px rgba(16,24,40,.08); }
+
+/* Line 1 — Title */
+.home-pubs .home-pub-title { margin: 0 0 .25rem; font-weight: 800; font-size: 1.08rem; line-height: 1.35; color: #111827; }
+.home-pubs .home-pub-title a { color: inherit; text-decoration: none; }
+.home-pubs .home-pub-title a:hover { text-decoration: underline; }
+.home-pubs .home-pub-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Line 2 — Authors (Year) */
+.home-pubs .home-pub-authors { color: #6b7280; font-size: .95rem; line-height: 1.35; }
+.home-pubs .home-pub-year { background: #f1f3f5; color: #374151; border-radius: 999px; padding: 0 .45em; font-size: .88em; margin-left: .5ch; }
+
+/* Line 3 — Journal · vol(issue) · pages  +  CTA at right */
+.home-pubs .home-pub-journal-row { display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap; margin-top: .15rem; }
+.home-pubs .home-pub-journal { color: #4b5563; font-size: .95rem; line-height: 1.35; }
+.home-pubs .home-pub-journal em { font-style: italic; }
+.home-pubs .home-pub-cta { margin-left: auto; }
+.home-pubs .home-pub-cta a { display: inline-flex; align-items: center; gap: .4rem; border: 1px solid #d1d5db; border-radius: 999px; padding: .38rem .65rem; font-weight: 600; color: #1f2937; text-decoration: none; background: #fff; }
+.home-pubs .home-pub-cta a:hover { box-shadow: 0 1px 6px rgba(0,0,0,.06); }
+
+@media (max-width: 640px) {
+  .home-pubs .home-pub-title { font-size: 1.02rem; -webkit-line-clamp: 3; }
+  .home-pubs .home-pub-journal-row { gap: .4rem; }
+}
