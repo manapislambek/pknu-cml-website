@@ -1,26 +1,26 @@
-// members-script.js — robust drop-in with CDN-off (temporarily), field fallbacks, and a debug log
+// members-script.js — debug build (CDN off + console log)
 
 import { createClient } from 'https://esm.sh/@sanity/client';
 
-// ----- Sanity client -----
-// Turn useCdn OFF while testing to avoid stale cache; switch back to true after you see links appear.
+// --- Sanity client ---
+// Keep useCdn:false while testing; switch back to true after you see updates on the site.
 const client = createClient({
   projectId: 'fd0kvo22',
   dataset: 'production',
-  useCdn: false,            // <— TEMPORARY for debugging; set back to true when done
+  useCdn: false, // <— DEBUG: avoid cache
   apiVersion: '2024-07-21',
 });
 
-// ----- Tiny DOM helpers -----
-const $ = (sel) => document.querySelector(sel);
+// --- Tiny DOM helpers ---
+const $  = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
-// ----- Formatting helpers -----
+// --- Formatting helpers ---
 function formatPeriod(period) {
   if (!period) return '';
   const toYear = (d) => (d ? new Date(d).getFullYear() : null);
   const start = toYear(period.startDate);
-  const end = toYear(period.endDate);
+  const end   = toYear(period.endDate);
   if (!start && !end) return '';
   return `${start ?? ''} – ${end ?? 'Present'}`;
 }
@@ -34,13 +34,12 @@ function isAlumniDoc(m) {
 }
 
 function roleBadge(role) {
-  if (!role) return '';
-  return `<span class="member-badge" aria-label="role">${role}</span>`;
+  return role ? `<span class="member-badge" aria-label="role">${role}</span>` : '';
 }
 
-// robust field fallback helper
-function pick(...candidates) {
-  for (const v of candidates) if (v != null && v !== '') return v;
+// pick first defined value
+function pick(...vals) {
+  for (const v of vals) if (v != null && v !== '') return v;
   return undefined;
 }
 
@@ -57,11 +56,8 @@ function thesisList(degreeHistory) {
     const head = [deg?.degree, deg?.institution, deg?.year].filter(Boolean).join(' • ');
     if (Array.isArray(deg?.theses) && deg.theses.length) {
       deg.theses.forEach((t) => {
-        const url = t?.link;
-        const tail = url ? ` <a class="thesis-link" href="${url}" target="_blank" rel="noopener">(Link)</a>` : '';
-        items.push(
-          `<li><strong>${t?.title ?? 'Thesis'}</strong>${head ? ` — <span class="thesis-meta">${head}</span>` : ''}${tail}</li>`
-        );
+        const tail = t?.link ? ` <a class="thesis-link" href="${t.link}" target="_blank" rel="noopener">(Link)</a>` : '';
+        items.push(`<li><strong>${t?.title ?? 'Thesis'}</strong>${head ? ` — <span class="thesis-meta">${head}</span>` : ''}${tail}</li>`);
       });
     } else if (head) {
       items.push(`<li><span class="thesis-meta">${head}</span></li>`);
@@ -70,32 +66,28 @@ function thesisList(degreeHistory) {
   return items.length ? `<ul class="thesis-list">${items.join('')}</ul>` : '';
 }
 
-// ----- Card template -----
+// --- Card template ---
 function memberCard(m) {
   const photoUrl = m?.photo?.asset?.url;
-  const deptLine = m?.department ? `<div class="member-dept">${m.department}</div>` : '';
+  const deptLine = m?.department  ? `<div class="member-dept">${m.department}</div>`   : '';
   const areaLine = m?.researchArea ? `<div class="member-area">${m.researchArea}</div>` : '';
-  const dates = formatPeriod(m?.period);
+  const dates    = formatPeriod(m?.period);
   const dateLine = dates ? `<div class="member-period">${dates}</div>` : '';
 
-  // fallbacks if field names differ
-  const scholarUrl  = pick(m?.profiles?.googleScholarUrl, m?.googleScholarUrl, m?.scholarUrl);
-  const websiteUrl  = pick(m?.profiles?.personalPageUrl, m?.personalPageUrl, m?.website, m?.websiteUrl);
+  // robust fallbacks in case field names differ
+  const scholarUrl = pick(m?.profiles?.googleScholarUrl, m?.googleScholarUrl, m?.scholarUrl);
+  const websiteUrl = pick(m?.profiles?.personalPageUrl, m?.personalPageUrl, m?.website, m?.websiteUrl);
 
   const scholar  = linkIcon(scholarUrl, 'Google Scholar', 'scholar');
   const personal = linkIcon(websiteUrl, 'Website', 'link');
   const email    = m?.email ? `<a class="member-email" href="mailto:${m.email}">✉︎ Email</a>` : '';
 
-  const theses = thesisList(m?.degreeHistory);
+  const theses       = thesisList(m?.degreeHistory);
   const legacyThesis = m?.thesisTitle ? `<div class="legacy-thesis">Thesis: ${m.thesisTitle}</div>` : '';
 
   return `
     <article class="member-card">
-      ${
-        photoUrl
-          ? `<div class="member-photo-wrap"><img src="${photoUrl}" alt="${m.name}" class="member-photo" loading="lazy"></div>`
-          : `<div class="member-photo-wrap"></div>`
-      }
+      ${photoUrl ? `<div class="member-photo-wrap"><img src="${photoUrl}" alt="${m.name}" class="member-photo" loading="lazy"></div>` : `<div class="member-photo-wrap"></div>`}
       <div class="member-info">
         <h3 class="member-name">${m.name} ${roleBadge(m.role)}</h3>
         ${deptLine}
@@ -114,14 +106,14 @@ function injectCards(container, list) {
     container.innerHTML = '<p class="empty-note">No members to display.</p>';
     return;
   }
-  const grid = container.querySelector?.('.team-grid') || container;
+  const grid = container.querySelector?.('.team-grid') || container; // professor has no .team-grid
   grid.innerHTML = list.map(memberCard).join('');
 }
 
-// ----- Tabs -----
+// --- Tabs ---
 function setupTabs() {
   const buttons = $$('.tab-button');
-  const tabs = $$('.tab-content');
+  const tabs    = $$('.tab-content');
   if (!buttons.length || !tabs.length) return;
 
   const showTab = (id) => {
@@ -140,7 +132,7 @@ function setupTabs() {
   });
 }
 
-// ----- Fetch + render -----
+// --- Fetch + render ---
 async function loadMembers() {
   const query = `*[_type == "teamMember"] | order(order asc, name asc){
     _id,
@@ -168,12 +160,12 @@ async function loadMembers() {
     return;
   }
 
-  // Debug: confirm we actually have profiles/period for at least one member
+  // Debug log so you can verify fields in the browser console
   const sample = members.find(x => x?.profiles || x?.period || x?.degreeHistory) || members[0];
   console.log('Members sample (debug):', sample);
 
-  const alumni   = members.filter(isAlumniDoc);
-  const current  = members.filter((m) => !isAlumniDoc(m));
+  const alumni  = members.filter(isAlumniDoc);
+  const current = members.filter((m) => !isAlumniDoc(m));
 
   const professors = current.filter((m) => /Professor/i.test(m.role));
   const postdocs   = current.filter((m) => m.role === 'Postdoctoral Researcher' || /Postdoc/i.test(m.role));
@@ -181,20 +173,21 @@ async function loadMembers() {
   const masters    = current.filter((m) => m.role === 'Master Student');
   const undergrads = current.filter((m) => m.role === 'Undergraduate Student');
 
-  injectCards($('#professor-section'),        professors);
-  injectCards($('#postdocs-section'),         postdocs);
-  injectCards($('#phd-section'),              phd);
-  injectCards($('#masters-section'),          masters);
-  injectCards($('#undergraduate-section'),    undergrads);
-  injectCards($('#alumni-section'),           alumni);
+  injectCards($('#professor-section'),     professors);
+  injectCards($('#postdocs-section'),      postdocs);
+  injectCards($('#phd-section'),           phd);
+  injectCards($('#masters-section'),       masters);
+  injectCards($('#undergraduate-section'), undergrads);
+  injectCards($('#alumni-section'),        alumni);
 
+  // hide empty researcher subsections
   [$('#postdocs-section'), $('#phd-section'), $('#masters-section'), $('#undergraduate-section')].forEach((sec) => {
     const grid = sec?.querySelector('.team-grid');
     if (grid && grid.children.length === 0) sec.style.display = 'none';
   });
 }
 
-// ----- Init -----
+// --- Init ---
 function initMembersPage() {
   setupTabs();
   loadMembers();
