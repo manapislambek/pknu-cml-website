@@ -1,120 +1,196 @@
-import { createClient } from 'https://esm.sh/@sanity/client';
-import imageUrlBuilder from 'https://esm.sh/@sanity/image-url';
-import { toHTML } from 'https://esm.sh/@portabletext/to-html';
-import { initializeAnimations } from './animations.js';
+// members-script.js — FULL DROP-IN matching your HTML & teamMember schema
 
-// --- Sanity Client & Helpers ---
+import { createClient } from 'https://esm.sh/@sanity/client';
+
+// ----- Sanity client -----
 const client = createClient({
   projectId: 'fd0kvo22',
   dataset: 'production',
   useCdn: true,
   apiVersion: '2024-07-21',
 });
-const builder = imageUrlBuilder(client);
-function urlFor(source) { return builder.image(source); }
 
-// --- Main Data Loading Function ---
-async function loadTeamMembers() {
-    const professorContainer = document.querySelector('#professor-section');
-    const postdocsContainer = document.querySelector('#postdocs-section .team-grid');
-    const phdContainer = document.querySelector('#phd-section .team-grid');
-    const mastersContainer = document.querySelector('#masters-section .team-grid');
-    const undergradContainer = document.querySelector('#undergraduate-section .team-grid');
-    const alumniContainer = document.querySelector('#alumni-section .team-grid');
+// ----- Tiny DOM helpers -----
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
-    try {
-        const query = `*[_type == "teamMember"] | order(order asc)`;
-        const members = await client.fetch(query);
+// ----- Formatting helpers -----
+function formatPeriod(period) {
+  if (!period) return '';
+  const toYear = (d) => (d ? new Date(d).getFullYear() : null);
+  const start = toYear(period.startDate);
+  const end = toYear(period.endDate);
+  if (!start && !end) return '';
+  return `${start ?? ''} – ${end ?? 'Present'}`;
+}
 
-        // Clear all containers
-        [professorContainer, postdocsContainer, phdContainer, mastersContainer, undergradContainer, alumniContainer].forEach(c => {
-            if (c) c.innerHTML = '';
-        });
+function isAlumniDoc(m) {
+  return Boolean(
+    m?.isAlumni === true ||
+    (typeof m?.role === 'string' && m.role.trim() === 'Alumni') ||
+    m?.period?.endDate
+  );
+}
 
-        if (members.length === 0) { return; }
+function roleBadge(role) {
+  if (!role) return '';
+  return `<span class="member-badge" aria-label="role">${role}</span>`;
+}
 
-        members.forEach(member => {
-            const memberCard = document.createElement('div');
-            memberCard.className = 'member-card';
-            const imageUrl = member.photo ? urlFor(member.photo).width(200).height(200).url() : 'https://placehold.co/200x200/e9ecef/333?text=Photo';
-            
-            let detailsHTML = '';
-            if (member.role?.toLowerCase().includes('professor') && member.details) {
-                detailsHTML = toHTML(member.details);
-            } else if (member.department || member.researchArea || member.thesisTitle) {
-                detailsHTML = `<div class="student-details">${member.department ? `<p><strong>Department:</strong> ${member.department}</p>` : ''}${member.researchArea ? `<p><strong>Research Area:</strong> ${member.researchArea}</p>` : ''}${member.thesisTitle ? `<p><strong>Thesis:</strong> ${member.thesisTitle}</p>` : ''}</div>`;
-            }
+function linkIcon(href, label, kind) {
+  if (!href) return '';
+  const icon = kind === 'scholar' ? '📚' : '↗';
+  return `<a class="member-link" href="${href}" target="_blank" rel="noopener noreferrer" aria-label="${label}">${icon}</a>`;
+}
 
-            memberCard.innerHTML = `<div class="member-summary"><img src="${imageUrl}" alt="Photo of ${member.name}" class="member-photo"><div class="member-info"><h3 class="member-name">${member.name}</h3><p class="member-role">${member.role}</p>${member.email ? `<a href="mailto:${member.email}" class="member-email">${member.email}</a>` : ''}</div></div><div class="member-details-content portable-text-content">${detailsHTML}</div><button class="expand-btn">Read More</button>`;
-            
-            if (member.isAlumni) {
-                if(alumniContainer) alumniContainer.appendChild(memberCard);
-            } else if (member.role?.toLowerCase().includes('professor')) {
-                if(professorContainer) professorContainer.appendChild(memberCard);
-                memberCard.classList.add('professor-card');
-            } else if (member.role?.toLowerCase().includes('postdoc')) {
-                if(postdocsContainer) postdocsContainer.appendChild(memberCard);
-            } else if (member.role?.toLowerCase().includes('ph.d')) {
-                if(phdContainer) phdContainer.appendChild(memberCard);
-            } else if (member.role?.toLowerCase().includes('master')) {
-                if(mastersContainer) mastersContainer.appendChild(memberCard);
-            } else if (member.role?.toLowerCase().includes('undergraduate')) {
-                if(undergradContainer) undergradContainer.appendChild(memberCard);
-            }
-        });
-
-        // Hide any sections that are still empty
-        [postdocsContainer, phdContainer, mastersContainer, undergradContainer, alumniContainer].forEach(container => {
-            if (container && container.children.length === 0) {
-                container.parentElement.style.display = 'none';
-            }
-        });
-
-        document.querySelectorAll('.expand-btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const card = e.target.closest('.member-card');
-                card.classList.toggle('expanded');
-                e.target.textContent = card.classList.contains('expanded') ? 'Show Less' : 'Read More';
-            });
-        });
-    } catch (error) {
-        console.error('Error fetching team members:', error);
+function thesisList(degreeHistory) {
+  if (!Array.isArray(degreeHistory) || !degreeHistory.length) return '';
+  const items = [];
+  degreeHistory.forEach((deg) => {
+    const head = [deg?.degree, deg?.institution, deg?.year].filter(Boolean).join(' • ');
+    if (Array.isArray(deg?.theses) && deg.theses.length) {
+      deg.theses.forEach((t) => {
+        const url = t?.link;
+        const tail = url ? ` <a class="thesis-link" href="${url}" target="_blank" rel="noopener">(Link)</a>` : '';
+        items.push(
+          `<li><strong>${t?.title ?? 'Thesis'}</strong>${head ? ` — <span class="thesis-meta">${head}</span>` : ''}${tail}</li>`
+        );
+      });
+    } else if (head) {
+      items.push(`<li><span class="thesis-meta">${head}</span></li>`);
     }
+  });
+  return items.length ? `<ul class="thesis-list">${items.join('')}</ul>` : '';
 }
 
-// --- Page Initialization & Tab Controls ---
+// ----- Card template -----
+function memberCard(m) {
+  const photoUrl = m?.photo?.asset?.url; // we project asset->url in GROQ
+  const deptLine = m?.department ? `<div class="member-dept">${m.department}</div>` : '';
+  const areaLine = m?.researchArea ? `<div class="member-area">${m.researchArea}</div>` : '';
+  const dates = formatPeriod(m?.period);
+  const dateLine = dates ? `<div class="member-period">${dates}</div>` : '';
 
-function handleTabSwitch() {
-    const hash = window.location.hash;
-    let targetTab = 'professor'; // Default tab
-    if (hash === '#students') {
-        targetTab = 'students';
-    } else if (hash === '#alumni') {
-        targetTab = 'alumni';
+  const scholar = linkIcon(m?.profiles?.googleScholarUrl, 'Google Scholar', 'scholar');
+  const personal = linkIcon(m?.profiles?.personalPageUrl, 'Personal page', 'link');
+  const email = m?.email ? `<a class="member-email" href="mailto:${m.email}">✉︎</a>` : '';
+
+  const theses = thesisList(m?.degreeHistory);
+  const legacyThesis = m?.thesisTitle ? `<div class="legacy-thesis">Thesis: ${m.thesisTitle}</div>` : '';
+
+  return `
+    <article class="member-card">
+      ${
+        photoUrl
+          ? `<div class="member-photo-wrap"><img src="${photoUrl}" alt="${m.name}" class="member-photo" loading="lazy"></div>`
+          : `<div class="member-photo-wrap"></div>`
+      }
+      <div class="member-info">
+        <h3 class="member-name">${m.name} ${roleBadge(m.role)}</h3>
+        ${deptLine}
+        ${areaLine}
+        ${dateLine}
+        <div class="member-links">${scholar}${personal}${email}</div>
+        ${theses || legacyThesis}
+      </div>
+    </article>
+  `;
+}
+
+function injectCards(container, list) {
+  if (!container) return;
+  if (!list || list.length === 0) {
+    container.innerHTML = '<p class="empty-note">No members to display.</p>';
+    return;
+  }
+  // honor your HTML: sections under “students” have a .team-grid; professor section does not
+  const grid = container.querySelector?.('.team-grid') || container;
+  grid.innerHTML = list.map(memberCard).join('');
+}
+
+// ----- Tabs -----
+function setupTabs() {
+  const buttons = $$('.tab-button');
+  const tabs = $$('.tab-content');
+  if (!buttons.length || !tabs.length) return;
+
+  const showTab = (id) => {
+    tabs.forEach((t) => t.classList.toggle('active', t.id === id));
+    buttons.forEach((b) => b.classList.toggle('active', b.dataset.tab === id));
+  };
+
+  buttons.forEach((btn) => btn.addEventListener('click', () => showTab(btn.dataset.tab)));
+
+  // default / deep link based on hash
+  const hash = window.location.hash?.replace('#', '') || 'professor';
+  showTab(['professor', 'students', 'alumni'].includes(hash) ? hash : 'professor');
+
+  window.addEventListener('hashchange', () => {
+    const newHash = window.location.hash?.replace('#', '') || 'professor';
+    showTab(['professor', 'students', 'alumni'].includes(newHash) ? newHash : 'professor');
+  });
+}
+
+// ----- Fetch + render -----
+async function loadMembers() {
+  const query = `*[_type == "teamMember"] | order(order asc, name asc){
+    _id,
+    name,
+    role,
+    email,
+    photo{asset->{url}},
+    department,
+    researchArea,
+    thesisTitle,
+    isAlumni,
+    profiles{googleScholarUrl, personalPageUrl},
+    period{startDate, endDate},
+    degreeHistory[]{
+      degree, institution, year,
+      theses[]{ title, link }
     }
-    const targetButton = document.querySelector(`.tab-button[data-tab="${targetTab}"]`);
-    if (targetButton) targetButton.click();
+  }`;
+
+  let members = [];
+  try {
+    members = await client.fetch(query);
+  } catch (e) {
+    console.error('Sanity fetch error:', e);
+    return;
+  }
+
+  // Split into Alumni vs Current
+  const alumni = members.filter(isAlumniDoc);
+  const current = members.filter((m) => !isAlumniDoc(m));
+
+  // Buckets for Current tab
+  const professors = current.filter((m) => /Professor/i.test(m.role));
+  const postdocs = current.filter((m) => m.role === 'Postdoctoral Researcher' || /Postdoc/i.test(m.role));
+  const phd = current.filter((m) => m.role === 'Ph.D. Student');
+  const masters = current.filter((m) => m.role === 'Master Student');
+  const undergrads = current.filter((m) => m.role === 'Undergraduate Student');
+
+  // Inject into DOM per your structure
+  injectCards($('#professor-section'), professors);
+  injectCards($('#postdocs-section'), postdocs);
+  injectCards($('#phd-section'), phd);
+  injectCards($('#masters-section'), masters);
+  injectCards($('#undergraduate-section'), undergrads);
+  injectCards($('#alumni-section'), alumni);
+
+  // Hide any “students” subsections that ended up empty
+  [$('#postdocs-section'), $('#phd-section'), $('#masters-section'), $('#undergraduate-section')].forEach((sec) => {
+    const grid = sec?.querySelector('.team-grid');
+    if (grid && grid.children.length === 0) {
+      sec.style.display = 'none';
+    }
+  });
 }
 
-async function initMembersPage() {
-    const tabButtons = document.querySelectorAll('.tab-button');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const tabId = button.dataset.tab;
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
-            button.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
-        });
-    });
-
-    window.addEventListener('hashchange', handleTabSwitch);
-    handleTabSwitch(); // Run on initial load
-
-    await loadTeamMembers();
-    initializeAnimations();
+// ----- Init -----
+function initMembersPage() {
+  setupTabs();
+  loadMembers();
 }
 
-initMembersPage();
+document.addEventListener('DOMContentLoaded', initMembersPage);
