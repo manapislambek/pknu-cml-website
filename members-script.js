@@ -1,12 +1,13 @@
-// members-script.js — FULL DROP-IN for your Members page
+// members-script.js — robust drop-in with CDN-off (temporarily), field fallbacks, and a debug log
 
 import { createClient } from 'https://esm.sh/@sanity/client';
 
 // ----- Sanity client -----
+// Turn useCdn OFF while testing to avoid stale cache; switch back to true after you see links appear.
 const client = createClient({
   projectId: 'fd0kvo22',
   dataset: 'production',
-  useCdn: true,            // if you don’t see updates immediately, temporarily set to false
+  useCdn: false,            // <— TEMPORARY for debugging; set back to true when done
   apiVersion: '2024-07-21',
 });
 
@@ -37,10 +38,15 @@ function roleBadge(role) {
   return `<span class="member-badge" aria-label="role">${role}</span>`;
 }
 
+// robust field fallback helper
+function pick(...candidates) {
+  for (const v of candidates) if (v != null && v !== '') return v;
+  return undefined;
+}
+
 function linkIcon(href, label, kind) {
   if (!href) return '';
   const icon = kind === 'scholar' ? '📚' : '↗';
-  // show icon + readable label
   return `<a class="member-link" href="${href}" target="_blank" rel="noopener noreferrer">${icon} ${label}</a>`;
 }
 
@@ -66,14 +72,18 @@ function thesisList(degreeHistory) {
 
 // ----- Card template -----
 function memberCard(m) {
-  const photoUrl = m?.photo?.asset?.url; // we project asset->url in GROQ
+  const photoUrl = m?.photo?.asset?.url;
   const deptLine = m?.department ? `<div class="member-dept">${m.department}</div>` : '';
   const areaLine = m?.researchArea ? `<div class="member-area">${m.researchArea}</div>` : '';
   const dates = formatPeriod(m?.period);
   const dateLine = dates ? `<div class="member-period">${dates}</div>` : '';
 
-  const scholar  = linkIcon(m?.profiles?.googleScholarUrl, 'Google Scholar', 'scholar');
-  const personal = linkIcon(m?.profiles?.personalPageUrl, 'Website', 'link');
+  // fallbacks if field names differ
+  const scholarUrl  = pick(m?.profiles?.googleScholarUrl, m?.googleScholarUrl, m?.scholarUrl);
+  const websiteUrl  = pick(m?.profiles?.personalPageUrl, m?.personalPageUrl, m?.website, m?.websiteUrl);
+
+  const scholar  = linkIcon(scholarUrl, 'Google Scholar', 'scholar');
+  const personal = linkIcon(websiteUrl, 'Website', 'link');
   const email    = m?.email ? `<a class="member-email" href="mailto:${m.email}">✉︎ Email</a>` : '';
 
   const theses = thesisList(m?.degreeHistory);
@@ -104,7 +114,6 @@ function injectCards(container, list) {
     container.innerHTML = '<p class="empty-note">No members to display.</p>';
     return;
   }
-  // your professor section has no .team-grid; student sections do
   const grid = container.querySelector?.('.team-grid') || container;
   grid.innerHTML = list.map(memberCard).join('');
 }
@@ -122,7 +131,6 @@ function setupTabs() {
 
   buttons.forEach((btn) => btn.addEventListener('click', () => showTab(btn.dataset.tab)));
 
-  // default / deep-link via hash
   const hash = window.location.hash?.replace('#', '') || 'professor';
   showTab(['professor', 'students', 'alumni'].includes(hash) ? hash : 'professor');
 
@@ -160,6 +168,10 @@ async function loadMembers() {
     return;
   }
 
+  // Debug: confirm we actually have profiles/period for at least one member
+  const sample = members.find(x => x?.profiles || x?.period || x?.degreeHistory) || members[0];
+  console.log('Members sample (debug):', sample);
+
   const alumni   = members.filter(isAlumniDoc);
   const current  = members.filter((m) => !isAlumniDoc(m));
 
@@ -176,7 +188,6 @@ async function loadMembers() {
   injectCards($('#undergraduate-section'),    undergrads);
   injectCards($('#alumni-section'),           alumni);
 
-  // hide empty subsections in “Researchers”
   [$('#postdocs-section'), $('#phd-section'), $('#masters-section'), $('#undergraduate-section')].forEach((sec) => {
     const grid = sec?.querySelector('.team-grid');
     if (grid && grid.children.length === 0) sec.style.display = 'none';
