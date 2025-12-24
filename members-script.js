@@ -11,6 +11,8 @@ const client = createClient({
   apiVersion: '2024-07-21',
 });
 
+console.log('Members script v14 loaded');
+
 // --- Tiny DOM helpers ---
 const $  = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
