@@ -44,58 +44,47 @@ function linkIf(href, label) {
 
 // --- Card template ---
 function memberCard(m) {
-  const photoUrl = m?.photo?.asset?.url || '';
-  const periodLine = formatPeriod(m);
+  const photoUrl = m?.photo?.asset?.url;
+  const deptLine = m?.department  ? `<div class="member-dept">${m.department}</div>`   : '';
+  const areaLine = m?.researchArea ? `<div class="member-area">${m.researchArea}</div>` : '';
+  const dates    = formatPeriod(m?.period);
+  const dateLine = dates ? `<div class="member-period">${dates}</div>` : '';
 
-  const scholarLink = linkIf(m?.profiles?.googleScholarUrl, 'Google Scholar');
-  const emailLink   = m?.email ? `<a class="member-link" href="mailto:${m.email}">Email</a>` : '';
+  const scholarUrl = pick(m?.profiles?.googleScholarUrl, m?.googleScholarUrl, m?.scholarUrl);
+  const websiteUrl = pick(m?.profiles?.personalPageUrl, m?.personalPageUrl, m?.website, m?.websiteUrl);
 
-  // Title line: role only for professors
-  const titleLine = `
-    <h3 class="member-name">
-      ${safe(m.name)}
-      ${m.memberType === 'Professor' && safe(m.role) ? `<span class="member-badge">${safe(m.role)}</span>` : ''}
-    </h3>
-  `;
+  const scholar  = scholarUrl ? `<a class="member-link" href="${scholarUrl}" target="_blank" rel="noopener">Google Scholar</a>` : '';
+  const personal = websiteUrl ? `<a class="member-link" href="${websiteUrl}" target="_blank" rel="noopener">Website</a>` : '';
+  const email    = m?.email ? `<a class="member-email" href="mailto:${m.email}">Email</a>` : '';
 
-  let middle = '';
+  const theses       = thesisList(m?.degreeHistory);
+  const legacyThesis = m?.thesisTitle ? `<div class="legacy-thesis">Thesis: ${m.thesisTitle}</div>` : '';
 
-  if (m.memberType === 'Professor') {
-    if (Array.isArray(m.details) && m.details.length) {
-      middle += `<div class="member-details portable-text-content">${toHTML(m.details)}</div>`;
-    }
-  }
-
-  if (m.memberType === 'Student') {
-    if (safe(m.department))      middle += `<div class="member-dept">${safe(m.department)}</div>`;
-    if (safe(m.researchArea))    middle += `<div class="member-area">${safe(m.researchArea)}</div>`;
-    if (safe(m.currentDegree))   middle += `<div class="member-degree">Current degree: ${safe(m.currentDegree)}</div>`;
-    if (safe(m.mastersThesisTitle)) middle += `<div class="member-thesis"><strong>Master’s thesis:</strong> ${safe(m.mastersThesisTitle)}</div>`;
-    if (safe(m.phdThesisTitle))     middle += `<div class="member-thesis"><strong>PhD thesis:</strong> ${safe(m.phdThesisTitle)}</div>`;
-  }
-
-  if (m.memberType === 'Alumni') {
-    if (safe(m.obtainedDegree))      middle += `<div class="member-degree">Degree obtained in lab: ${safe(m.obtainedDegree)}</div>`;
-    if (safe(m.currentOccupation))   middle += `<div class="member-occupation">${safe(m.currentOccupation)}</div>`;
-    if (safe(m.alumniMastersThesisTitle)) middle += `<div class="member-thesis"><strong>Master’s thesis:</strong> ${safe(m.alumniMastersThesisTitle)}</div>`;
-    if (safe(m.alumniPhdThesisTitle))     middle += `<div class="member-thesis"><strong>PhD thesis:</strong> ${safe(m.alumniPhdThesisTitle)}</div>`;
-  }
-
-  const periodBlock = periodLine ? `<div class="member-period">${periodLine}</div>` : '';
-  const linksRow = (scholarLink || emailLink) ? `<div class="member-links">${scholarLink}${emailLink}</div>` : '';
+  // details that will be collapsible
+  const detailsHTML = [deptLine, areaLine, dateLine, theses || legacyThesis].filter(Boolean).join('');
+  const hasDetails  = detailsHTML.length > 0;
 
   return `
     <article class="member-card">
-      ${photoUrl ? `<div class="member-photo-wrap"><img src="${photoUrl}" alt="${safe(m.name)}" class="member-photo" loading="lazy"></div>` : `<div class="member-photo-wrap"></div>`}
+      <div class="member-photo-wrap">
+        ${photoUrl ? `<img src="${photoUrl}" alt="${m.name}" class="member-photo" loading="lazy">` : ''}
+      </div>
+
       <div class="member-info">
-        ${titleLine}
-        ${periodBlock}
-        ${middle}
-        ${linksRow}
+        <h3 class="member-name">${m.name} ${roleBadge(m.role)}</h3>
+        <div class="member-links">${[scholar, personal, email].filter(Boolean).join('')}</div>
+
+        ${hasDetails ? `
+          <div class="member-details-content">
+            ${detailsHTML}
+          </div>
+          <button type="button" class="expand-btn" aria-expanded="false">Show more</button>
+        ` : ''}
       </div>
     </article>
   `;
 }
+
 
 function injectCards(sectionEl, list) {
   if (!sectionEl) return;
@@ -189,5 +178,17 @@ function initMembersPage() {
   setupTabs();
   loadMembers();
 }
+// Expand/Collapse handling (event delegation)
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.expand-btn');
+  if (!btn) return;
+
+  const card = btn.closest('.member-card');
+  if (!card) return;
+
+  const expanded = card.classList.toggle('expanded');
+  btn.textContent = expanded ? 'Show less' : 'Show more';
+  btn.setAttribute('aria-expanded', String(expanded));
+});
 
 document.addEventListener('DOMContentLoaded', initMembersPage);
