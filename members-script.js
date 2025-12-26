@@ -1,4 +1,4 @@
-// members-script.js — FULL DROP-IN for updated schema (v15)
+// members-script.js — FULL DROP-IN for updated schema (v16)
 import { createClient } from 'https://esm.sh/@sanity/client';
 import { toHTML } from 'https://esm.sh/@portabletext/to-html';
 
@@ -6,62 +6,105 @@ import { toHTML } from 'https://esm.sh/@portabletext/to-html';
 const client = createClient({
   projectId: 'fd0kvo22',
   dataset: 'production',
-  useCdn: false,           // keep false while testing; switch to true after you confirm updates
+  useCdn: false,            // keep false while testing; flip to true after confirming
   apiVersion: '2024-07-21',
 });
 
-console.log('Members script v15 loaded');
+console.log('Members script v16 loaded');
 
 // --- DOM helpers ---
 const $  = (sel) => document.querySelector(sel);
-const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
-// --- Helpers ---
+// --- Small utils ---
 const year = (d) => (d ? String(new Date(d).getFullYear()) : '');
 
-function formatPeriod(m) {
-  if (m.memberType === 'Student') {
-    const s = year(m?.period?.startDate);
+function formatPeriod(member) {
+  if (!member) return '';
+  if (member.memberType === 'Student') {
+    const s = year(member?.period?.startDate);
     return s ? `${s} – Present` : '';
   }
-  if (m.memberType === 'Alumni') {
-    const s = year(m?.period?.startDate);
-    const e = year(m?.period?.endDate);
+  if (member.memberType === 'Alumni') {
+    const s = year(member?.period?.startDate);
+    const e = year(member?.period?.endDate);
     if (!s && !e) return '';
     return `${s || ''} – ${e || ''}`;
   }
-  return ''; // Professors: none
+  // Professors: no period displayed
+  return '';
 }
 
-function safe(x) {
-  return (x ?? '').toString().trim();
+function roleBadgeIfProfessor(member) {
+  if (member?.memberType === 'Professor' && member?.role) {
+    return `<span class="member-badge" aria-label="role">${member.role}</span>`;
+  }
+  return '';
 }
 
-function linkIf(href, label) {
-  if (!href) return '';
-  return `<a class="member-link" href="${href}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+function scholarLink(url) {
+  if (!url) return '';
+  return `<a class="member-link" href="${url}" target="_blank" rel="noopener">Google Scholar</a>`;
+}
+
+function emailLink(email) {
+  if (!email) return '';
+  return `<a class="member-email" href="mailto:${email}">Email</a>`;
+}
+
+// Build the expandable details area depending on memberType
+function buildDetailsHTML(m) {
+  const period = formatPeriod(m);
+  const periodLine = period ? `<div class="member-period">${period}</div>` : '';
+
+  if (m.memberType === 'Professor') {
+    // Render long bio from Portable Text
+    const detailsHtml = Array.isArray(m.details) ? toHTML(m.details) : '';
+    return detailsHtml
+      ? `<div class="member-details-content portable-text-content">${detailsHtml}</div>`
+      : '';
+  }
+
+  if (m.memberType === 'Student') {
+    const deptLine   = m?.department   ? `<div class="member-dept">${m.department}</div>` : '';
+    const areaLine   = m?.researchArea ? `<div class="member-area">${m.researchArea}</div>` : '';
+    const degreeLine = m?.currentDegree ? `<div class="member-area"><strong>Degree:</strong> ${m.currentDegree}</div>` : '';
+
+    const mastersThesis = m?.mastersThesisTitle ? `<p><strong>Master’s Thesis:</strong> ${m.mastersThesisTitle}</p>` : '';
+    const phdThesis     = m?.phdThesisTitle     ? `<p><strong>Ph.D. Thesis:</strong> ${m.phdThesisTitle}</p>` : '';
+
+    const body = [deptLine, areaLine, degreeLine, periodLine, mastersThesis, phdThesis]
+      .filter(Boolean)
+      .join('');
+
+    return body ? `<div class="member-details-content">${body}</div>` : '';
+  }
+
+  if (m.memberType === 'Alumni') {
+    const obtained = m?.obtainedDegree ? `<div class="member-area"><strong>Obtained degree:</strong> ${m.obtainedDegree}</div>` : '';
+    const occupation = m?.currentOccupation ? `<div class="member-area"><strong>Current:</strong> ${m.currentOccupation}</div>` : '';
+    const mastersThesis = m?.alumniMastersThesisTitle ? `<p><strong>Master’s Thesis:</strong> ${m.alumniMastersThesisTitle}</p>` : '';
+    const phdThesis     = m?.alumniPhdThesisTitle     ? `<p><strong>Ph.D. Thesis:</strong> ${m.alumniPhdThesisTitle}</p>` : '';
+
+    const body = [obtained, occupation, periodLine, mastersThesis, phdThesis]
+      .filter(Boolean)
+      .join('');
+
+    return body ? `<div class="member-details-content">${body}</div>` : '';
+  }
+
+  return '';
 }
 
 // --- Card template ---
 function memberCard(m) {
   const photoUrl = m?.photo?.asset?.url;
-  const deptLine = m?.department  ? `<div class="member-dept">${m.department}</div>`   : '';
-  const areaLine = m?.researchArea ? `<div class="member-area">${m.researchArea}</div>` : '';
-  const dates    = formatPeriod(m?.period);
-  const dateLine = dates ? `<div class="member-period">${dates}</div>` : '';
 
-  const scholarUrl = pick(m?.profiles?.googleScholarUrl, m?.googleScholarUrl, m?.scholarUrl);
-  const websiteUrl = pick(m?.profiles?.personalPageUrl, m?.personalPageUrl, m?.website, m?.websiteUrl);
+  // Links row: only Scholar + Email (no personal website by request)
+  const linksRow = [scholarLink(m?.profiles?.googleScholarUrl), emailLink(m?.email)]
+    .filter(Boolean)
+    .join('');
 
-  const scholar  = scholarUrl ? `<a class="member-link" href="${scholarUrl}" target="_blank" rel="noopener">Google Scholar</a>` : '';
-  const personal = websiteUrl ? `<a class="member-link" href="${websiteUrl}" target="_blank" rel="noopener">Website</a>` : '';
-  const email    = m?.email ? `<a class="member-email" href="mailto:${m.email}">Email</a>` : '';
-
-  const theses       = thesisList(m?.degreeHistory);
-  const legacyThesis = m?.thesisTitle ? `<div class="legacy-thesis">Thesis: ${m.thesisTitle}</div>` : '';
-
-  // details that will be collapsible
-  const detailsHTML = [deptLine, areaLine, dateLine, theses || legacyThesis].filter(Boolean).join('');
+  const detailsHTML = buildDetailsHTML(m);
   const hasDetails  = detailsHTML.length > 0;
 
   return `
@@ -71,13 +114,11 @@ function memberCard(m) {
       </div>
 
       <div class="member-info">
-        <h3 class="member-name">${m.name} ${roleBadge(m.role)}</h3>
-        <div class="member-links">${[scholar, personal, email].filter(Boolean).join('')}</div>
+        <h3 class="member-name">${m.name} ${roleBadgeIfProfessor(m)}</h3>
+        ${linksRow ? `<div class="member-links">${linksRow}</div>` : ''}
 
         ${hasDetails ? `
-          <div class="member-details-content">
-            ${detailsHTML}
-          </div>
+          ${detailsHTML}
           <button type="button" class="expand-btn" aria-expanded="false">Show more</button>
         ` : ''}
       </div>
@@ -85,17 +126,18 @@ function memberCard(m) {
   `;
 }
 
-
 function injectCards(sectionEl, list) {
   if (!sectionEl) return;
   const grid = sectionEl.querySelector?.('.team-grid') || sectionEl;
-  grid.innerHTML = (list && list.length) ? list.map(memberCard).join('') : '<p class="empty-note">No members to display.</p>';
+  grid.innerHTML = (list && list.length)
+    ? list.map(memberCard).join('')
+    : '<p class="empty-note">No members to display.</p>';
 }
 
 // --- Tabs ---
 function setupTabs() {
-  const buttons = $$('.tab-button');
-  const tabs = $$('.tab-content');
+  const buttons = Array.from(document.querySelectorAll('.tab-button'));
+  const tabs = Array.from(document.querySelectorAll('.tab-content'));
   if (!buttons.length || !tabs.length) return;
 
   const showTab = (id) => {
@@ -105,8 +147,8 @@ function setupTabs() {
 
   buttons.forEach((btn) => btn.addEventListener('click', () => showTab(btn.dataset.tab)));
 
-  const hash = (window.location.hash || '#professor').replace('#', '');
-  showTab(['professor', 'students', 'alumni'].includes(hash) ? hash : 'professor');
+  const initial = (window.location.hash || '#professor').replace('#', '');
+  showTab(['professor', 'students', 'alumni'].includes(initial) ? initial : 'professor');
 
   window.addEventListener('hashchange', () => {
     const hh = (window.location.hash || '#professor').replace('#', '');
@@ -125,15 +167,12 @@ async function loadMembers() {
     photo{asset->{url}},
     profiles{ googleScholarUrl },
     period{ startDate, endDate },
-    // student
     department,
     researchArea,
     currentDegree,
     mastersThesisTitle,
     phdThesisTitle,
-    // professor
     details,
-    // alumni
     obtainedDegree,
     currentOccupation,
     alumniMastersThesisTitle,
@@ -148,12 +187,11 @@ async function loadMembers() {
     return;
   }
 
-  // Buckets by memberType
   const professors = members.filter((m) => m.memberType === 'Professor');
   const students   = members.filter((m) => m.memberType === 'Student');
   const alumni     = members.filter((m) => m.memberType === 'Alumni');
 
-  // Split students by currentDegree keywords to match your sections
+  // Bucket students into your subsections by currentDegree text
   const postdocs   = students.filter((m) => /postdoc/i.test(m.currentDegree || ''));
   const phd        = students.filter((m) => /ph\.?d|doctoral/i.test(m.currentDegree || ''));
   const masters    = students.filter((m) => /master/i.test(m.currentDegree || ''));
@@ -173,8 +211,7 @@ async function loadMembers() {
   });
 }
 
-
-// Expand/Collapse handling (event delegation)
+// Expand/Collapse (event delegation)
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.expand-btn');
   if (!btn) return;
