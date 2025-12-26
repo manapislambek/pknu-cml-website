@@ -7,7 +7,7 @@ import { createClient } from 'https://esm.sh/@sanity/client';
 const client = createClient({
   projectId: 'fd0kvo22',
   dataset: 'production',
-  useCdn: false, // <— DEBUG: avoid cache
+  useCdn: true
   apiVersion: '2024-07-21',
 });
 
