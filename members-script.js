@@ -173,11 +173,7 @@ async function loadMembers() {
   });
 }
 
-// --- Init ---
-function initMembersPage() {
-  setupTabs();
-  loadMembers();
-}
+
 // Expand/Collapse handling (event delegation)
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.expand-btn');
@@ -190,5 +186,11 @@ document.addEventListener('click', (e) => {
   btn.textContent = expanded ? 'Show less' : 'Show more';
   btn.setAttribute('aria-expanded', String(expanded));
 });
+
+// --- Init ---
+function initMembersPage() {
+  setupTabs();
+  loadMembers();
+}
 
 document.addEventListener('DOMContentLoaded', initMembersPage);
