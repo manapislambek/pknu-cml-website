@@ -1,121 +1,112 @@
-// members-script.js — debug build (CDN off + console log)
-
+// members-script.js — FULL DROP-IN for updated schema (v15)
 import { createClient } from 'https://esm.sh/@sanity/client';
+import { toHTML } from 'https://esm.sh/@portabletext/to-html';
 
 // --- Sanity client ---
-// Keep useCdn:false while testing; switch back to true after you see updates on the site.
 const client = createClient({
   projectId: 'fd0kvo22',
   dataset: 'production',
-  useCdn: true
+  useCdn: false,           // keep false while testing; switch to true after you confirm updates
   apiVersion: '2024-07-21',
 });
 
-console.log('Members script v14 loaded');
+console.log('Members script v15 loaded');
 
-// --- Tiny DOM helpers ---
+// --- DOM helpers ---
 const $  = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
-// --- Formatting helpers ---
-function formatPeriod(period) {
-  if (!period) return '';
-  const toYear = (d) => (d ? new Date(d).getFullYear() : null);
-  const start = toYear(period.startDate);
-  const end   = toYear(period.endDate);
-  if (!start && !end) return '';
-  return `${start ?? ''} – ${end ?? 'Present'}`;
+// --- Helpers ---
+const year = (d) => (d ? String(new Date(d).getFullYear()) : '');
+
+function formatPeriod(m) {
+  if (m.memberType === 'Student') {
+    const s = year(m?.period?.startDate);
+    return s ? `${s} – Present` : '';
+  }
+  if (m.memberType === 'Alumni') {
+    const s = year(m?.period?.startDate);
+    const e = year(m?.period?.endDate);
+    if (!s && !e) return '';
+    return `${s || ''} – ${e || ''}`;
+  }
+  return ''; // Professors: none
 }
 
-function isAlumniDoc(m) {
-  return Boolean(
-    m?.isAlumni === true ||
-    (typeof m?.role === 'string' && m.role.trim() === 'Alumni') ||
-    m?.period?.endDate
-  );
+function safe(x) {
+  return (x ?? '').toString().trim();
 }
 
-function roleBadge(role) {
-  return role ? `<span class="member-badge" aria-label="role">${role}</span>` : '';
-}
-
-// pick first defined value
-function pick(...vals) {
-  for (const v of vals) if (v != null && v !== '') return v;
-  return undefined;
-}
-
-function linkIcon(href, label, kind) {
+function linkIf(href, label) {
   if (!href) return '';
-  const icon = kind === 'scholar' ? '📚' : '↗';
-  return `<a class="member-link" href="${href}" target="_blank" rel="noopener noreferrer">${icon} ${label}</a>`;
-}
-
-function thesisList(degreeHistory) {
-  if (!Array.isArray(degreeHistory) || !degreeHistory.length) return '';
-  const items = [];
-  degreeHistory.forEach((deg) => {
-    const head = [deg?.degree, deg?.institution, deg?.year].filter(Boolean).join(' • ');
-    if (Array.isArray(deg?.theses) && deg.theses.length) {
-      deg.theses.forEach((t) => {
-        const tail = t?.link ? ` <a class="thesis-link" href="${t.link}" target="_blank" rel="noopener">(Link)</a>` : '';
-        items.push(`<li><strong>${t?.title ?? 'Thesis'}</strong>${head ? ` — <span class="thesis-meta">${head}</span>` : ''}${tail}</li>`);
-      });
-    } else if (head) {
-      items.push(`<li><span class="thesis-meta">${head}</span></li>`);
-    }
-  });
-  return items.length ? `<ul class="thesis-list">${items.join('')}</ul>` : '';
+  return `<a class="member-link" href="${href}" target="_blank" rel="noopener noreferrer">${label}</a>`;
 }
 
 // --- Card template ---
 function memberCard(m) {
-  const photoUrl = m?.photo?.asset?.url;
-  const deptLine = m?.department  ? `<div class="member-dept">${m.department}</div>`   : '';
-  const areaLine = m?.researchArea ? `<div class="member-area">${m.researchArea}</div>` : '';
-  const dates    = formatPeriod(m?.period);
-  const dateLine = dates ? `<div class="member-period">${dates}</div>` : '';
+  const photoUrl = m?.photo?.asset?.url || '';
+  const periodLine = formatPeriod(m);
 
-  // robust fallbacks in case field names differ
-  const scholarUrl = pick(m?.profiles?.googleScholarUrl, m?.googleScholarUrl, m?.scholarUrl);
-  const websiteUrl = pick(m?.profiles?.personalPageUrl, m?.personalPageUrl, m?.website, m?.websiteUrl);
+  const scholarLink = linkIf(m?.profiles?.googleScholarUrl, 'Google Scholar');
+  const emailLink   = m?.email ? `<a class="member-link" href="mailto:${m.email}">Email</a>` : '';
 
-  const scholar  = linkIcon(scholarUrl, 'Google Scholar', 'scholar');
-  const personal = linkIcon(websiteUrl, 'Website', 'link');
-  const email    = m?.email ? `<a class="member-email" href="mailto:${m.email}">✉︎ Email</a>` : '';
+  // Title line: role only for professors
+  const titleLine = `
+    <h3 class="member-name">
+      ${safe(m.name)}
+      ${m.memberType === 'Professor' && safe(m.role) ? `<span class="member-badge">${safe(m.role)}</span>` : ''}
+    </h3>
+  `;
 
-  const theses       = thesisList(m?.degreeHistory);
-  const legacyThesis = m?.thesisTitle ? `<div class="legacy-thesis">Thesis: ${m.thesisTitle}</div>` : '';
+  let middle = '';
+
+  if (m.memberType === 'Professor') {
+    if (Array.isArray(m.details) && m.details.length) {
+      middle += `<div class="member-details portable-text-content">${toHTML(m.details)}</div>`;
+    }
+  }
+
+  if (m.memberType === 'Student') {
+    if (safe(m.department))      middle += `<div class="member-dept">${safe(m.department)}</div>`;
+    if (safe(m.researchArea))    middle += `<div class="member-area">${safe(m.researchArea)}</div>`;
+    if (safe(m.currentDegree))   middle += `<div class="member-degree">Current degree: ${safe(m.currentDegree)}</div>`;
+    if (safe(m.mastersThesisTitle)) middle += `<div class="member-thesis"><strong>Master’s thesis:</strong> ${safe(m.mastersThesisTitle)}</div>`;
+    if (safe(m.phdThesisTitle))     middle += `<div class="member-thesis"><strong>PhD thesis:</strong> ${safe(m.phdThesisTitle)}</div>`;
+  }
+
+  if (m.memberType === 'Alumni') {
+    if (safe(m.obtainedDegree))      middle += `<div class="member-degree">Degree obtained in lab: ${safe(m.obtainedDegree)}</div>`;
+    if (safe(m.currentOccupation))   middle += `<div class="member-occupation">${safe(m.currentOccupation)}</div>`;
+    if (safe(m.alumniMastersThesisTitle)) middle += `<div class="member-thesis"><strong>Master’s thesis:</strong> ${safe(m.alumniMastersThesisTitle)}</div>`;
+    if (safe(m.alumniPhdThesisTitle))     middle += `<div class="member-thesis"><strong>PhD thesis:</strong> ${safe(m.alumniPhdThesisTitle)}</div>`;
+  }
+
+  const periodBlock = periodLine ? `<div class="member-period">${periodLine}</div>` : '';
+  const linksRow = (scholarLink || emailLink) ? `<div class="member-links">${scholarLink}${emailLink}</div>` : '';
 
   return `
     <article class="member-card">
-      ${photoUrl ? `<div class="member-photo-wrap"><img src="${photoUrl}" alt="${m.name}" class="member-photo" loading="lazy"></div>` : `<div class="member-photo-wrap"></div>`}
+      ${photoUrl ? `<div class="member-photo-wrap"><img src="${photoUrl}" alt="${safe(m.name)}" class="member-photo" loading="lazy"></div>` : `<div class="member-photo-wrap"></div>`}
       <div class="member-info">
-        <h3 class="member-name">${m.name} ${roleBadge(m.role)}</h3>
-        ${deptLine}
-        ${areaLine}
-        ${dateLine}
-        <div class="member-links">${scholar}${personal}${email}</div>
-        ${theses || legacyThesis}
+        ${titleLine}
+        ${periodBlock}
+        ${middle}
+        ${linksRow}
       </div>
     </article>
   `;
 }
 
-function injectCards(container, list) {
-  if (!container) return;
-  if (!list || list.length === 0) {
-    container.innerHTML = '<p class="empty-note">No members to display.</p>';
-    return;
-  }
-  const grid = container.querySelector?.('.team-grid') || container; // professor has no .team-grid
-  grid.innerHTML = list.map(memberCard).join('');
+function injectCards(sectionEl, list) {
+  if (!sectionEl) return;
+  const grid = sectionEl.querySelector?.('.team-grid') || sectionEl;
+  grid.innerHTML = (list && list.length) ? list.map(memberCard).join('') : '<p class="empty-note">No members to display.</p>';
 }
 
 // --- Tabs ---
 function setupTabs() {
   const buttons = $$('.tab-button');
-  const tabs    = $$('.tab-content');
+  const tabs = $$('.tab-content');
   if (!buttons.length || !tabs.length) return;
 
   const showTab = (id) => {
@@ -125,12 +116,12 @@ function setupTabs() {
 
   buttons.forEach((btn) => btn.addEventListener('click', () => showTab(btn.dataset.tab)));
 
-  const hash = window.location.hash?.replace('#', '') || 'professor';
+  const hash = (window.location.hash || '#professor').replace('#', '');
   showTab(['professor', 'students', 'alumni'].includes(hash) ? hash : 'professor');
 
   window.addEventListener('hashchange', () => {
-    const newHash = window.location.hash?.replace('#', '') || 'professor';
-    showTab(['professor', 'students', 'alumni'].includes(newHash) ? newHash : 'professor');
+    const hh = (window.location.hash || '#professor').replace('#', '');
+    showTab(['professor', 'students', 'alumni'].includes(hh) ? hh : 'professor');
   });
 }
 
@@ -139,19 +130,25 @@ async function loadMembers() {
   const query = `*[_type == "teamMember"] | order(order asc, name asc){
     _id,
     name,
+    memberType,
     role,
     email,
     photo{asset->{url}},
+    profiles{ googleScholarUrl },
+    period{ startDate, endDate },
+    // student
     department,
     researchArea,
-    thesisTitle,
-    isAlumni,
-    profiles{googleScholarUrl, personalPageUrl},
-    period{startDate, endDate},
-    degreeHistory[]{
-      degree, institution, year,
-      theses[]{ title, link }
-    }
+    currentDegree,
+    mastersThesisTitle,
+    phdThesisTitle,
+    // professor
+    details,
+    // alumni
+    obtainedDegree,
+    currentOccupation,
+    alumniMastersThesisTitle,
+    alumniPhdThesisTitle
   }`;
 
   let members = [];
@@ -162,30 +159,28 @@ async function loadMembers() {
     return;
   }
 
-  // Debug log so you can verify fields in the browser console
-  const sample = members.find(x => x?.profiles || x?.period || x?.degreeHistory) || members[0];
-  console.log('Members sample (debug):', sample);
+  // Buckets by memberType
+  const professors = members.filter((m) => m.memberType === 'Professor');
+  const students   = members.filter((m) => m.memberType === 'Student');
+  const alumni     = members.filter((m) => m.memberType === 'Alumni');
 
-  const alumni  = members.filter(isAlumniDoc);
-  const current = members.filter((m) => !isAlumniDoc(m));
+  // Split students by currentDegree keywords to match your sections
+  const postdocs   = students.filter((m) => /postdoc/i.test(m.currentDegree || ''));
+  const phd        = students.filter((m) => /ph\.?d|doctoral/i.test(m.currentDegree || ''));
+  const masters    = students.filter((m) => /master/i.test(m.currentDegree || ''));
+  const undergrads = students.filter((m) => /undergrad|b\.?s|bachelor/i.test(m.currentDegree || ''));
 
-  const professors = current.filter((m) => /Professor/i.test(m.role));
-  const postdocs   = current.filter((m) => m.role === 'Postdoctoral Researcher' || /Postdoc/i.test(m.role));
-  const phd        = current.filter((m) => m.role === 'Ph.D. Student');
-  const masters    = current.filter((m) => m.role === 'Master Student');
-  const undergrads = current.filter((m) => m.role === 'Undergraduate Student');
-
-  injectCards($('#professor-section'),     professors);
-  injectCards($('#postdocs-section'),      postdocs);
-  injectCards($('#phd-section'),           phd);
-  injectCards($('#masters-section'),       masters);
+  injectCards($('#professor-section'), professors);
+  injectCards($('#postdocs-section'), postdocs);
+  injectCards($('#phd-section'),      phd);
+  injectCards($('#masters-section'),  masters);
   injectCards($('#undergraduate-section'), undergrads);
-  injectCards($('#alumni-section'),        alumni);
+  injectCards($('#alumni-section'),   alumni);
 
-  // hide empty researcher subsections
+  // Hide empty student subsections
   [$('#postdocs-section'), $('#phd-section'), $('#masters-section'), $('#undergraduate-section')].forEach((sec) => {
     const grid = sec?.querySelector('.team-grid');
-    if (grid && grid.children.length === 0) sec.style.display = 'none';
+    if (sec && grid && grid.children.length === 0) sec.style.display = 'none';
   });
 }
 
