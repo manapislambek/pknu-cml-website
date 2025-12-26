@@ -1889,3 +1889,123 @@ body.home .main-nav {
 /* Reduce big gaps above/below sections on this page */
 .tab-content-container { margin-top: .75rem; }
 .team-section { margin-bottom: 1.25rem; }
+
+/* ==== MEMBERS LAYOUT — FINAL OVERRIDES (put at EOF) ==== */
+
+/* 1) Professors: one wide card per row */
+#professor-section,
+#professor-section .team-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+#professor-section .member-card {
+  display: grid;
+  grid-template-columns: 120px 1fr;  /* photo | text */
+  align-items: start;
+  padding: 20px;
+}
+#professor-section .member-photo-wrap { width:120px; height:120px; }
+@media (max-width: 640px) {
+  #professor-section .member-card { grid-template-columns: 1fr; }
+  #professor-section .member-photo-wrap { width:100%; height:200px; }
+}
+
+/* 2) Researchers & Alumni: 4 columns on desktop */
+#postdocs-section .team-grid,
+#phd-section .team-grid,
+#masters-section .team-grid,
+#undergraduate-section .team-grid,
+#alumni-section .team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* responsive steps: 3 → 2 → 1 columns */
+@media (max-width: 1200px) {
+  #postdocs-section .team-grid,
+  #phd-section .team-grid,
+  #masters-section .team-grid,
+  #undergraduate-section .team-grid,
+  #alumni-section .team-grid {
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+  }
+}
+@media (max-width: 900px) {
+  #postdocs-section .team-grid,
+  #phd-section .team-grid,
+  #masters-section .team-grid,
+  #undergraduate-section .team-grid,
+  #alumni-section .team-grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  #postdocs-section .team-grid,
+  #phd-section .team-grid,
+  #masters-section .team-grid,
+  #undergraduate-section .team-grid,
+  #alumni-section .team-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 3) Card polish (works for all) */
+.member-card {
+  border: 1px solid #e9ecef;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 2px rgba(16,24,40,.04);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.member-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(16,24,40,.08); }
+.member-photo-wrap { border-radius: 12px; overflow: hidden; background:#f6f6f6; }
+.member-name { margin: 0 0 .25rem; font-weight: 800; color: #0f2a3a; }
+.member-links { margin-top: .5rem; display: flex; gap: .75rem; flex-wrap: wrap; }
+
+/* 4) Show more / collapse (re-use your existing classes) */
+.member-details-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .45s ease, margin-top .45s ease, padding-top .45s ease;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 1px solid #eee;
+}
+.member-card.expanded .member-details-content {
+  max-height: 4000px;
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+.expand-btn {
+  margin-top: .75rem;
+  align-self: flex-start;        /* centered on students, left on profs */
+  background: var(--bg-light);
+  border: 1px solid var(--border-color);
+  color: #555;
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.expand-btn:hover { background:#0b61d6; color:#fff; border-color:#0b61d6; }
+
+/* Centered cards for student grid; keep left-aligned layout for professors */
+#postdocs-section .member-card,
+#phd-section .member-card,
+#masters-section .member-card,
+#undergraduate-section .member-card,
+#alumni-section .member-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+#postdocs-section .member-photo-wrap,
+#phd-section .member-photo-wrap,
+#masters-section .member-photo-wrap,
+#undergraduate-section .member-photo-wrap,
+#alumni-section .member-photo-wrap {
+  width: 140px; height: 140px;
+}
