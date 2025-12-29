@@ -1,4 +1,4 @@
-// members-script.js — FULL DROP-IN for updated schema (v16)
+// members-script.js — v17 (period under name, Month YYYY formatting)
 import { createClient } from 'https://esm.sh/@sanity/client';
 import { toHTML } from 'https://esm.sh/@portabletext/to-html';
 
@@ -6,31 +6,37 @@ import { toHTML } from 'https://esm.sh/@portabletext/to-html';
 const client = createClient({
   projectId: 'fd0kvo22',
   dataset: 'production',
-  useCdn: false,            // keep false while testing; flip to true after confirming
+  useCdn: false,            // keep false while testing; flip to true later
   apiVersion: '2024-07-21',
 });
 
-console.log('Members script v16 loaded');
+console.log('Members script v17 loaded');
 
 // --- DOM helpers ---
-const $  = (sel) => document.querySelector(sel);
+const $ = (sel) => document.querySelector(sel);
 
-// --- Small utils ---
-const year = (d) => (d ? String(new Date(d).getFullYear()) : '');
+// --- Date helpers ---
+function formatMonthYear(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return '';
+  // English month names, e.g., January 2024
+  return d.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+}
 
 function formatPeriod(member) {
   if (!member) return '';
   if (member.memberType === 'Student') {
-    const s = year(member?.period?.startDate);
-    return s ? `${s} – Present` : '';
+    const s = formatMonthYear(member?.period?.startDate);
+    return s ? `${s} – Current` : '';
   }
   if (member.memberType === 'Alumni') {
-    const s = year(member?.period?.startDate);
-    const e = year(member?.period?.endDate);
+    const s = formatMonthYear(member?.period?.startDate);
+    const e = formatMonthYear(member?.period?.endDate);
     if (!s && !e) return '';
     return `${s || ''} – ${e || ''}`;
   }
-  // Professors: no period displayed
+  // Professors: no period
   return '';
 }
 
@@ -51,13 +57,9 @@ function emailLink(email) {
   return `<a class="member-email" href="mailto:${email}">Email</a>`;
 }
 
-// Build the expandable details area depending on memberType
+// Build the expandable details (no period here anymore)
 function buildDetailsHTML(m) {
-  const period = formatPeriod(m);
-  const periodLine = period ? `<div class="member-period">${period}</div>` : '';
-
   if (m.memberType === 'Professor') {
-    // Render long bio from Portable Text
     const detailsHtml = Array.isArray(m.details) ? toHTML(m.details) : '';
     return detailsHtml
       ? `<div class="member-details-content portable-text-content">${detailsHtml}</div>`
@@ -68,11 +70,10 @@ function buildDetailsHTML(m) {
     const deptLine   = m?.department   ? `<div class="member-dept">${m.department}</div>` : '';
     const areaLine   = m?.researchArea ? `<div class="member-area">${m.researchArea}</div>` : '';
     const degreeLine = m?.currentDegree ? `<div class="member-area"><strong>Degree:</strong> ${m.currentDegree}</div>` : '';
-
     const mastersThesis = m?.mastersThesisTitle ? `<p><strong>Master’s Thesis:</strong> ${m.mastersThesisTitle}</p>` : '';
     const phdThesis     = m?.phdThesisTitle     ? `<p><strong>Ph.D. Thesis:</strong> ${m.phdThesisTitle}</p>` : '';
 
-    const body = [deptLine, areaLine, degreeLine, periodLine, mastersThesis, phdThesis]
+    const body = [deptLine, areaLine, degreeLine, mastersThesis, phdThesis]
       .filter(Boolean)
       .join('');
 
@@ -80,12 +81,12 @@ function buildDetailsHTML(m) {
   }
 
   if (m.memberType === 'Alumni') {
-    const obtained = m?.obtainedDegree ? `<div class="member-area"><strong>Obtained degree:</strong> ${m.obtainedDegree}</div>` : '';
+    const obtained   = m?.obtainedDegree ? `<div class="member-area"><strong>Obtained degree:</strong> ${m.obtainedDegree}</div>` : '';
     const occupation = m?.currentOccupation ? `<div class="member-area"><strong>Current:</strong> ${m.currentOccupation}</div>` : '';
     const mastersThesis = m?.alumniMastersThesisTitle ? `<p><strong>Master’s Thesis:</strong> ${m.alumniMastersThesisTitle}</p>` : '';
     const phdThesis     = m?.alumniPhdThesisTitle     ? `<p><strong>Ph.D. Thesis:</strong> ${m.alumniPhdThesisTitle}</p>` : '';
 
-    const body = [obtained, occupation, periodLine, mastersThesis, phdThesis]
+    const body = [obtained, occupation, mastersThesis, phdThesis]
       .filter(Boolean)
       .join('');
 
@@ -98,8 +99,7 @@ function buildDetailsHTML(m) {
 // --- Card template ---
 function memberCard(m) {
   const photoUrl = m?.photo?.asset?.url;
-
-  // Links row: only Scholar + Email (no personal website by request)
+  const headerPeriod = formatPeriod(m); // show this under the name (students & alumni only)
   const linksRow = [scholarLink(m?.profiles?.googleScholarUrl), emailLink(m?.email)]
     .filter(Boolean)
     .join('');
@@ -115,6 +115,7 @@ function memberCard(m) {
 
       <div class="member-info">
         <h3 class="member-name">${m.name} ${roleBadgeIfProfessor(m)}</h3>
+        ${headerPeriod ? `<div class="member-period">${headerPeriod}</div>` : ''}
         ${linksRow ? `<div class="member-links">${linksRow}</div>` : ''}
 
         ${hasDetails ? `
@@ -191,7 +192,6 @@ async function loadMembers() {
   const students   = members.filter((m) => m.memberType === 'Student');
   const alumni     = members.filter((m) => m.memberType === 'Alumni');
 
-  // Bucket students into your subsections by currentDegree text
   const postdocs   = students.filter((m) => /postdoc/i.test(m.currentDegree || ''));
   const phd        = students.filter((m) => /ph\.?d|doctoral/i.test(m.currentDegree || ''));
   const masters    = students.filter((m) => /master/i.test(m.currentDegree || ''));
@@ -204,7 +204,7 @@ async function loadMembers() {
   injectCards($('#undergraduate-section'), undergrads);
   injectCards($('#alumni-section'),   alumni);
 
-  // Hide empty student subsections
+  // hide empty student subsections
   [$('#postdocs-section'), $('#phd-section'), $('#masters-section'), $('#undergraduate-section')].forEach((sec) => {
     const grid = sec?.querySelector('.team-grid');
     if (sec && grid && grid.children.length === 0) sec.style.display = 'none';
@@ -215,10 +215,8 @@ async function loadMembers() {
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.expand-btn');
   if (!btn) return;
-
   const card = btn.closest('.member-card');
   if (!card) return;
-
   const expanded = card.classList.toggle('expanded');
   btn.textContent = expanded ? 'Show less' : 'Show more';
   btn.setAttribute('aria-expanded', String(expanded));
