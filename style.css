@@ -2009,3 +2009,22 @@ body.home .main-nav {
 #alumni-section .member-photo-wrap {
   width: 140px; height: 140px;
 }
+
+.member-dept .label,
+.member-area .label,
+.member-degree .label,
+.member-thesis .label { font-weight: 700; }
+
+.member-dept .value,
+.member-area .value,
+.member-degree .value,
+.member-thesis .value { font-weight: 400; }
+
+.member-obtained .label,
+.member-occupation .label,
+.member-thesis .label { font-weight: 700; }
+
+.member-obtained .value,
+.member-occupation .value,
+.member-thesis .value { font-weight: 400; }
+

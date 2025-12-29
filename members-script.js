@@ -67,11 +67,35 @@ function buildDetailsHTML(m) {
   }
 
   if (m.memberType === 'Student') {
-    const deptLine   = m?.department   ? `<div class="member-dept"><strong>Department:</strong> ${m.department}</div>` : '';
-    const areaLine   = m?.researchArea ? `<div class="member-area"><strong>Research Area:</strong> ${m.researchArea}</div>` : '';
-    const degreeLine = m?.currentDegree ? `<div class="member-area"><strong>Pursuing Degree:</strong> ${m.currentDegree}</div>` : '';
-    const mastersThesis = m?.mastersThesisTitle ? `<p><strong>Master’s Thesis:</strong> ${m.mastersThesisTitle}</p>` : '';
-    const phdThesis     = m?.phdThesisTitle     ? `<p><strong>Ph.D. Thesis:</strong> ${m.phdThesisTitle}</p>` : '';
+    const deptLine = m?.department
+      ? `<div class="member-dept">
+           <span class="label">Department:</span>
+           <span class="value">${m.department}</span>
+        </div>` : '';
+
+    const areaLine = m?.researchArea
+      ? `<div class="member-area">
+           <span class="label">Research Area:</span>
+           <span class="value">${m.researchArea}</span>
+         </div>` : '';
+
+    const degreeLine = m?.currentDegree
+      ? `<div class="member-degree">
+           <span class="label">Pursuing Degree:</span>
+           <span class="value">${m.currentDegree}</span>
+        </div>` : '';
+
+    const mastersThesis = m?.mastersThesisTitle
+      ? `<p class="member-thesis">
+           <span class="label">Master’s Thesis:</span>
+           <span class="value">${m.mastersThesisTitle}</span>
+        </p>` : '';
+
+    const phdThesis = m?.phdThesisTitle
+      ? `<p class="member-thesis">
+           <span class="label">Ph.D. Thesis:</span>
+           <span class="value">${m.phdThesisTitle}</span>
+        </p>` : '';
 
     const body = [deptLine, areaLine, degreeLine, mastersThesis, phdThesis]
       .filter(Boolean)
@@ -80,11 +104,31 @@ function buildDetailsHTML(m) {
     return body ? `<div class="member-details-content">${body}</div>` : '';
   }
 
+
   if (m.memberType === 'Alumni') {
-    const obtained   = m?.obtainedDegree ? `<div class="member-area"><strong>Obtained Degree:</strong> ${m.obtainedDegree}</div>` : '';
-    const occupation = m?.currentOccupation ? `<div class="member-area"><strong>Current Occupation:</strong> ${m.currentOccupation}</div>` : '';
-    const mastersThesis = m?.alumniMastersThesisTitle ? `<p><strong>Master’s Thesis:</strong> ${m.alumniMastersThesisTitle}</p>` : '';
-    const phdThesis     = m?.alumniPhdThesisTitle     ? `<p><strong>Ph.D. Thesis:</strong> ${m.alumniPhdThesisTitle}</p>` : '';
+    const obtained = m?.obtainedDegree
+      ? `<div class="member-obtained">
+           <span class="label">Obtained Degree:</span>
+           <span class="value">${m.obtainedDegree}</span>
+        </div>` : '';
+
+    const occupation = m?.currentOccupation
+      ? `<div class="member-occupation">
+           <span class="label">Current Occupation:</span>
+           <span class="value">${m.currentOccupation}</span>
+        </div>` : '';
+
+    const mastersThesis = m?.alumniMastersThesisTitle
+      ? `<p class="member-thesis">
+           <span class="label">Master’s Thesis:</span>
+           <span class="value">${m.alumniMastersThesisTitle}</span>
+        </p>` : '';
+
+    const phdThesis = m?.alumniPhdThesisTitle
+      ? `<p class="member-thesis">
+           <span class="label">Ph.D. Thesis:</span>
+           <span class="value">${m.alumniPhdThesisTitle}</span>
+        </p>` : '';
 
     const body = [obtained, occupation, mastersThesis, phdThesis]
       .filter(Boolean)
@@ -93,8 +137,6 @@ function buildDetailsHTML(m) {
     return body ? `<div class="member-details-content">${body}</div>` : '';
   }
 
-  return '';
-}
 
 // --- Card template ---
 function memberCard(m) {
