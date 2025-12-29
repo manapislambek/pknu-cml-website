@@ -1,7 +1,11 @@
-// members-script.js — v18 (Students modal; Professors/Alumni inline "Show more")
+// members-script.js — v19
+// Students use a modal, Professors use a media-row card (no "Show more"),
+// Alumni use inline details with "Show more".
+
 import { createClient } from 'https://esm.sh/@sanity/client';
 import { toHTML } from 'https://esm.sh/@portabletext/to-html';
 
+// ---------- Sanity client ----------
 const client = createClient({
   projectId: 'fd0kvo22',
   dataset: 'production',
@@ -9,7 +13,7 @@ const client = createClient({
   apiVersion: '2024-07-21',
 });
 
-console.log('Members script v18 loaded');
+console.log('Members script v19 loaded');
 
 // ---------- tiny DOM helpers ----------
 const $  = (s) => document.querySelector(s);
@@ -55,14 +59,50 @@ function alumniDetails(m) {
   if (m?.alumniPhdThesisTitle)     rows.push(`<p class="member-thesis"><span class="label">Ph.D. Thesis:</span><span class="value">${m.alumniPhdThesisTitle}</span></p>`);
   return rows.join('');
 }
-function professorDetails(m) {
-  if (!m?.details) return '';
-  const html = toHTML(m.details);
-  return `<div class="member-details-content"><div class="portable-text-content">${html}</div></div>`;
+
+// ---------- Professor media-row card ----------
+function professorCard(m) {
+  const photoUrl = m?.photo?.asset?.url || '';
+
+  const links = [
+    m?.profiles?.googleScholarUrl
+      ? `<a class="member-link" href="${m.profiles.googleScholarUrl}" target="_blank" rel="noopener">Google Scholar</a>`
+      : '',
+    m?.email ? `<a class="member-email" href="mailto:${m.email}">Email</a>` : ''
+  ].filter(Boolean).join(' · ');
+
+  const dept = m?.department
+    ? `<div class="prof-row"><span class="label">Department:</span><span class="value">${m.department}</span></div>`
+    : '';
+  const area = m?.researchArea
+    ? `<div class="prof-row"><span class="label">Research Area:</span><span class="value">${m.researchArea}</span></div>`
+    : '';
+
+  const detailsHTML = m?.details
+    ? `<div class="prof-details portable-text-content">${toHTML(m.details)}</div>`
+    : '';
+
+  return `
+    <article class="member-card professor-card">
+      <div class="prof-photo-wrap">
+        ${photoUrl ? `<img src="${photoUrl}" alt="${m.name}" class="prof-photo" loading="lazy">` : ''}
+      </div>
+      <div class="prof-info">
+        <h3 class="member-name">${m.name}</h3>
+        ${links ? `<div class="member-links">${links}</div>` : ''}
+        <div class="prof-meta">${dept}${area}</div>
+        ${detailsHTML}
+      </div>
+    </article>
+  `;
 }
 
-// ---------- card template ----------
+// ---------- Generic card chooser ----------
 function memberCard(m) {
+  // Professors: media-row layout, no "Show more"
+  if (m.memberType === 'Professor') return professorCard(m);
+
+  // Students & Alumni keep the existing card layout
   const photoUrl = m?.photo?.asset?.url || '';
   const period   = formatMemberPeriod(m);
   const periodLine = period ? `<div class="member-period">${period}</div>` : '';
@@ -72,7 +112,6 @@ function memberCard(m) {
     mailto(m.email),
   ].filter(Boolean).join('');
 
-  // decide details presence (Students shown in modal, others inline)
   let detailsBlock = '';
   let showMoreBtn  = '';
 
@@ -85,12 +124,6 @@ function memberCard(m) {
     const body = alumniDetails(m);
     if (body) {
       detailsBlock = `<div class="member-details-content">${body}</div>`;
-      showMoreBtn  = `<button type="button" class="expand-btn" data-member-type="Other" aria-expanded="false">Show more</button>`;
-    }
-  } else if (m.memberType === 'Professor') {
-    const body = professorDetails(m);
-    if (body) {
-      detailsBlock = body;
       showMoreBtn  = `<button type="button" class="expand-btn" data-member-type="Other" aria-expanded="false">Show more</button>`;
     }
   }
@@ -137,7 +170,7 @@ function setupTabs() {
   });
 }
 
-// ---------- modal helpers ----------
+// ---------- modal helpers (students) ----------
 function ensureModalRoot() {
   let root = $('#member-modal-root');
   if (root) return root;
@@ -166,7 +199,6 @@ function openModal(title, html) {
 }
 function closeModal() { $('#member-modal')?.classList.remove('is-active'); }
 
-// helper for rows inside modal
 function modalRow(label, value, cls='') {
   if (!value) return '';
   return `<div class="row ${cls}"><span class="label">${label}</span><span class="value">${value}</span></div>`;
@@ -218,12 +250,18 @@ async function loadMembers() {
     photo{asset->{url}},
     profiles{ googleScholarUrl },
     period{ startDate, endDate },
+
+    // student fields
     department,
     researchArea,
     currentDegree,
     mastersThesisTitle,
     phdThesisTitle,
-    details,                      // professor portable text
+
+    // professor fields
+    details,
+
+    // alumni fields
     obtainedDegree,
     currentOccupation,
     alumniMastersThesisTitle,
@@ -238,13 +276,14 @@ async function loadMembers() {
     return;
   }
 
-  // map for modal lookup
+  // map for student modal lookup
   window.__TEAM_BY_ID__ = Object.fromEntries(members.map(m => [m._id, m]));
 
   const professors = members.filter(m => m.memberType === 'Professor');
   const students   = members.filter(m => m.memberType === 'Student');
   const alumni     = members.filter(m => m.memberType === 'Alumni');
 
+  // Student buckets (free-text currentDegree)
   const postdocs   = students.filter(m => /postdoc/i.test(m.currentDegree || ''));
   const phd        = students.filter(m => /ph\.?d|doctoral/i.test(m.currentDegree || ''));
   const masters    = students.filter(m => /master/i.test(m.currentDegree || ''));
@@ -276,7 +315,7 @@ document.addEventListener('click', (e) => {
     return;
   }
 
-  // inline expand for Alumni/Professors
+  // inline expand for Alumni only (professors have no expand button)
   const card = btn.closest('.member-card');
   if (!card) return;
   const expanded = card.classList.toggle('expanded');
