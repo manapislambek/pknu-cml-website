@@ -2348,4 +2348,60 @@ body.home .main-nav {
   margin: 0; 
 }
 
+/* ===== Unified Tabs (Research / Members / Publications) ===== */
+.tab-buttons {                      /* container */
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 1rem 0 1.25rem;
+}
+
+.tab-buttons.center {               /* optional centering */
+  justify-content: center;
+}
+
+.tab-button {                       /* tab pill */
+  appearance: none;
+  border: 1px solid var(--border-color);
+  background: #f6f8fa;
+  color: #344054;
+  padding: .55rem 1rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, color .2s ease, transform .08s ease, box-shadow .2s ease;
+}
+
+.tab-button:hover {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+}
+
+.tab-button:active { transform: translateY(1px); }
+
+.tab-button:focus-visible {
+  outline: 3px solid rgba(13,110,253,.28);
+  outline-offset: 2px;
+}
+
+/* active tab */
+.tab-button.active {
+  background: var(--primary-accent);
+  color: #fff;
+  border-color: var(--primary-accent);
+  box-shadow: 0 1px 4px rgba(2,82,196,.22) inset;
+}
+
+/* compact variant if you ever need it */
+.tab-buttons.small .tab-button {
+  padding: .45rem .85rem;
+  font-size: .95rem;
+  border-radius: 8px;
+}
+
+/* consistent spacing to the content block below */
+.tab-content { margin-top: 1rem; }
 
