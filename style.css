@@ -2322,3 +2322,30 @@ body.home .main-nav {
   .member-modal .modal-details .row { grid-template-columns: 1fr; }
 }
 
+/* === Student modal: normalize typography for ALL rows === */
+.member-modal .modal-details,
+.member-modal .modal-details .row,
+.member-modal .modal-details .row .label,
+.member-modal .modal-details .row .value {
+  font-size: 1rem;           /* 16px across the board */
+  line-height: 1.55;
+  color: #2b333a;            /* same body color for values & theses */
+}
+
+.member-modal .modal-details .row .label { 
+  font-weight: 700; 
+  color: #111827; 
+}
+
+.member-modal .modal-details .row .value { 
+  font-weight: 400; 
+}
+
+/* remove any stray margins that can make rows look different */
+.member-modal .modal-details .member-dept,
+.member-modal .modal-details .member-area,
+.member-modal .modal-details .member-thesis { 
+  margin: 0; 
+}
+
+
