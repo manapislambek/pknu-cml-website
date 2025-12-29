@@ -2201,3 +2201,124 @@ body.home .main-nav {
   .modal-content.member-modal .modal-photo{ width: 120px !important; height: 154px !important; }
   .modal-content.member-modal .modal-title{ font-size: 1.6rem !important; }
 }
+
+
+/* --- Professor section: single wide column + tidy card layout --- */
+#professor-section .team-grid { 
+  grid-template-columns: 1fr !important;            /* 1 column */
+}
+
+#professor-section .member-card {
+  display: grid !important;
+  grid-template-columns: 150px 1fr;                 /* photo | info */
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+}
+
+#professor-section .member-photo-wrap {
+  margin: 0;                                        /* remove auto-center */
+  width: 150px;
+  aspect-ratio: 35 / 45;
+}
+
+#professor-section .member-info { padding-left: 4px; }
+#professor-section .member-name,
+#professor-section .member-links { text-align: left; }
+
+/* no period for professors (defensive) */
+#professor-section .member-period { display: none; }
+
+
+/* ===== Member modal — consistent typography & spacing ===== */
+.member-modal {
+  --mm-title: 2rem;
+  --mm-text: 1rem;
+  --mm-muted: #475467;
+  --mm-body: #2b333a;
+}
+
+.member-modal .modal-title {
+  font-family: "Roboto Slab", serif;
+  font-size: var(--mm-title);
+  color: var(--pknu-blue);
+  margin: 0 0 .85rem;
+}
+
+.member-modal .modal-identity {
+  display: grid;
+  grid-template-columns: 140px 1fr;  /* larger portrait */
+  gap: 1rem 1.25rem;
+  align-items: center;
+}
+
+.member-modal .modal-photo {
+  width: 140px;
+  height: 180px;                      /* 3.5 x 4.5 aspect */
+  object-fit: cover;
+  border-radius: 10px;
+  border: 4px solid #fff;
+  box-shadow: 0 5px 20px rgba(0,0,0,.12);
+}
+
+.member-modal .modal-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f2a3a;
+  margin: 0 0 .25rem;
+}
+
+.member-modal .modal-period {
+  font-size: .95rem;
+  color: var(--mm-muted);
+  margin: 0 0 .35rem;
+}
+
+.member-modal .modal-links a {
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--primary-accent);
+  text-decoration: none;
+}
+.member-modal .modal-links a:hover { text-decoration: underline; }
+
+.member-modal .modal-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 1rem 0 1.25rem;
+}
+
+/* Details: same color/size for ALL rows (dept/area/degree/theses) */
+.member-modal .modal-details {
+  display: grid;
+  gap: .45rem;
+  font-size: var(--mm-text);
+  color: var(--mm-body);
+  line-height: 1.55;
+}
+
+.member-modal .modal-details .row {
+  display: grid;
+  grid-template-columns: 200px 1fr;   /* label | value */
+  column-gap: .5rem;
+  align-items: baseline;
+}
+
+.member-modal .modal-details .row .label {
+  font-weight: 700;
+  color: #111827;
+  margin-right: 0;                     /* spacing handled by grid */
+}
+
+.member-modal .modal-details .row .value {
+  font-weight: 400;
+  color: var(--mm-body);
+}
+
+/* Responsive stack */
+@media (max-width: 640px) {
+  .member-modal .modal-identity { grid-template-columns: 1fr; align-items: start; }
+  .member-modal .modal-photo { width: 120px; height: 154px; }
+  .member-modal .modal-details .row { grid-template-columns: 1fr; }
+}
+
