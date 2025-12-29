@@ -2027,3 +2027,30 @@ body.home .main-nav {
 .member-occupation .value {
   font-weight: 400;
 }
+
+/* Members: 3.5 x 4.5 portrait photo */
+.member-card .member-photo-wrap {
+  width: 150px;              /* tweak if you want bigger/smaller */
+  aspect-ratio: 35 / 45;     /* keeps 3.5x4.5 ratio */
+  height: auto;              /* let aspect-ratio set the height */
+  border-radius: 10px;
+  background: #f2f4f7;
+  overflow: hidden;
+  flex: 0 0 auto;            /* don't shrink */
+  margin: 0 auto 0.75rem;    /* center above the name */
+}
+
+.member-card .member-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;         /* fill the frame without distortion */
+  object-position: center;   /* adjust if you prefer 'center top' */
+  display: block;
+  border: 0;                 /* remove thick border that felt tight */
+  box-shadow: 0 4px 16px rgba(0,0,0,.10);
+}
+
+/* Smaller on narrow screens */
+@media (max-width: 520px) {
+  .member-card .member-photo-wrap { width: 130px; }
+}
