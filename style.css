@@ -2010,18 +2010,20 @@ body.home .main-nav {
   width: 140px; height: 140px;
 }
 
+/* Members: label/value styling + space after ":" */
 .member-dept .label,
 .member-area .label,
 .member-thesis .label,
 .member-obtained .label,
-.member-occupation .label { font-weight: 700; }
+.member-occupation .label {
+  font-weight: 700;
+  margin-right: 6px; /* space after ":" */
+}
 
 .member-dept .value,
 .member-area .value,
 .member-thesis .value,
 .member-obtained .value,
-.member-occupation .value { font-weight: 400; }
-
-.member-dept .label,
-.member-area .label { margin-right: 4px; }
-.member-thesis,
+.member-occupation .value {
+  font-weight: 400;
+}
