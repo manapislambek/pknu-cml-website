@@ -1,5 +1,6 @@
-// members-script.js — v17 (modal for Students + safe fallbacks)
+// members-script.js — v18 (Students modal; Professors/Alumni inline "Show more")
 import { createClient } from 'https://esm.sh/@sanity/client';
+import { toHTML } from 'https://esm.sh/@portabletext/to-html';
 
 const client = createClient({
   projectId: 'fd0kvo22',
@@ -8,7 +9,7 @@ const client = createClient({
   apiVersion: '2024-07-21',
 });
 
-console.log('Members script v17 loaded');
+console.log('Members script v18 loaded');
 
 // ---------- tiny DOM helpers ----------
 const $  = (s) => document.querySelector(s);
@@ -48,11 +49,16 @@ function studentDetails(m) {
 }
 function alumniDetails(m) {
   const rows = [];
-  if (m?.obtainedDegree)         rows.push(`<div class="member-obtained"><span class="label">Obtained Degree:</span><span class="value">${m.obtainedDegree}</span></div>`);
-  if (m?.currentOccupation)      rows.push(`<div class="member-occupation"><span class="label">Current Occupation:</span><span class="value">${m.currentOccupation}</span></div>`);
+  if (m?.obtainedDegree)           rows.push(`<div class="member-obtained"><span class="label">Obtained Degree:</span><span class="value">${m.obtainedDegree}</span></div>`);
+  if (m?.currentOccupation)        rows.push(`<div class="member-occupation"><span class="label">Current Occupation:</span><span class="value">${m.currentOccupation}</span></div>`);
   if (m?.alumniMastersThesisTitle) rows.push(`<p class="member-thesis"><span class="label">Master’s Thesis:</span><span class="value">${m.alumniMastersThesisTitle}</span></p>`);
   if (m?.alumniPhdThesisTitle)     rows.push(`<p class="member-thesis"><span class="label">Ph.D. Thesis:</span><span class="value">${m.alumniPhdThesisTitle}</span></p>`);
   return rows.join('');
+}
+function professorDetails(m) {
+  if (!m?.details) return '';
+  const html = toHTML(m.details);
+  return `<div class="member-details-content"><div class="portable-text-content">${html}</div></div>`;
 }
 
 // ---------- card template ----------
@@ -69,17 +75,25 @@ function memberCard(m) {
   // decide details presence (Students shown in modal, others inline)
   let detailsBlock = '';
   let showMoreBtn  = '';
+
   if (m.memberType === 'Student') {
-    // modal will render details; button carries dataset attributes
     const hasAny = (m.department || m.researchArea || m.currentDegree || m.mastersThesisTitle || m.phdThesisTitle);
-    if (hasAny) showMoreBtn = `<button type="button" class="expand-btn" data-member-id="${m._id}" data-member-type="Student" aria-expanded="false">Show more</button>`;
+    if (hasAny) {
+      showMoreBtn = `<button type="button" class="expand-btn" data-member-id="${m._id}" data-member-type="Student" aria-expanded="false">Show more</button>`;
+    }
   } else if (m.memberType === 'Alumni') {
     const body = alumniDetails(m);
     if (body) {
       detailsBlock = `<div class="member-details-content">${body}</div>`;
       showMoreBtn  = `<button type="button" class="expand-btn" data-member-type="Other" aria-expanded="false">Show more</button>`;
     }
-  } // Professors currently no extra content
+  } else if (m.memberType === 'Professor') {
+    const body = professorDetails(m);
+    if (body) {
+      detailsBlock = body;
+      showMoreBtn  = `<button type="button" class="expand-btn" data-member-type="Other" aria-expanded="false">Show more</button>`;
+    }
+  }
 
   return `
     <article class="member-card">
@@ -123,7 +137,7 @@ function setupTabs() {
   });
 }
 
-// ---------- modal helpers (self-contained) ----------
+// ---------- modal helpers ----------
 function ensureModalRoot() {
   let root = $('#member-modal-root');
   if (root) return root;
@@ -150,9 +164,7 @@ function openModal(title, html) {
   $('#modal-body').innerHTML = html || '';
   $('#member-modal').classList.add('is-active');
 }
-function closeModal() {
-  $('#member-modal')?.classList.remove('is-active');
-}
+function closeModal() { $('#member-modal')?.classList.remove('is-active'); }
 
 // helper for rows inside modal
 function modalRow(label, value, cls='') {
@@ -211,7 +223,7 @@ async function loadMembers() {
     currentDegree,
     mastersThesisTitle,
     phdThesisTitle,
-    details,
+    details,                      // professor portable text
     obtainedDegree,
     currentOccupation,
     alumniMastersThesisTitle,
@@ -226,7 +238,7 @@ async function loadMembers() {
     return;
   }
 
-  // make a quick map for modal lookup
+  // map for modal lookup
   window.__TEAM_BY_ID__ = Object.fromEntries(members.map(m => [m._id, m]));
 
   const professors = members.filter(m => m.memberType === 'Professor');
@@ -264,7 +276,7 @@ document.addEventListener('click', (e) => {
     return;
   }
 
-  // fallback: inline expand for alumni/others
+  // inline expand for Alumni/Professors
   const card = btn.closest('.member-card');
   if (!card) return;
   const expanded = card.classList.toggle('expanded');

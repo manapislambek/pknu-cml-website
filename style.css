@@ -2112,3 +2112,92 @@ body.home .main-nav {
   .member-modal .modal-photo{ width:120px; height:154px; }
   .member-modal .modal-title{ font-size:1.6rem; }
 }
+
+/* === Members modal hard overrides (place LAST in style.css) === */
+.modal-content.member-modal { max-width: 920px !important; }
+
+/* Identity row */
+.modal-content.member-modal .modal-identity{
+  display: grid !important;
+  grid-template-columns: 140px 1fr !important;
+  gap: 1rem 1.25rem !important;
+  align-items: center !important;
+}
+
+/* Portrait: 3.5×4.5 look */
+.modal-content.member-modal .modal-photo{
+  width: 140px !important;
+  height: 180px !important;   /* 7:9 ≈ 3.5:4.5 */
+  object-fit: cover !important;
+  border-radius: 10px !important;
+  border: 4px solid #fff !important;
+  background: #f2f4f7 !important;
+  box-shadow: 0 5px 20px rgba(0,0,0,.12) !important;
+}
+
+/* Title / name / period */
+.modal-content.member-modal .modal-title{
+  font-family: "Roboto Slab", serif !important;
+  font-size: 2rem !important;
+  color: var(--pknu-blue) !important;
+  margin: 0 0 .75rem !important;
+}
+.modal-content.member-modal .modal-name{
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #0f2a3a !important;
+  margin: 0 0 .25rem !important;
+}
+.modal-content.member-modal .modal-period{
+  font-size: .95rem !important;
+  color: #475467 !important;
+  margin: 0 0 .35rem !important;
+}
+.modal-content.member-modal .modal-links a{
+  color: var(--primary-accent) !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+.modal-content.member-modal .modal-links a:hover{ text-decoration: underline !important; }
+
+/* Details rows + consistent space after ":" */
+.modal-content.member-modal .modal-details{
+  display: grid !important;
+  gap: .5rem !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+  color: #2b333a !important;
+}
+.modal-content.member-modal .modal-details .row .label{
+  font-weight: 700 !important;
+  margin-right: .35rem !important;
+}
+.modal-content.member-modal .modal-details .row .value{
+  font-weight: 400 !important;
+}
+
+/* Card portrait (outside modal) */
+.member-card .member-photo-wrap{
+  width: 150px !important;
+  aspect-ratio: 35/45 !important;
+  height: auto !important;
+  border-radius: 10px !important;
+  background: #f2f4f7 !important;
+  overflow: hidden !important;
+  margin: 0 auto .75rem !important;
+}
+.member-card .member-photo{
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  display: block !important;
+  border: 0 !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,.10) !important;
+}
+
+@media (max-width: 640px){
+  .modal-content.member-modal .modal-identity{ grid-template-columns: 1fr !important; }
+  .modal-content.member-modal .modal-photo{ width: 120px !important; height: 154px !important; }
+  .modal-content.member-modal .modal-title{ font-size: 1.6rem !important; }
+}
