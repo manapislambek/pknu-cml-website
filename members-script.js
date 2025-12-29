@@ -224,12 +224,35 @@ document.addEventListener('click', (e)=>{
   btn.setAttribute('aria-expanded', String(expanded));
 });
 
-// 2) Build + open student modal
-async function openStudentModal(memberId){
+function row(label, value, cls = '') {
+  if (!value) return '';
+  return `<div class="row ${cls}"><span class="label">${label}</span><span class="value">${value}</span></div>`;
+}
+
+async function openStudentModal(memberId) {
   const m = window.__TEAM_BY_ID__?.[memberId];
   if (!m) return;
 
-  // build rows
+  const headerBlock = `
+    <div class="member-modal">
+      <h2 class="modal-title">${m.name}</h2>
+
+      <div class="modal-identity">
+        ${m?.photo?.asset?.url ? `<img class="modal-photo" src="${m.photo.asset.url}" alt="${m.name}">` : `<div class="modal-photo"></div>`}
+        <div>
+          <div class="modal-name">${m.name}</div>
+          <div class="modal-period">${formatMemberPeriod(m) || ''}</div>
+          <div class="modal-links">
+            ${m.email ? `<a href="mailto:${m.email}">Email</a>` : ''}
+            ${m?.profiles?.googleScholarUrl ? (m.email ? ' · ' : '') + `<a href="${m.profiles.googleScholarUrl}" target="_blank" rel="noopener">Google Scholar</a>` : ''}
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-divider"></div>
+    </div>
+  `;
+
   const rows = [];
   if (m?.department)         rows.push(row('Department:', m.department, 'member-dept'));
   if (m?.researchArea)       rows.push(row('Research Area:', m.researchArea, 'member-area'));
@@ -237,31 +260,13 @@ async function openStudentModal(memberId){
   if (m?.mastersThesisTitle) rows.push(row('Master’s Thesis:', m.mastersThesisTitle, 'member-thesis'));
   if (m?.phdThesisTitle)     rows.push(row('Ph.D. Thesis:', m.phdThesisTitle, 'member-thesis'));
 
-  // optional: keep these best-effort lookups (will render only if something found)
-  const pubs = await fetchStudentPubs(m.name);
-  const pres = await fetchStudentPresentations(m.name);
-
-  const header = `
-    <div style="display:flex; gap:16px; align-items:center; margin-bottom:1rem;">
-      ${m?.photo?.asset?.url ? `<img src="${m.photo.asset.url}" alt="${m.name}" style="width:84px;height:108px;object-fit:cover;border-radius:8px;">` : ''}
-      <div>
-        <div style="font-weight:700; font-size:1.1rem;">${m.name}</div>
-        ${periodLine(m)}
-        ${m.email ? `<div><a class="member-email" href="mailto:${m.email}">Email</a></div>` : ''}
-        ${m?.profiles?.googleScholarUrl ? `<div><a class="member-link" href="${m.profiles.googleScholarUrl}" target="_blank" rel="noopener">Google Scholar</a></div>` : ''}
-      </div>
-    </div>
-  `;
-
   const detailsHTML = rows.length
-    ? `<div class="modal-details">${rows.join('')}</div>`
-    : `<em>No additional details.</em>`;
+    ? `<div class="member-modal"><div class="modal-details">${rows.join('')}</div></div>`
+    : `<div class="member-modal"><em>No additional details.</em></div>`;
 
-  const pubsHTML = pubs.length ? `<h3>Publications</h3><ul>${pubs.map(p=>`<li>${p}</li>`).join('')}</ul>` : '';
-  const presHTML = pres.length ? `<h3>Presentations</h3><ul>${pres.map(p=>`<li>${p}</li>`).join('')}</ul>` : '';
-
-  openModal(m.name, `${header}${detailsHTML}${pubsHTML}${presHTML}`);
+  openModal(m.name, headerBlock + detailsHTML);
 }
+
 
 
 // Heuristic fetchers — adjust to your schemas if needed
