@@ -1,15 +1,16 @@
-// members-script.js — stable build for Members page (no badges)
+// members-script.js — v17: render Professor details too
 import { createClient } from 'https://esm.sh/@sanity/client';
+import { toHTML } from 'https://esm.sh/@portabletext/to-html';
 
 // --- Sanity client ---
 const client = createClient({
   projectId: 'fd0kvo22',
   dataset: 'production',
-  useCdn: false,               // set to true after you confirm
+  useCdn: false,               // set to true after you confirm on production
   apiVersion: '2024-07-21',
 });
 
-console.log('Members script v16.2 loaded (no role badge)');
+console.log('Members script v17 loaded');
 
 // ---------- DOM helpers ----------
 const $  = (sel) => document.querySelector(sel);
@@ -25,8 +26,7 @@ const fmtMonthYear = (iso) => {
 
 function formatMemberPeriod(m) {
   const s = m?.period?.startDate ? fmtMonthYear(m.period.startDate) : '';
-  const e = m?.period?.endDate ? fmtMonthYear(m.period.endDate)
-    : (m.memberType === 'Student' ? 'Current' : (m.memberType === 'Alumni' ? '' : ''));
+  const e = m?.period?.endDate ? fmtMonthYear(m.period.endDate) : (m.memberType === 'Student' ? 'Current' : (m.memberType === 'Alumni' ? '' : ''));
   if (!s && !e) return '';
   if (m.memberType === 'Professor') return ''; // no period for professors
   return `${s}${s || e ? ' – ' : ''}${e || (m.memberType === 'Student' ? 'Current' : '')}`;
@@ -69,17 +69,30 @@ function alumniDetails(m) {
   return body ? `<div class="member-details-content">${body}</div>` : '';
 }
 
+// NEW: professor details from Portable Text → HTML
+function professorDetails(m) {
+  if (!m?.details) return '';
+  const html = toHTML(m.details);
+  return `
+    <div class="member-details-content portable-text-content">
+      ${html}
+    </div>
+  `;
+}
+
 // ---------- Card ----------
 function memberCard(m) {
-  const photoUrl   = m?.photo?.asset?.url || '';
-  const period     = formatMemberPeriod(m);
+  const photoUrl = m?.photo?.asset?.url || '';
+  const period   = formatMemberPeriod(m);
   const periodLine = period ? `<div class="member-period">${period}</div>` : '';
+
   const scholarUrl = m?.profiles?.googleScholarUrl;
 
   // details by type
   let detailsHTML = '';
   if (m.memberType === 'Student') detailsHTML = studentDetails(m);
   else if (m.memberType === 'Alumni') detailsHTML = alumniDetails(m);
+  else if (m.memberType === 'Professor') detailsHTML = professorDetails(m);
 
   const links = [
     link(scholarUrl, 'Google Scholar'),
@@ -142,7 +155,7 @@ async function loadMembers() {
     _id,
     name,
     memberType,
-    role, // still fetched but unused
+    role,
     email,
     photo{asset->{url}},
     profiles{ googleScholarUrl },
@@ -172,6 +185,10 @@ async function loadMembers() {
     console.error('Sanity fetch error:', err);
     return;
   }
+
+  // quick sanity check in console
+  const prof = members.find(m => m.memberType === 'Professor');
+  if (prof) console.log('Professor sample:', prof);
 
   const professors = members.filter(m => m.memberType === 'Professor');
   const students   = members.filter(m => m.memberType === 'Student');
