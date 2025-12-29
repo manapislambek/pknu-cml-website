@@ -2588,3 +2588,25 @@ body.home .main-nav {
 .team-section .member-card .member-details-content *{
   margin-left:0 !important;
 }
+
+/* Normalize ALL member photos (cards) to 3.5×4.5 and same width */
+.team-section .team-grid .member-card .member-photo-wrap{
+  width: 150px !important;          /* force same width */
+  aspect-ratio: 35 / 45;            /* 3.5 : 4.5 */
+  height: auto;
+  margin: 0 auto .75rem;            /* centered above name */
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f2f4f7;
+}
+.team-section .team-grid .member-card .member-photo{
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+}
+
+/* Center the expand/collapse button consistently */
+.team-section .member-card .expand-btn{
+  display: inline-flex;
+  margin: .75rem auto 0;            /* center */
+}
