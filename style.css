@@ -2469,3 +2469,21 @@ body.home .main-nav {
 
 /* Consistent spacing below tabs */
 .tab-content { margin-top: 1rem; }
+
+/* No rectangle/background on selected or focused tabs */
+.tab-buttons .tab-button.active,
+.category-tabs .category-button.active,
+.tab-buttons .tab-button:focus,
+.tab-buttons .tab-button:focus-visible,
+.category-tabs .category-button:focus,
+.category-tabs .category-button:focus-visible {
+  background: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* (optional) kill iOS/Chrome tap highlight on tabs */
+.tab-buttons .tab-button,
+.category-tabs .category-button {
+  -webkit-tap-highlight-color: transparent;
+}
