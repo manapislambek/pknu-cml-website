@@ -67,8 +67,8 @@ function buildDetailsHTML(m) {
   }
 
   if (m.memberType === 'Student') {
-    const deptLine   = m?.department   ? `<div class="member-dept"><strong>Department:</strong>${m.department}</div>` : '';
-    const areaLine   = m?.researchArea ? `<div class="member-area"><strong>Research Area:</strong>${m.researchArea}</div>` : '';
+    const deptLine   = m?.department   ? `<div class="member-dept"><strong>Department:</strong> ${m.department}</div>` : '';
+    const areaLine   = m?.researchArea ? `<div class="member-area"><strong>Research Area:</strong> ${m.researchArea}</div>` : '';
     const degreeLine = m?.currentDegree ? `<div class="member-area"><strong>Pursuing Degree:</strong> ${m.currentDegree}</div>` : '';
     const mastersThesis = m?.mastersThesisTitle ? `<p><strong>Master’s Thesis:</strong> ${m.mastersThesisTitle}</p>` : '';
     const phdThesis     = m?.phdThesisTitle     ? `<p><strong>Ph.D. Thesis:</strong> ${m.phdThesisTitle}</p>` : '';
