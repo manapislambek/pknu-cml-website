@@ -67,9 +67,9 @@ function buildDetailsHTML(m) {
   }
 
   if (m.memberType === 'Student') {
-    const deptLine   = m?.department   ? `<div class="member-dept">${m.department}</div>` : '';
-    const areaLine   = m?.researchArea ? `<div class="member-area">${m.researchArea}</div>` : '';
-    const degreeLine = m?.currentDegree ? `<div class="member-area"><strong>Purusing Degree:</strong> ${m.currentDegree}</div>` : '';
+    const deptLine   = m?.department   ? `<div class="member-dept"><strong>Department:</strong>${m.department}</div>` : '';
+    const areaLine   = m?.researchArea ? `<div class="member-area"><strong>Research Area:</strong>${m.researchArea}</div>` : '';
+    const degreeLine = m?.currentDegree ? `<div class="member-area"><strong>Pursuing Degree:</strong> ${m.currentDegree}</div>` : '';
     const mastersThesis = m?.mastersThesisTitle ? `<p><strong>Master’s Thesis:</strong> ${m.mastersThesisTitle}</p>` : '';
     const phdThesis     = m?.phdThesisTitle     ? `<p><strong>Ph.D. Thesis:</strong> ${m.phdThesisTitle}</p>` : '';
 
@@ -81,8 +81,8 @@ function buildDetailsHTML(m) {
   }
 
   if (m.memberType === 'Alumni') {
-    const obtained   = m?.obtainedDegree ? `<div class="member-area"><strong>Obtained degree:</strong> ${m.obtainedDegree}</div>` : '';
-    const occupation = m?.currentOccupation ? `<div class="member-area"><strong>Current occupation:</strong> ${m.currentOccupation}</div>` : '';
+    const obtained   = m?.obtainedDegree ? `<div class="member-area"><strong>Obtained Degree:</strong> ${m.obtainedDegree}</div>` : '';
+    const occupation = m?.currentOccupation ? `<div class="member-area"><strong>Current Occupation:</strong> ${m.currentOccupation}</div>` : '';
     const mastersThesis = m?.alumniMastersThesisTitle ? `<p><strong>Master’s Thesis:</strong> ${m.alumniMastersThesisTitle}</p>` : '';
     const phdThesis     = m?.alumniPhdThesisTitle     ? `<p><strong>Ph.D. Thesis:</strong> ${m.alumniPhdThesisTitle}</p>` : '';
 
