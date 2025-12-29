@@ -2405,3 +2405,67 @@ body.home .main-nav {
 /* consistent spacing to the content block below */
 .tab-content { margin-top: 1rem; }
 
+/* ==== Unified Underline Tabs (centered) ==== */
+.tab-buttons,
+.category-tabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  padding: .5rem 0;
+  margin: 0 0 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Tab button look (override any pill styles) */
+.tab-buttons .tab-button,
+.category-tabs .category-button {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: .55rem 0;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #6c757d;
+  cursor: pointer;
+  position: relative;
+  transition: color .2s ease;
+}
+
+.tab-buttons .tab-button:hover,
+.category-tabs .category-button:hover {
+  color: var(--pknu-blue);
+}
+
+.tab-buttons .tab-button.active,
+.category-tabs .category-button.active {
+  color: var(--primary-accent);
+}
+
+/* Blue underline indicator */
+.tab-buttons .tab-button::after,
+.category-tabs .category-button::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 3px;
+  background: var(--primary-accent);
+  border-radius: 999px;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform .2s ease;
+}
+.tab-buttons .tab-button.active::after,
+.category-tabs .category-button.active::after {
+  transform: scaleX(1);
+}
+
+/* Accessibility focus */
+.tab-buttons .tab-button:focus-visible,
+.category-tabs .category-button:focus-visible {
+  outline: 3px solid rgba(13,110,253,.25);
+  outline-offset: 2px;
+}
+
+/* Consistent spacing below tabs */
+.tab-content { margin-top: 1rem; }
