@@ -1,4 +1,4 @@
-// members-script.js — stable build for Members page
+// members-script.js — stable build for Members page (no badges)
 import { createClient } from 'https://esm.sh/@sanity/client';
 
 // --- Sanity client ---
@@ -9,7 +9,7 @@ const client = createClient({
   apiVersion: '2024-07-21',
 });
 
-console.log('Members script v16 loaded');
+console.log('Members script v16.2 loaded (no role badge)');
 
 // ---------- DOM helpers ----------
 const $  = (sel) => document.querySelector(sel);
@@ -25,14 +25,12 @@ const fmtMonthYear = (iso) => {
 
 function formatMemberPeriod(m) {
   const s = m?.period?.startDate ? fmtMonthYear(m.period.startDate) : '';
-  const e = m?.period?.endDate ? fmtMonthYear(m.period.endDate) : (m.memberType === 'Student' ? 'Current' : (m.memberType === 'Alumni' ? '' : ''));
+  const e = m?.period?.endDate ? fmtMonthYear(m.period.endDate)
+    : (m.memberType === 'Student' ? 'Current' : (m.memberType === 'Alumni' ? '' : ''));
   if (!s && !e) return '';
   if (m.memberType === 'Professor') return ''; // no period for professors
   return `${s}${s || e ? ' – ' : ''}${e || (m.memberType === 'Student' ? 'Current' : '')}`;
 }
-
-const roleBadge = (role) =>
-  role ? `<span class="member-badge" aria-label="role">${role}</span>` : '';
 
 const link = (href, text, cls = 'member-link') =>
   href ? `<a class="${cls}" href="${href}" target="_blank" rel="noopener noreferrer">${text}</a>` : '';
@@ -73,17 +71,15 @@ function alumniDetails(m) {
 
 // ---------- Card ----------
 function memberCard(m) {
-  const photoUrl = m?.photo?.asset?.url || '';
-  const period   = formatMemberPeriod(m);
+  const photoUrl   = m?.photo?.asset?.url || '';
+  const period     = formatMemberPeriod(m);
   const periodLine = period ? `<div class="member-period">${period}</div>` : '';
-
   const scholarUrl = m?.profiles?.googleScholarUrl;
 
   // details by type
   let detailsHTML = '';
   if (m.memberType === 'Student') detailsHTML = studentDetails(m);
   else if (m.memberType === 'Alumni') detailsHTML = alumniDetails(m);
-  // professors can later include long bio if needed
 
   const links = [
     link(scholarUrl, 'Google Scholar'),
@@ -98,7 +94,7 @@ function memberCard(m) {
         ${photoUrl ? `<img src="${photoUrl}" alt="${m.name}" class="member-photo" loading="lazy">` : ''}
       </div>
       <div class="member-info">
-        <h3 class="member-name">${m.name} ${roleBadge(m.role)}</h3>
+        <h3 class="member-name">${m.name}</h3>
         ${periodLine}
         <div class="member-links">${links}</div>
         ${hasDetails ? `
@@ -146,7 +142,7 @@ async function loadMembers() {
     _id,
     name,
     memberType,
-    role,
+    role, // still fetched but unused
     email,
     photo{asset->{url}},
     profiles{ googleScholarUrl },

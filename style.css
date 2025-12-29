@@ -2022,4 +2022,6 @@ body.home .main-nav {
 .member-obtained .value,
 .member-occupation .value { font-weight: 400; }
 
-
+.member-dept .label,
+.member-area .label { margin-right: 4px; }
+.member-thesis,
