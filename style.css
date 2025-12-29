@@ -2028,211 +2028,87 @@ body.home .main-nav {
   font-weight: 400;
 }
 
-/* Members: 3.5 x 4.5 portrait photo */
-.member-card .member-photo-wrap {
-  width: 150px;              /* tweak if you want bigger/smaller */
-  aspect-ratio: 35 / 45;     /* keeps 3.5x4.5 ratio */
-  height: auto;              /* let aspect-ratio set the height */
-  border-radius: 10px;
-  background: #f2f4f7;
-  overflow: hidden;
-  flex: 0 0 auto;            /* don't shrink */
-  margin: 0 auto 0.75rem;    /* center above the name */
+/* ---- Members: 3.5×4.5 portrait in cards (keep) ---- */
+.member-card .member-photo-wrap{
+  width:150px;
+  aspect-ratio:35/45;  /* 3.5×4.5 */
+  height:auto;
+  border-radius:10px;
+  background:#f2f4f7;
+  overflow:hidden;
+  flex:0 0 auto;
+  margin:0 auto .75rem;
+}
+.member-card .member-photo{
+  width:100%; height:100%;
+  object-fit:cover; object-position:center;
+  display:block; border:0; box-shadow:0 4px 16px rgba(0,0,0,.10);
+}
+@media (max-width:520px){
+  .member-card .member-photo-wrap{ width:130px; }
 }
 
-.member-card .member-photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;         /* fill the frame without distortion */
-  object-position: center;   /* adjust if you prefer 'center top' */
-  display: block;
-  border: 0;                 /* remove thick border that felt tight */
-  box-shadow: 0 4px 16px rgba(0,0,0,.10);
-}
+/* ---- Member modal (single source of truth) ---- */
+.modal-content.member-modal{ max-width:920px; }              /* wider modal */
 
-/* Smaller on narrow screens */
-@media (max-width: 520px) {
-  .member-card .member-photo-wrap { width: 130px; }
+.member-modal .modal-title{
+  font-family:"Roboto Slab", serif;
+  font-size:2rem; line-height:1.2;
+  color:var(--pknu-blue);
+  margin:0 0 .75rem;
 }
-
-/* Modal details should always be visible (unlike .member-details-content in cards) */
-.modal-details { 
-  margin-top: .5rem;
-}
-.modal-details .label { 
-  font-weight: 700; 
-  margin-right: 6px; 
-}
-.modal-details .value { 
-  font-weight: 400; 
-}
-
-/* ===== Member modal polish ===== */
-.member-modal {
-  --mm-title: 2rem;
-  --mm-subtitle: 1.05rem;
-  --mm-text: 0.98rem;
-  --mm-muted: #475467;
-}
-
-.member-modal .modal-title {
-  font-size: var(--mm-title);
-  margin: 0 0 .75rem;
-  color: var(--pknu-blue);
-  line-height: 1.2;
-}
-
-.member-modal .modal-identity {
-  display: grid;
-  grid-template-columns: 112px 1fr; /* bigger portrait */
-  gap: 16px;
-  align-items: start;
-  margin-bottom: 1rem;
-}
-
-.member-modal .modal-photo {
-  width: 112px;           /* ~3.5x4.5 aspect via height */
-  height: 144px;
-  object-fit: cover;
-  border-radius: 10px;
-  background: #f2f4f7;
-  box-shadow: 0 2px 10px rgba(0,0,0,.08);
-}
-
-.member-modal .modal-name {
-  font-size: var(--mm-subtitle);
-  font-weight: 700;
-  margin: 0 0 .25rem;
-  color: #122b3a;
-}
-
-.member-modal .modal-period {
-  font-size: var(--mm-text);
-  color: var(--mm-muted);
-  margin: 0 0 .35rem;
-}
-
-.member-modal .modal-links a {
-  font-size: var(--mm-text);
-  font-weight: 600;
-  color: #0b61d6;
-  text-decoration: none;
-}
-.member-modal .modal-links a:hover { text-decoration: underline; }
-
-.member-modal .modal-divider {
-  height: 1px;
-  background: #e5e7eb;
-  margin: 12px 0 14px;
-}
-
-/* Details list */
-.member-modal .modal-details {
-  display: grid;
-  gap: .4rem;
-  font-size: var(--mm-text);
-  line-height: 1.55;
-}
-
-.member-modal .row .label {
-  font-weight: 700;
-  margin-right: 6px;
-}
-.member-modal .row .value {
-  font-weight: 400;
-  color: #374151;
-}
-
-/* Section headings (if you later add Publications/Presentations) */
-.member-modal h3 {
-  margin: 1rem 0 .5rem;
-  font-size: 1.1rem;
-  color: #12324a;
-}
-
-/* ==== Members modal refinements ==== */
-.member-modal .modal-title {
-  font-family: "Roboto Slab", serif;
-  font-size: 2rem;
-  color: var(--pknu-blue);
-  margin: 0 0 0.75rem;
-}
-
-.member-modal .modal-divider {
-  height: 1px;
-  background: var(--border-color);
-  margin: 1rem 0 1.25rem;
+.member-modal .modal-divider{
+  height:1px; background:var(--border-color);
+  margin:1rem 0 1.25rem;
 }
 
 /* Identity row */
-.member-modal .modal-identity {
-  display: grid;
-  grid-template-columns: 140px 1fr;   /* bigger left column for photo */
-  gap: 1rem 1.25rem;
-  align-items: center;
+.member-modal .modal-identity{
+  display:grid;
+  grid-template-columns:140px 1fr;   /* bigger left column */
+  gap:1rem 1.25rem;
+  align-items:center;
 }
 
-/* Bigger portrait with 3.5×4.5 aspect */
-.member-modal .modal-photo {
-  width: 140px;
-  height: 180px;              /* 7:9 ≈ 3.5:4.5 */
-  object-fit: cover;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.12);
-  border: 4px solid #fff;
+/* Portrait in modal: fixed 140×180 (≈3.5×4.5) */
+.member-modal .modal-photo{
+  width:140px; height:180px;
+  object-fit:cover; border-radius:10px;
+  box-shadow:0 5px 20px rgba(0,0,0,.12);
+  border:4px solid #fff; background:#f2f4f7;
 }
 
-/* Name, period, links */
-.member-modal .modal-name {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #0f2a3a;
-  margin: 0 0 .25rem;
+/* Name / period / links */
+.member-modal .modal-name{
+  font-size:1.25rem; font-weight:700; color:#0f2a3a; margin:0 0 .25rem;
 }
-.member-modal .modal-period {
-  color: #475467;
-  font-size: .95rem;
-  margin: 0 0 .35rem;
+.member-modal .modal-period{
+  font-size:.95rem; color:#475467; margin:0 0 .35rem;
 }
-.member-modal .modal-links a {
-  color: var(--primary-accent);
-  font-weight: 600;
-  text-decoration: none;
+.member-modal .modal-links a{
+  color:var(--primary-accent); font-weight:600; text-decoration:none;
 }
-.member-modal .modal-links a:hover { text-decoration: underline; }
+.member-modal .modal-links a:hover{ text-decoration:underline; }
 
-/* Details block */
-.member-modal .modal-details {
-  display: grid;
-  gap: .5rem;                      /* tighter vertical rhythm */
-  font-size: 1rem;
-  color: #2b333a;
-  line-height: 1.5;
+/* Details */
+.member-modal .modal-details{
+  display:grid; gap:.5rem;
+  font-size:1rem; line-height:1.5; color:#2b333a;
+}
+/* label/value with consistent space after ":" */
+.member-modal .modal-details .row .label{
+  font-weight:700; margin-right:.35rem;
+}
+.member-modal .modal-details .row .value{
+  font-weight:400;
 }
 
-/* Label/value alignment with consistent spacing after ":" */
-.member-modal .modal-details .row .label {
-  font-weight: 700;
-  margin-right: .35rem;            /* space after ":" */
-}
-.member-modal .modal-details .row .value {
-  font-weight: 400;
-}
+/* Always-visible details container */
+.modal-details{ margin-top:.5rem; }
 
-/* Make the modal a bit wider on desktop */
-.modal-content.member-modal {
-  max-width: 920px;
-}
-
-/* Responsive: stack photo above text on small screens */
-@media (max-width: 640px) {
-  .member-modal .modal-identity {
-    grid-template-columns: 1fr;
-    align-items: start;
-  }
-  .member-modal .modal-photo {
-    width: 120px;
-    height: 154px;
-  }
-  .member-modal .modal-title { font-size: 1.6rem; }
+/* Responsive */
+@media (max-width:640px){
+  .member-modal .modal-identity{ grid-template-columns:1fr; align-items:start; }
+  .member-modal .modal-photo{ width:120px; height:154px; }
+  .member-modal .modal-title{ font-size:1.6rem; }
 }
