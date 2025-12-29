@@ -2537,3 +2537,54 @@ body.home .main-nav {
 .team-section .member-card .member-details-content > * + * {
   margin-top: .35rem;
 }
+
+/* --- Consistent 3.5×4.5 portrait on cards --- */
+.team-section .member-card .member-photo-wrap{
+  width:150px;                 /* back to your original size */
+  aspect-ratio:35 / 45;
+  height:auto;
+  margin:0 auto .75rem;        /* keep centered above name */
+  border-radius:10px;
+  background:#f2f4f7;
+  overflow:hidden;
+}
+.team-section .member-card .member-photo{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* --- Make header area centered on all cards --- */
+.team-section .member-card .member-info{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* --- Details block: same left gutter on EVERY card --- */
+.team-section .member-card .member-details-content{
+  width:100%;
+  box-sizing:border-box;
+  text-align:left;
+  padding:0 20px;              /* uniform inner gutter left/right */
+  margin:0;                    /* kill stray theme margins */
+}
+
+/* Put the value on a new line after the label */
+.team-section .member-card .member-details-content .label{
+  display:block;
+  font-weight:700;
+  margin:0 0 .25rem;
+}
+.team-section .member-card .member-details-content .value{
+  display:block;
+  font-weight:400;
+  line-height:1.5;
+  margin:0 0 .6rem;
+}
+
+/* Safety: remove any accidental left shifts from other styles */
+.team-section .member-card .member-details-content,
+.team-section .member-card .member-details-content *{
+  margin-left:0 !important;
+}
