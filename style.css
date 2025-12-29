@@ -2012,19 +2012,14 @@ body.home .main-nav {
 
 .member-dept .label,
 .member-area .label,
-.member-degree .label,
-.member-thesis .label { font-weight: 700; }
+.member-thesis .label,
+.member-obtained .label,
+.member-occupation .label { font-weight: 700; }
 
 .member-dept .value,
 .member-area .value,
-.member-degree .value,
-.member-thesis .value { font-weight: 400; }
-
-.member-obtained .label,
-.member-occupation .label,
-.member-thesis .label { font-weight: 700; }
-
+.member-thesis .value,
 .member-obtained .value,
-.member-occupation .value,
-.member-thesis .value { font-weight: 400; }
+.member-occupation .value { font-weight: 400; }
+
 
