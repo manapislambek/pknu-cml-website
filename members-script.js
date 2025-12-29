@@ -229,24 +229,17 @@ async function openStudentModal(memberId){
   const m = window.__TEAM_BY_ID__?.[memberId];
   if (!m) return;
 
-  // details (same content as before but displayed inside modal)
-  const detailParts = [];
-  if (m?.department) detailParts.push(row('Department:', m.department, 'member-dept'));
-  if (m?.researchArea) detailParts.push(row('Research Area:', m.researchArea, 'member-area'));
-  if (m?.currentDegree) detailParts.push(row('Pursuing Degree:', m.currentDegree, 'member-area'));
-  if (m?.mastersThesisTitle) detailParts.push(row('Master’s Thesis:', m.mastersThesisTitle, 'member-thesis'));
-  if (m?.phdThesisTitle) detailParts.push(row('Ph.D. Thesis:', m.phdThesisTitle, 'member-thesis'));
+  // build rows
+  const rows = [];
+  if (m?.department)         rows.push(row('Department:', m.department, 'member-dept'));
+  if (m?.researchArea)       rows.push(row('Research Area:', m.researchArea, 'member-area'));
+  if (m?.currentDegree)      rows.push(row('Pursuing Degree:', m.currentDegree, 'member-area'));
+  if (m?.mastersThesisTitle) rows.push(row('Master’s Thesis:', m.mastersThesisTitle, 'member-thesis'));
+  if (m?.phdThesisTitle)     rows.push(row('Ph.D. Thesis:', m.phdThesisTitle, 'member-thesis'));
 
-  // fetch publications/presentations best-effort (schema-agnostic heuristics)
+  // optional: keep these best-effort lookups (will render only if something found)
   const pubs = await fetchStudentPubs(m.name);
   const pres = await fetchStudentPresentations(m.name);
-
-  const pubsHTML = pubs.length
-    ? `<h3>Publications</h3><ul>${pubs.map(p=>`<li>${p}</li>`).join('')}</ul>`
-    : '';
-  const presHTML = pres.length
-    ? `<h3>Presentations</h3><ul>${pres.map(p=>`<li>${p}</li>`).join('')}</ul>`
-    : '';
 
   const header = `
     <div style="display:flex; gap:16px; align-items:center; margin-bottom:1rem;">
@@ -260,16 +253,16 @@ async function openStudentModal(memberId){
     </div>
   `;
 
-  const html = `
-    ${header}
-    <div class="member-details-content">
-      ${detailParts.join('') || '<em>No additional details.</em>'}
-    </div>
-    ${pubsHTML}
-    ${presHTML}
-  `;
-  openModal(`${m.name}`, html);
+  const detailsHTML = rows.length
+    ? `<div class="modal-details">${rows.join('')}</div>`
+    : `<em>No additional details.</em>`;
+
+  const pubsHTML = pubs.length ? `<h3>Publications</h3><ul>${pubs.map(p=>`<li>${p}</li>`).join('')}</ul>` : '';
+  const presHTML = pres.length ? `<h3>Presentations</h3><ul>${pres.map(p=>`<li>${p}</li>`).join('')}</ul>` : '';
+
+  openModal(m.name, `${header}${detailsHTML}${pubsHTML}${presHTML}`);
 }
+
 
 // Heuristic fetchers — adjust to your schemas if needed
 async function fetchStudentPubs(name){

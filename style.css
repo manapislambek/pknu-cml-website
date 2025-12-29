@@ -2054,3 +2054,16 @@ body.home .main-nav {
 @media (max-width: 520px) {
   .member-card .member-photo-wrap { width: 130px; }
 }
+
+/* Modal details should always be visible (unlike .member-details-content in cards) */
+.modal-details { 
+  margin-top: .5rem;
+}
+.modal-details .label { 
+  font-weight: 700; 
+  margin-right: 6px; 
+}
+.modal-details .value { 
+  font-weight: 400; 
+}
+
