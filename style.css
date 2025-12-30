@@ -2754,3 +2754,153 @@ body.home .main-nav {
 .prof-line .label { font-weight: 700; margin-right: .35rem; color: #334155; }
 .contact-email-link { color: #2563eb; text-decoration: none; font-weight: 600; }
 .contact-email-link:hover { text-decoration: underline; }
+
+/* =========================
+   Facilities & Equipment
+   (safe to paste at end)
+   ========================= */
+
+/* Fallback variables in case your theme vars are missing */
+:root {
+  --border-color: #e5e7eb;
+  --panel-bg: #ffffff;
+  --soft-bg: #f6f8fa;
+  --title-color: #0f2a3a;
+  --text-color: #1f2937;
+  --muted-color: #475467;
+}
+
+/* Page intro */
+.facility-intro {
+  max-width: 900px;
+  margin: 0 auto 1.75rem;
+  color: var(--muted-color);
+  line-height: 1.6;
+}
+
+/* Root wrapper for all facilities */
+.facilities-root {
+  margin-top: 0.5rem;
+}
+
+.facilities-root .facilities-container {
+  display: grid;
+  gap: 1.25rem; /* distance between facilities */
+}
+
+/* One facility section */
+.facility-section {
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--panel-bg);
+  padding: 1.25rem 1.25rem 1rem;
+}
+
+/* Facility header (title + description) */
+.facility-header {
+  margin: 0 0 0.75rem;
+}
+
+.facility-title {
+  font-family: "Roboto Slab", serif;
+  font-size: 1.5rem;
+  line-height: 1.25;
+  color: var(--title-color);
+  margin: 0 0 0.25rem;
+}
+
+.facility-description,
+.facility-description .portable-text-content {
+  color: var(--muted-color);
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
+.facility-description .portable-text-content p {
+  margin: 0.3rem 0;
+}
+
+/* Equipment list: clean rows (no cards) with subtle separators */
+.equipment-list {
+  margin-top: 0.5rem;
+}
+
+.equipment-item {
+  display: grid;
+  grid-template-columns: 240px 1fr; /* image | text */
+  gap: 16px;
+  align-items: start;
+  padding: 12px 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.equipment-item:first-child {
+  border-top: 0;
+}
+
+/* Image block with consistent aspect ratio */
+.equipment-photo-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--soft-bg);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 3px 14px rgba(0,0,0,.06);
+}
+
+.equipment-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Text block */
+.equipment-info {
+  min-width: 0; /* prevent overflow in grid */
+}
+
+.equipment-name {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.equipment-description {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: var(--text-color);
+}
+
+/* Optional tiny metadata row, if you add things later (model, vendor, etc.) */
+.equipment-meta {
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--muted-color);
+}
+
+/* Responsive tweaks */
+@media (max-width: 900px) {
+  .equipment-item {
+    grid-template-columns: 200px 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .equipment-item {
+    grid-template-columns: 1fr;
+  }
+  .equipment-photo-wrap {
+    aspect-ratio: 16 / 9; /* wider on mobile */
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Optional: subtle hover lift for rows (keeps “no card” feel) */
+.equipment-item:hover .equipment-photo-wrap {
+  box-shadow: 0 6px 20px rgba(0,0,0,.10);
+  transition: box-shadow .2s ease;
+}

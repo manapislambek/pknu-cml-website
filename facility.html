@@ -1,39 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Facility - Construction Materials Laboratory</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>Our Facilities — Construction Materials Laboratory</title>
 
-  <!-- All pages now share this exact header structure -->
+  <!-- Fonts & Styles -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Slab:wght@700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Shared site header (nav is injected by main-layout.js) -->
   <header class="main-header">
-    <!-- The navigation will be loaded here by main-layout.js -->
     <div class="header-content">
-        <!-- This content is specific to the facility page -->
-        <h1>Our Facilities</h1>
+      <h1>Our Facilities</h1>
     </div>
   </header>
 
   <main class="container">
+    <!-- Optional intro text -->
     <section class="facility-intro">
-        <p>Our laboratory consists of 6 different lab spaces assigned for various purposes, including a general purpose lab, chemical analysis lab, hood lab, processing lab, concrete lab, and a concrete preparation lab for teaching purposes.</p>
+      <p>
+        Our laboratory consists of multiple dedicated spaces, including general purpose,
+        chemical analysis, hood, processing, concrete testing, and a teaching preparation lab.
+        Each section below lists the equipment available in that facility.
+      </p>
     </section>
-    <section class="facility-section">
-      <div class="facility-grid">
-          <!-- JavaScript will populate this grid -->
-      </div>
+
+    <!-- JS injects one <section class="facility-section"> per facility here -->
+    <section id="facilities" class="facilities-root">
+      <div class="facilities-container"><!-- populated by facility-script.js --></div>
     </section>
   </main>
-  
+
   <footer class="main-footer"></footer>
 
+  <!-- Layout (nav/header/footer) loader -->
   <script src="main-layout.js" defer></script>
+
+  <!-- Facilities page logic (make sure this filename matches your JS file) -->
   <script type="module" src="facility-script.js"></script>
 </body>
 </html>
