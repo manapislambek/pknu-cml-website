@@ -1,68 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>News & Contact - Construction Materials Laboratory</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+
+  <!-- Fonts & CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+
+  <!-- Optional: page-scoped polish for contact box & tabs (remove if you already added in style.css) -->
+  <style>
+    /* Center tab buttons and use underline for active (no rectangular background) */
+    .tab-buttons { display:flex; justify-content:center; gap:1rem; margin:1.25rem 0; }
+    .tab-button { background:none; border:none; padding:.5rem .75rem; font-weight:700; color:#334155; cursor:pointer; border-bottom:2px solid transparent; }
+    .tab-button.active { color:#0f172a; border-bottom-color:#0f172a; }
+    .tab-content { display:none; }
+    .tab-content.active { display:block; }
+
+    /* Contact layout (safe to keep here or move to style.css) */
+    .contact-info-section { max-width: 900px; margin: 0 auto; }
+    .contact-box { padding: 1.25rem; border-radius: 10px; background: #f8fafc; border: 1px solid #e5e7eb; }
+    .contact-row { margin-bottom: .75rem; }
+    .contact-section-title { margin: .75rem 0 .5rem; font-weight: 700; color: #1f2937; }
+    .prof-contacts { display: grid; gap: .75rem; }
+    .prof-contact { padding: .75rem .9rem; border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; }
+    .prof-name { font-weight: 700; margin: 0 0 .25rem; color: #0f172a; }
+    .prof-line .label { font-weight: 700; margin-right: .35rem; color: #334155; }
+    .contact-email-link { color: #2563eb; text-decoration: none; font-weight: 600; }
+    .contact-email-link:hover { text-decoration: underline; }
+  </style>
 </head>
 <body>
-
   <header class="main-header">
     <div class="header-content">
-        <h1>News & Contact</h1>
+      <h1>News & Contact</h1>
     </div>
   </header>
 
   <main class="container">
     <div class="tab-section">
-        <div class="tab-buttons">
-            <button class="tab-button" data-tab="announcements">Notice</button>
-            <button class="tab-button" data-tab="gallery">Photo Gallery</button>
-            <button class="tab-button" data-tab="contact">Contact Info</button>
+      <div class="tab-buttons">
+        <button class="tab-button" data-tab="announcements">Notice</button>
+        <button class="tab-button" data-tab="gallery">Photo Gallery</button>
+        <button class="tab-button" data-tab="contact">Contact Info</button>
+      </div>
+
+      <div class="tab-content-container">
+        <!-- Announcements -->
+        <div id="announcements" class="tab-content">
+          <div class="notice-controls">
+            <div class="search-wrapper">
+              <input type="text" id="search-input" placeholder="Search by title..."/>
+            </div>
+            <div class="view-options">
+              <label for="rows-per-page">Rows per page:</label>
+              <select id="rows-per-page">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+              </select>
+            </div>
+          </div>
+          <div class="announcements-list"></div>
+          <div class="pagination-controls"></div>
         </div>
 
-        <div class="tab-content-container">
-            <div id="announcements" class="tab-content">
-                <div class="notice-controls">
-                    <div class="search-wrapper">
-                        <input type="text" id="search-input" placeholder="Search by title...">
-                    </div>
-                    <div class="view-options">
-                        <label for="rows-per-page">Rows per page:</label>
-                        <select id="rows-per-page">
-                            <option value="5">5</option>
-                            <option value="10" selected>10</option>
-                            <option value="20">20</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="announcements-list"></div>
-                <div class="pagination-controls"></div>
-            </div>
-
-            <div id="gallery" class="tab-content">
-                <div class="photo-grid"></div>
-            </div>
-
-            <div id="contact" class="tab-content">
-                <section id="contact-info-section" class="contact-info-section">
-                    <div id="contact-details-container" class="contact-details">
-                        <p><strong>Address:</strong> <span id="contact-address">Loading...</span></p>
-                        <p><strong>Email:</strong> <a id="contact-email" href="#"></a></p>
-                        <p><strong>Phone:</strong> <span id="contact-phone"></span></p>
-                    </div>
-                </section>
-            </div>
+        <!-- Gallery -->
+        <div id="gallery" class="tab-content">
+          <div class="photo-grid"></div>
         </div>
+
+        <!-- Contact -->
+        <div id="contact" class="tab-content">
+          <section id="contact-info-section" class="contact-info-section">
+            <div id="contact-details-container" class="contact-details"></div>
+          </section>
+        </div>
+      </div>
     </div>
   </main>
-  
+
   <footer class="main-footer"></footer>
 
+  <!-- Scripts -->
   <script src="main-layout.js" defer></script>
   <script type="module" src="contact-script.js"></script>
 </body>

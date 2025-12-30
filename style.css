@@ -2745,3 +2745,12 @@ body.home .main-nav {
   }
 }
 
+.contact-box { padding: 1.25rem; border-radius: 10px; background: #f8fafc; border: 1px solid #e5e7eb; }
+.contact-row { margin-bottom: .75rem; }
+.contact-section-title { margin: .75rem 0 .5rem; font-weight: 700; color: #1f2937; }
+.prof-contacts { display: grid; gap: .75rem; }
+.prof-contact { padding: .75rem .9rem; border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; }
+.prof-name { font-weight: 700; margin: 0 0 .25rem; color: #0f172a; }
+.prof-line .label { font-weight: 700; margin-right: .35rem; color: #334155; }
+.contact-email-link { color: #2563eb; text-decoration: none; font-weight: 600; }
+.contact-email-link:hover { text-decoration: underline; }
