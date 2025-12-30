@@ -2610,3 +2610,76 @@ body.home .main-nav {
   display: inline-flex;
   margin: .75rem auto 0;            /* center */
 }
+
+/* ===== Professors: media-row layout ===== */
+.member-card.professor-card{
+  display:grid;
+  grid-template-columns: 240px 1fr;  /* fixed portrait + flexible info */
+  gap: 20px 24px;
+  align-items:start;
+}
+
+/* Portrait */
+.professor-card .prof-photo-wrap{
+  width:240px;
+  aspect-ratio: 3 / 4;               /* tall upper-body portrait */
+  border-radius:12px;
+  overflow:hidden;
+  background:#f2f4f7;
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
+  flex:0 0 auto;
+}
+.professor-card .prof-photo{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center top;
+  display:block;
+}
+
+/* Info column */
+.professor-card .prof-info .member-name{
+  margin:0 0 .35rem;
+}
+.professor-card .member-links{
+  margin:0 0 .75rem;
+}
+
+/* Simple key/value rows (Department, Research Area) */
+.professor-card .prof-meta{
+  display:grid;
+  gap:.5rem;
+  margin:0 0 .75rem;
+}
+.professor-card .prof-row .label{
+  display:block;                 /* put value on its own line */
+  font-weight:700;
+  margin:0 0 .15rem;
+}
+.professor-card .prof-row .value{
+  display:block;
+  font-weight:400;
+  color:#374151;
+}
+
+/* Portable Text details (bio) */
+.professor-card .prof-details{
+  font-size:1rem;
+  line-height:1.55;
+  color:#2b333a;
+}
+.professor-card .prof-details h2,
+.professor-card .prof-details h3{
+  margin:1rem 0 .5rem;
+  font-size:1.05rem;
+  color:#12324a;
+}
+.professor-card .prof-details p{ margin:.4rem 0; }
+
+/* Make it stack nicely on small screens */
+@media (max-width: 720px){
+  .member-card.professor-card{ grid-template-columns: 1fr; }
+  .professor-card .prof-photo-wrap{
+    width:160px; aspect-ratio:3/4; margin:0 auto .75rem;
+  }
+}
