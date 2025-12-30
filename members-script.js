@@ -1,11 +1,7 @@
-// members-script.js — v19
-// Students use a modal, Professors use a media-row card (no "Show more"),
-// Alumni use inline details with "Show more".
-
+// members-script.js — v19 (Professors = media rows; Students modal; Alumni inline)
 import { createClient } from 'https://esm.sh/@sanity/client';
 import { toHTML } from 'https://esm.sh/@portabletext/to-html';
 
-// ---------- Sanity client ----------
 const client = createClient({
   projectId: 'fd0kvo22',
   dataset: 'production',
@@ -59,50 +55,40 @@ function alumniDetails(m) {
   if (m?.alumniPhdThesisTitle)     rows.push(`<p class="member-thesis"><span class="label">Ph.D. Thesis:</span><span class="value">${m.alumniPhdThesisTitle}</span></p>`);
   return rows.join('');
 }
+function professorDetails(m) {
+  if (!m?.details) return '';
+  const html = toHTML(m.details);
+  return `<div class="portable-text-content">${html}</div>`;
+}
 
-// ---------- Professor media-row card ----------
-function professorCard(m) {
+// ---------- PROFESSOR ROW (no cards, no modal) ----------
+function professorRow(m) {
   const photoUrl = m?.photo?.asset?.url || '';
-
-  const links = [
-    m?.profiles?.googleScholarUrl
-      ? `<a class="member-link" href="${m.profiles.googleScholarUrl}" target="_blank" rel="noopener">Google Scholar</a>`
-      : '',
-    m?.email ? `<a class="member-email" href="mailto:${m.email}">Email</a>` : ''
-  ].filter(Boolean).join(' · ');
-
-  const dept = m?.department
-    ? `<div class="prof-row"><span class="label">Department:</span><span class="value">${m.department}</span></div>`
-    : '';
-  const area = m?.researchArea
-    ? `<div class="prof-row"><span class="label">Research Area:</span><span class="value">${m.researchArea}</span></div>`
-    : '';
-
-  const detailsHTML = m?.details
-    ? `<div class="prof-details portable-text-content">${toHTML(m.details)}</div>`
-    : '';
+  const scholar  = m?.profiles?.googleScholarUrl;
 
   return `
-    <article class="member-card professor-card">
+    <section class="professor-row">
       <div class="prof-photo-wrap">
-        ${photoUrl ? `<img src="${photoUrl}" alt="${m.name}" class="prof-photo" loading="lazy">` : ''}
+        ${photoUrl
+          ? `<img class="prof-photo" src="${photoUrl}" alt="${m.name}" loading="lazy">`
+          : `<div class="prof-photo placeholder"></div>`}
       </div>
-      <div class="prof-info">
-        <h3 class="member-name">${m.name}</h3>
-        ${links ? `<div class="member-links">${links}</div>` : ''}
-        <div class="prof-meta">${dept}${area}</div>
-        ${detailsHTML}
+
+      <div class="prof-body">
+        <h3 class="prof-name">${m.name}</h3>
+        <div class="prof-links">
+          ${mailto(m.email)}
+          ${scholar ? (m.email ? ' · ' : '') + link(scholar, 'Google Scholar') : ''}
+        </div>
+
+        ${professorDetails(m) || ''}
       </div>
-    </article>
+    </section>
   `;
 }
 
-// ---------- Generic card chooser ----------
+// ---------- STUDENT/ALUMNI CARDS ----------
 function memberCard(m) {
-  // Professors: media-row layout, no "Show more"
-  if (m.memberType === 'Professor') return professorCard(m);
-
-  // Students & Alumni keep the existing card layout
   const photoUrl = m?.photo?.asset?.url || '';
   const period   = formatMemberPeriod(m);
   const periodLine = period ? `<div class="member-period">${period}</div>` : '';
@@ -151,6 +137,13 @@ function injectCards(sectionEl, list) {
     ? list.map(memberCard).join('')
     : '<p class="empty-note">No members to display.</p>';
 }
+function injectProfessors(sectionEl, list) {
+  if (!sectionEl) return;
+  const grid = sectionEl.querySelector('.team-grid') || sectionEl;
+  grid.innerHTML = (list && list.length)
+    ? list.map(professorRow).join('')
+    : '<p class="empty-note">No professors to display.</p>';
+}
 
 // ---------- tabs ----------
 function setupTabs() {
@@ -170,7 +163,7 @@ function setupTabs() {
   });
 }
 
-// ---------- modal helpers (students) ----------
+// ---------- modal helpers (for students) ----------
 function ensureModalRoot() {
   let root = $('#member-modal-root');
   if (root) return root;
@@ -198,12 +191,10 @@ function openModal(title, html) {
   $('#member-modal').classList.add('is-active');
 }
 function closeModal() { $('#member-modal')?.classList.remove('is-active'); }
-
 function modalRow(label, value, cls='') {
   if (!value) return '';
   return `<div class="row ${cls}"><span class="label">${label}</span><span class="value">${value}</span></div>`;
 }
-
 function openStudentModal(memberId) {
   const m = window.__TEAM_BY_ID__?.[memberId];
   if (!m) return;
@@ -250,18 +241,12 @@ async function loadMembers() {
     photo{asset->{url}},
     profiles{ googleScholarUrl },
     period{ startDate, endDate },
-
-    // student fields
     department,
     researchArea,
     currentDegree,
     mastersThesisTitle,
     phdThesisTitle,
-
-    // professor fields
-    details,
-
-    // alumni fields
+    details,                      // professor portable text
     obtainedDegree,
     currentOccupation,
     alumniMastersThesisTitle,
@@ -276,27 +261,26 @@ async function loadMembers() {
     return;
   }
 
-  // map for student modal lookup
+  // map for modal lookup
   window.__TEAM_BY_ID__ = Object.fromEntries(members.map(m => [m._id, m]));
 
   const professors = members.filter(m => m.memberType === 'Professor');
   const students   = members.filter(m => m.memberType === 'Student');
   const alumni     = members.filter(m => m.memberType === 'Alumni');
 
-  // Student buckets (free-text currentDegree)
   const postdocs   = students.filter(m => /postdoc/i.test(m.currentDegree || ''));
   const phd        = students.filter(m => /ph\.?d|doctoral/i.test(m.currentDegree || ''));
   const masters    = students.filter(m => /master/i.test(m.currentDegree || ''));
   const undergrads = students.filter(m => /undergrad|b\.?s|bachelor/i.test(m.currentDegree || ''));
 
-  injectCards($('#professor-section'), professors);
+  injectProfessors($('#professor-section'), professors); // <-- new layout
   injectCards($('#postdocs-section'), postdocs);
-  injectCards($('#phd-section'), phd);
-  injectCards($('#masters-section'), masters);
+  injectCards($('#phd-section'),      phd);
+  injectCards($('#masters-section'),  masters);
   injectCards($('#undergraduate-section'), undergrads);
-  injectCards($('#alumni-section'), alumni);
+  injectCards($('#alumni-section'),   alumni);
 
-  // hide empty buckets
+  // hide empty student buckets
   [$('#postdocs-section'), $('#phd-section'), $('#masters-section'), $('#undergraduate-section')].forEach(sec => {
     const grid = sec?.querySelector('.team-grid');
     if (sec && grid && grid.children.length === 0) sec.style.display = 'none';
@@ -315,7 +299,7 @@ document.addEventListener('click', (e) => {
     return;
   }
 
-  // inline expand for Alumni only (professors have no expand button)
+  // inline expand for Alumni only (Professors have no expand)
   const card = btn.closest('.member-card');
   if (!card) return;
   const expanded = card.classList.toggle('expanded');

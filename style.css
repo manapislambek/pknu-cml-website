@@ -2683,3 +2683,65 @@ body.home .main-nav {
     width:160px; aspect-ratio:3/4; margin:0 auto .75rem;
   }
 }
+
+/* === Professors: media rows (no cards) === */
+.professor-row {
+  display: grid;
+  grid-template-columns: 280px 1fr;   /* 2× student-modal photo */
+  gap: 1.25rem;
+  padding: 1.25rem 1.25rem 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 6px 22px rgba(16,24,40,.06);
+  margin-bottom: 1rem;
+}
+
+.prof-photo-wrap { width: 280px; }
+.prof-photo,
+.prof-photo.placeholder {
+  width: 280px;
+  height: 360px;               /* 3.5×4.5 aspect */
+  object-fit: cover;
+  border-radius: 12px;
+  background: #f2f4f7;
+  display: block;
+}
+
+.prof-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f2a3a;
+  margin: .25rem 0 .35rem;
+}
+
+.prof-links a {
+  color: var(--primary-accent, #0b61d6);
+  font-weight: 600;
+  text-decoration: none;
+}
+.prof-links a:hover { text-decoration: underline; }
+
+/* PortableText inside professor details */
+.professor-row .portable-text-content {
+  margin-top: .75rem;
+  color: #2b333a;
+  line-height: 1.6;
+}
+
+/* subtle separation when multiple profs */
+#professor-section .team-grid > .professor-row + .professor-row {
+  margin-top: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .professor-row {
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+  .prof-photo-wrap, .prof-photo, .prof-photo.placeholder {
+    width: 220px; height: 283px;   /* keep 3.5×4.5 */
+  }
+}
+
